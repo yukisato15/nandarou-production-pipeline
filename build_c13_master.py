@@ -392,12 +392,26 @@ JSX_TEMPLATE = r'''#target aftereffects
 
     function addM6Statement(master) {
         var bg = solid(master, "M6_STATEMENT_BG_INK", C.ink, PROJECT.width, PROJECT.height, [960, 540], DURATION);
+        var left, center, right, leftRect, centerRect, rightRect, totalWidth, cursorX;
         bg.inPoint = at(235);
         bg.outPoint = DURATION;
 
-        var left = textLayer(master, "TXT_M6_LEFT", "売られているのは、あなたの『", 78, C.white, [710, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
-        var center = textLayer(master, "TXT_M6_EM_ATTENTION", "注意", 78, C.gold, [1208, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
-        var right = textLayer(master, "TXT_M6_RIGHT", "』です。", 78, C.white, [1405, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
+        // 強調語だけ色を変えるため3レイヤーに分けるが、座標は手入力しない。
+        // AEが実際に選んだフォントの描画幅を測り、全文が中央に来るよう横組みする。
+        // フォントのフォールバックが起きても「注意」が前後の文字と重ならない。
+        left = textLayer(master, "TXT_M6_LEFT", "売られているのは、あなたの『", 78, C.white, [0, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
+        center = textLayer(master, "TXT_M6_EM_ATTENTION", "注意", 78, C.gold, [0, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
+        right = textLayer(master, "TXT_M6_RIGHT", "』です。", 78, C.white, [0, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
+        leftRect = left.sourceRectAtTime(0, false);
+        centerRect = center.sourceRectAtTime(0, false);
+        rightRect = right.sourceRectAtTime(0, false);
+        totalWidth = leftRect.width + centerRect.width + rightRect.width;
+        cursorX = (PROJECT.width - totalWidth) / 2;
+        left.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + leftRect.width / 2, 540]);
+        cursorX += leftRect.width;
+        center.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + centerRect.width / 2, 540]);
+        cursorX += centerRect.width;
+        right.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + rightRect.width / 2, 540]);
         left.inPoint = at(235); center.inPoint = at(247); right.inPoint = at(255);
         left.outPoint = DURATION; center.outPoint = DURATION; right.outPoint = DURATION;
         setOpacity(left, [[at(235), 0], [at(247), 100]]);
@@ -435,21 +449,24 @@ JSX_TEMPLATE = r'''#target aftereffects
         boardLayer.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([1920, 1080]);
         boardLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
 
+        // 2xボードは50%で1920x1080に一致する。
+        // 寄りの75%では安全なPosition範囲が x=480..1440 / y=270..810。
+        // 全キーをこの範囲内に固定し、パン中も紙の外側（黒）が見えないようにする。
         setScaleKeys(boardLayer, [
-            [at(0), [82, 82]],
-            [at(77), [82, 82]],
-            [at(101), [72, 72]],
-            [at(156), [78, 78]],
-            [at(204), [72, 72]],
+            [at(0), [75, 75]],
+            [at(77), [75, 75]],
+            [at(101), [75, 75]],
+            [at(156), [75, 75]],
+            [at(204), [75, 75]],
             [at(228), [50, 50]],
             [at(235), [50, 50]]
         ]);
         setPositionKeys(boardLayer, [
-            [at(0), [1895, 762]],
-            [at(77), [1895, 762]],
-            [at(101), [1050, 720]],
-            [at(156), [945, 735]],
-            [at(204), [70, 735]],
+            [at(0), [1400, 720]],
+            [at(77), [1400, 720]],
+            [at(101), [960, 720]],
+            [at(156), [960, 720]],
+            [at(204), [520, 720]],
             [at(228), [960, 540]],
             [at(235), [960, 540]]
         ]);

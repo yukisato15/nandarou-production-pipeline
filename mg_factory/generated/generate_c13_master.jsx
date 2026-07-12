@@ -182,12 +182,19 @@
 
     function textLayer(cmp, name, text, size, color, pos, fonts, tracking, justification) {
         var layer = cmp.layers.addText(text);
+        var tr, rect;
         layer.name = name;
         layer.comment = SIGNATURE + "|TXT";
         setText(layer, text, size, color, fonts, tracking, justification);
-        layer.property("ADBE Transform Group").property("ADBE Anchor Point").expression =
-            "r=sourceRectAtTime(time,false);[r.left+r.width/2,r.top+r.height/2]";
-        layer.property("ADBE Transform Group").property("ADBE Position").setValue(pos);
+        tr = layer.property("ADBE Transform Group");
+        try {
+            rect = layer.sourceRectAtTime(0, false);
+            tr.property("ADBE Anchor Point").setValue([rect.left + rect.width / 2, rect.top + rect.height / 2]);
+        } catch (error) {
+            tr.property("ADBE Anchor Point").setValue([0, 0]);
+            warn(name + ": sourceRect anchor fallback used");
+        }
+        tr.property("ADBE Position").setValue(pos);
         return layer;
     }
 
@@ -311,9 +318,7 @@
         counter.property("ADBE Transform Group").property("ADBE Rotate Z").setValue(1.2);
         addDropShadow(counter, 28, 60, 35);
         play = textLayer(boardComp, "UNIT_COUNTER_PLAY", "▶", 76, C.white, p(835, 410), F.oswald, 0, ParagraphJustification.CENTER_JUSTIFY);
-        number = textLayer(boardComp, "TXT_COUNTER_VALUE", "0", 108, C.white, p(1012, 400), F.oswald, 40, ParagraphJustification.CENTER_JUSTIFY);
-        number.property("ADBE Text Properties").property("ADBE Text Document").expression =
-            "v=Math.round(linear(time," + at(96) + "," + at(156) + ",0,1024553)); d=value; d.text=v.toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ','); d;";
+        number = textLayer(boardComp, "TXT_COUNTER_VALUE", "1,024,553", 108, C.white, p(1012, 400), F.oswald, 40, ParagraphJustification.CENTER_JUSTIFY);
         sub = textLayer(boardComp, "TXT_COUNTER_SUB", "回再生", 32, [0.545, 0.545, 0.522], p(970, 475), F.oswald, 300, ParagraphJustification.CENTER_JUSTIFY);
         pin = shapeEllipse(boardComp, "PIN_RED", 32, p(970, 340), C.red, null, 0, 100);
 
@@ -374,30 +379,19 @@
     }
 
     function addLook(master, camRig) {
-        var vignette = solid(master, "LOOK_GLOBAL_VIGNETTE", [0, 0, 0], PROJECT.width, PROJECT.height, [960, 540], DURATION);
-        vignette.adjustmentLayer = false;
-        vignette.property("ADBE Transform Group").property("ADBE Opacity").setValue(28);
-        vignette.blendingMode = BlendingMode.MULTIPLY;
-        try {
-            var mask = vignette.Masks.addProperty("ADBE Mask Atom");
-            mask.property("ADBE Mask Shape").expression =
-                "var s=new Shape(); s.vertices=[[120,540],[960,80],[1800,540],[960,1020]]; s.inTangents=[[0,0],[0,0],[0,0],[0,0]]; s.outTangents=[[0,0],[0,0],[0,0],[0,0]]; s.closed=true; s;";
-            mask.property("ADBE Mask Feather").setValue([420, 420]);
-            mask.property("ADBE Mask Mode").setValue(MaskMode.SUBTRACT);
-        } catch (error) {
-            warn("vignette mask not applied");
-        }
+        var vignette = solid(master, "LOOK_GLOBAL_VIGNETTE_DISABLED_REFERENCE", [0, 0, 0], PROJECT.width, PROJECT.height, [960, 540], DURATION);
+        var grain;
+        vignette.enabled = false;
+        vignette.comment = SIGNATURE + "|disabled until mask is hand-checked";
 
-        var grain = solid(master, "LOOK_GLOBAL_GRAIN_NOISE", [0.5, 0.5, 0.5], PROJECT.width, PROJECT.height, [960, 540], DURATION);
+        grain = solid(master, "LOOK_GLOBAL_GRAIN_NOISE", [0.5, 0.5, 0.5], PROJECT.width, PROJECT.height, [960, 540], DURATION);
         grain.adjustmentLayer = true;
-        grain.property("ADBE Transform Group").property("ADBE Opacity").setValue(9);
+        grain.property("ADBE Transform Group").property("ADBE Opacity").setValue(4);
         try {
             grain.property("ADBE Effect Parade").addProperty("ADBE Noise");
         } catch (noiseError) {
             warn("noise effect not applied");
         }
-
-        camRig.property("ADBE Transform Group").property("ADBE Position").expression = "value + wiggle(0.3,3)";
     }
 
     function buildMaster(root, boardComp) {
@@ -411,7 +405,6 @@
         cam.comment = SIGNATURE + "|CAM_RIG";
         boardLayer.name = "BOARD";
         boardLayer.comment = SIGNATURE + "|BOARD";
-        boardLayer.parent = cam;
         boardLayer.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([1920, 1080]);
         boardLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
 

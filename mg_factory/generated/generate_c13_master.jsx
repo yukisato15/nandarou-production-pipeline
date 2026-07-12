@@ -17,7 +17,7 @@
         "fps": 23.976,
         "width": 1920,
         "height": 1080,
-        "duration_frames": 312
+        "duration_frames": 408
     },
     "paths": {
         "eye": "/Users/yukisato/VSCode_Python/Youtube企画 スクリプト作成自動化/assets/mg/c13/eye_phone_glow.png",
@@ -260,18 +260,47 @@
         var op = layer.property("ADBE Transform Group").property("ADBE Opacity");
         var i;
         for (i = 0; i < keys.length; i++) op.setValueAtTime(keys[i][0], keys[i][1]);
+        applySoftEase(op, 55);
     }
 
     function setScaleKeys(layer, keys) {
         var prop = layer.property("ADBE Transform Group").property("ADBE Scale");
         var i;
         for (i = 0; i < keys.length; i++) prop.setValueAtTime(keys[i][0], keys[i][1]);
+        applySoftEase(prop, 72);
     }
 
     function setPositionKeys(layer, keys) {
         var prop = layer.property("ADBE Transform Group").property("ADBE Position");
         var i;
         for (i = 0; i < keys.length; i++) prop.setValueAtTime(keys[i][0], keys[i][1]);
+        applySoftEase(prop, 72);
+    }
+
+    function easeArrayFor(prop, influence) {
+        var value = prop.value;
+        var dims = value && value.length !== undefined ? value.length : 1;
+        var result = [];
+        var i;
+        for (i = 0; i < dims; i++) result.push(new KeyframeEase(0, influence));
+        return result;
+    }
+
+    function applySoftEase(prop, influence) {
+        var ease = easeArrayFor(prop, influence || 66);
+        var k;
+        for (k = 1; k <= prop.numKeys; k++) {
+            try {
+                prop.setTemporalEaseAtKey(k, ease, ease);
+                prop.setInterpolationTypeAtKey(k, KeyframeInterpolationType.BEZIER, KeyframeInterpolationType.BEZIER);
+                if (prop.propertyValueType === PropertyValueType.TwoD_SPATIAL || prop.propertyValueType === PropertyValueType.ThreeD_SPATIAL) {
+                    prop.setSpatialAutoBezierAtKey(k, false);
+                    prop.setSpatialContinuousAtKey(k, false);
+                }
+            } catch (error) {
+                warn(prop.name + ": soft ease not applied at key " + k);
+            }
+        }
     }
 
     function buildBoard(root, assetsFolder) {
@@ -366,7 +395,7 @@
     function addM6Statement(master) {
         var bg = solid(master, "M6_STATEMENT_BG_INK", C.ink, PROJECT.width, PROJECT.height, [960, 540], DURATION);
         var left, center, right, leftRect, centerRect, rightRect, totalWidth, cursorX;
-        bg.inPoint = at(235);
+        bg.inPoint = at(335);
         bg.outPoint = DURATION;
 
         // 強調語だけ色を変えるため3レイヤーに分けるが、座標は手入力しない。
@@ -385,11 +414,11 @@
         center.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + centerRect.width / 2, 540]);
         cursorX += centerRect.width;
         right.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + rightRect.width / 2, 540]);
-        left.inPoint = at(235); center.inPoint = at(247); right.inPoint = at(255);
+        left.inPoint = at(335); center.inPoint = at(347); right.inPoint = at(355);
         left.outPoint = DURATION; center.outPoint = DURATION; right.outPoint = DURATION;
-        setOpacity(left, [[at(235), 0], [at(247), 100]]);
-        setOpacity(center, [[at(247), 0], [at(259), 100]]);
-        setOpacity(right, [[at(255), 0], [at(267), 100]]);
+        setOpacity(left, [[at(335), 0], [at(347), 100]]);
+        setOpacity(center, [[at(347), 0], [at(359), 100]]);
+        setOpacity(right, [[at(355), 0], [at(367), 100]]);
     }
 
     function addLook(master, camRig) {
@@ -444,9 +473,11 @@
             [at(235), [960, 540]]
         ]);
 
-        flash.inPoint = at(230);
-        flash.outPoint = at(238);
-        setOpacity(flash, [[at(230), 0], [at(231), 100], [at(235), 0]]);
+        // Zoom-out ends at F235. Hold the full board for about 4 seconds,
+        // then use the existing paper flash as the transition into the black M6 statement.
+        flash.inPoint = at(330);
+        flash.outPoint = at(338);
+        setOpacity(flash, [[at(330), 0], [at(331), 100], [at(335), 0]]);
 
         addM6Statement(master);
         addLook(master, cam);

@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 MG_JSON = ROOT / "output/ep01_mg.json"
 MG_JSX = ROOT / "mg_factory/generated/generate_mg_factory.jsx"
 DESIGN_JSX = ROOT / "mg_factory/generated/generate_mg_factory_design_v2.jsx"
+C13_MASTER_JSX = ROOT / "mg_factory/generated/generate_c13_master.jsx"
 UI_HTML = ROOT / "mg_factory/generated/ui/C26_UI_AD_FEED_SCROLL.html"
 
 
@@ -166,6 +167,17 @@ class MgFactoryTests(unittest.TestCase):
                 text=True,
             )
             self.assertEqual(raw, rebuilt.read_bytes())
+
+    def test_c13_master_uses_eased_motion_and_four_second_board_hold(self) -> None:
+        raw = C13_MASTER_JSX.read_bytes()
+        self.assertEqual(raw[:3], b"\xef\xbb\xbf")
+        jsx = raw.decode("utf-8-sig")
+        self.assertIn('"duration_frames": 408', jsx)
+        self.assertIn("new KeyframeEase(0, influence)", jsx)
+        self.assertIn("setTemporalEaseAtKey", jsx)
+        self.assertIn("flash.inPoint = at(330)", jsx)
+        self.assertIn("bg.inPoint = at(335)", jsx)
+        self.assertIsNone(re.search(r"\b(?:const|let)\b|=>", jsx))
 
     def test_ui_is_standalone_and_deterministic(self) -> None:
         html = UI_HTML.read_text(encoding="utf-8")

@@ -28,7 +28,7 @@ def build_payload() -> dict[str, object]:
             "fps": 23.976,
             "width": 1920,
             "height": 1080,
-            "duration_frames": 528,
+            "duration_frames": 312,
         },
         "paths": {
             "eye": str((ROOT / "assets" / "mg" / "c13" / "eye_phone_glow.png").resolve()),
@@ -312,6 +312,59 @@ JSX_TEMPLATE = r'''#target aftereffects
         applySoftEase(prop, 72);
     }
 
+    /*
+     * C13専用の2Dカメラリグ。
+     *
+     * Positionを動かしてパンとズームを同時に行うと、画面上の被写体が
+     * 斜めに滑る軌道になりやすい。そこでPositionは画面中央に固定し、
+     * Anchor Point を「何を見るか」、Scale を「どれだけ寄るか」とする。
+     * ScaleはAnchor Pointを中心に掛かるため、ズーム中も注視点が中央に残る。
+     */
+    function applyCameraRig(boardLayer, keys, fps, baseScale) {
+        var tr = boardLayer.property("ADBE Transform Group");
+        var ap = tr.property("ADBE Anchor Point");
+        var sc = tr.property("ADBE Scale");
+        var pos = tr.property("ADBE Position");
+        var i, tk, zoomScale, inEase, outEase, finalInEase, finalOutEase;
+
+        while (ap.numKeys) ap.removeKey(1);
+        while (sc.numKeys) sc.removeKey(1);
+        while (pos.numKeys) pos.removeKey(1);
+
+        // Positionは以後一切アニメーションさせない。
+        pos.setValue([960, 540]);
+
+        for (i = 0; i < keys.length; i++) {
+            tk = keys[i].f / fps;
+            ap.setValueAtTime(tk, keys[i].look);
+            zoomScale = baseScale * keys[i].zoom;
+            sc.setValueAtTime(tk, [zoomScale, zoomScale]);
+        }
+
+        // 通常の移動は「ゆっくり発進→加速→短めに減速して停止」。
+        inEase = easeArrayFor(ap, 33);
+        outEase = easeArrayFor(ap, 60);
+        for (i = 1; i <= ap.numKeys; i++) {
+            ap.setTemporalEaseAtKey(i, inEase, outEase);
+            sc.setTemporalEaseAtKey(i, easeArrayFor(sc, 33), easeArrayFor(sc, 60));
+            try {
+                // オートベジェ由来の弧を禁止し、注視点は直線だけを移動する。
+                ap.setSpatialAutoBezierAtKey(i, false);
+                ap.setSpatialContinuousAtKey(i, false);
+                ap.setSpatialTangentsAtKey(i, [0, 0], [0, 0]);
+            } catch (spatialError) {}
+        }
+
+        // 最後の引きだけは、少し長めに抜けて全景で止める。
+        // keys[5] = F204（引き開始）、keys[6] = F230（全景着）。
+        finalInEase = easeArrayFor(ap, 25);
+        finalOutEase = easeArrayFor(ap, 70);
+        ap.setTemporalEaseAtKey(6, easeArrayFor(ap, 33), finalOutEase);
+        ap.setTemporalEaseAtKey(7, finalInEase, easeArrayFor(ap, 60));
+        sc.setTemporalEaseAtKey(6, easeArrayFor(sc, 33), easeArrayFor(sc, 70));
+        sc.setTemporalEaseAtKey(7, easeArrayFor(sc, 25), easeArrayFor(sc, 60));
+    }
+
     function easeArrayFor(prop, influence) {
         var value = prop.value;
         var dims = value && value.length !== undefined ? value.length : 1;
@@ -430,7 +483,7 @@ JSX_TEMPLATE = r'''#target aftereffects
     function addM6Statement(master) {
         var bg = solid(master, "M6_STATEMENT_BG_INK", C.ink, PROJECT.width, PROJECT.height, [960, 540], DURATION);
         var left, center, right, leftRect, centerRect, rightRect, totalWidth, cursorX;
-        bg.inPoint = at(443);
+        bg.inPoint = at(240);
         bg.outPoint = DURATION;
 
         // 強調語だけ色を変えるため3レイヤーに分けるが、座標は手入力しない。
@@ -450,11 +503,11 @@ JSX_TEMPLATE = r'''#target aftereffects
         center.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + centerRect.width / 2, 540]);
         cursorX += centerRect.width + emphasisGap;
         right.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + rightRect.width / 2, 540]);
-        left.inPoint = at(443); center.inPoint = at(455); right.inPoint = at(463);
+        left.inPoint = at(240); center.inPoint = at(252); right.inPoint = at(260);
         left.outPoint = DURATION; center.outPoint = DURATION; right.outPoint = DURATION;
-        setOpacity(left, [[at(443), 0], [at(455), 100]]);
-        setOpacity(center, [[at(455), 0], [at(467), 100]]);
-        setOpacity(right, [[at(463), 0], [at(475), 100]]);
+        setOpacity(left, [[at(240), 0], [at(252), 100]]);
+        setOpacity(center, [[at(252), 0], [at(264), 100]]);
+        setOpacity(right, [[at(260), 0], [at(272), 100]]);
     }
 
     function addLook(master, camRig) {
@@ -481,10 +534,14 @@ JSX_TEMPLATE = r'''#target aftereffects
         var flash = solid(master, "FLASH_PAPER_WHITE", C.white, PROJECT.width, PROJECT.height, [960, 540], DURATION);
         var ref;
 
-        cam.name = "CAM_RIG";
-        cam.comment = SIGNATURE + "|CAM_RIG";
+        // 微動を追加する場合はこのヌルだけに加える。BOARD本体には
+        // expression/wiggleを入れず、注視点とズームのキーを汚さない。
+        cam.name = "CAM_DRIFT";
+        cam.comment = SIGNATURE + "|CAM_DRIFT|manual wiggle port";
+        cam.property("ADBE Transform Group").property("ADBE Position").setValue([0, 0]);
         boardLayer.name = "BOARD";
         boardLayer.comment = SIGNATURE + "|BOARD";
+        boardLayer.parent = cam;
         boardLayer.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([1920, 1080]);
         boardLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
 
@@ -505,38 +562,23 @@ JSX_TEMPLATE = r'''#target aftereffects
             continuityTexture.moveAfter(boardLayer);
         }
 
-        // 2xボードは75%で画面より大きく、Position の安全範囲は
-        // x=480..1440 / y=270..810。水平パンはこの範囲の中だけで行う。
-        // 最後のズームは右の停止後に独立させ、50%・中央で全景へ着地する。
-        // この順番ならパンとズームが競合せず、対角線状の不自然な軌道も生まれない。
-        //
-        // 時間設計（23.976fps）:
-        // F48→84: 左から中央へ 1.5秒、F84→180: 中央を約4秒静止。
-        // F180→216: 中央から右へ 1.5秒、F216→312: 右を約4秒静止。
-        // F312→340: 中央へズームアウト、F340→436: 全景を約4秒静止。
-        // 各移動キーには temporal ease を適用するため、ゆっくり発進して加速し、
-        // 到着時は再びゆっくり止まる。
-        setScaleKeys(boardLayer, [
-            [at(0), [75, 75]],
-            [at(312), [75, 75]],
-            [at(340), [50, 50]],
-            [at(436), [50, 50]]
-        ]);
-        setPositionKeys(boardLayer, [
-            [at(0), [1400, 540]],
-            [at(48), [1400, 540]],
-            [at(84), [960, 540]],
-            [at(180), [960, 540]],
-            [at(216), [520, 540]],
-            [at(312), [520, 540]],
-            [at(340), [960, 540]],
-            [at(436), [960, 540]]
-        ]);
+        // 仕様書 C13_カメラリグ修正仕様.md のキーフレーム表に準拠。
+        // BOARD は 3840x2160 (= 2倍解像度) のため、全景は50%。
+        // look はBOARD内座標であり、Positionは常に[960, 540]のまま固定する。
+        applyCameraRig(boardLayer, [
+            {f: 0,   look: [780, 810],   zoom: 1.70},
+            {f: 76,  look: [780, 810],   zoom: 1.70},
+            {f: 100, look: [1940, 830],  zoom: 1.55},
+            {f: 163, look: [1940, 830],  zoom: 1.55},
+            {f: 187, look: [3130, 830],  zoom: 1.55},
+            {f: 204, look: [3130, 830],  zoom: 1.55},
+            {f: 230, look: [1920, 1080], zoom: 1.00}
+        ], FPS, 50);
 
-        // 全景の静止を見せ切ったあと、紙フラッシュで黒いM6へ切り替える。
-        flash.inPoint = at(438);
-        flash.outPoint = at(446);
-        setOpacity(flash, [[at(438), 0], [at(439), 100], [at(443), 0]]);
+        // 全景を短く見せたあと、紙フラッシュで黒いM6へ切り替える。
+        flash.inPoint = at(235);
+        flash.outPoint = at(243);
+        setOpacity(flash, [[at(235), 0], [at(236), 100], [at(240), 0]]);
 
         addM6Statement(master);
         addLook(master, cam);

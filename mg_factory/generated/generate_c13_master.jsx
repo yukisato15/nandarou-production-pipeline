@@ -17,7 +17,7 @@
         "fps": 23.976,
         "width": 1920,
         "height": 1080,
-        "duration_frames": 408
+        "duration_frames": 528
     },
     "paths": {
         "eye": "/Users/yukisato/VSCode_Python/Youtube企画 スクリプト作成自動化/assets/mg/c13/eye_phone_glow.png",
@@ -113,6 +113,14 @@
         item.parentFolder = folder;
         item.comment = SIGNATURE + "|asset";
         return item;
+    }
+
+    function findProjectItem(name) {
+        var i;
+        for (i = 1; i <= app.project.numItems; i++) {
+            if (app.project.item(i).name === name) return app.project.item(i);
+        }
+        return null;
     }
 
     function solid(cmp, name, color, width, height, pos, duration) {
@@ -395,7 +403,7 @@
     function addM6Statement(master) {
         var bg = solid(master, "M6_STATEMENT_BG_INK", C.ink, PROJECT.width, PROJECT.height, [960, 540], DURATION);
         var left, center, right, leftRect, centerRect, rightRect, totalWidth, cursorX;
-        bg.inPoint = at(319);
+        bg.inPoint = at(443);
         bg.outPoint = DURATION;
 
         // 強調語だけ色を変えるため3レイヤーに分けるが、座標は手入力しない。
@@ -415,11 +423,11 @@
         center.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + centerRect.width / 2, 540]);
         cursorX += centerRect.width + emphasisGap;
         right.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + rightRect.width / 2, 540]);
-        left.inPoint = at(319); center.inPoint = at(331); right.inPoint = at(339);
+        left.inPoint = at(443); center.inPoint = at(455); right.inPoint = at(463);
         left.outPoint = DURATION; center.outPoint = DURATION; right.outPoint = DURATION;
-        setOpacity(left, [[at(319), 0], [at(331), 100]]);
-        setOpacity(center, [[at(331), 0], [at(343), 100]]);
-        setOpacity(right, [[at(339), 0], [at(351), 100]]);
+        setOpacity(left, [[at(443), 0], [at(455), 100]]);
+        setOpacity(center, [[at(455), 0], [at(467), 100]]);
+        setOpacity(right, [[at(463), 0], [at(475), 100]]);
     }
 
     function addLook(master, camRig) {
@@ -442,6 +450,7 @@
         var master = comp(root, "C13_MASTER", PROJECT.width, PROJECT.height, DURATION);
         var cam = master.layers.addNull(DURATION);
         var boardLayer = master.layers.add(boardComp);
+        var continuityBase, continuityTexture, paperItem;
         var flash = solid(master, "FLASH_PAPER_WHITE", C.white, PROJECT.width, PROJECT.height, [960, 540], DURATION);
         var ref;
 
@@ -452,18 +461,39 @@
         boardLayer.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([1920, 1080]);
         boardLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
 
+        // BOARDの外側が一瞬でも見えても黒くならないよう、マスター側にも
+        // 紙の連続背景を置く。これはズーム用の保険で、紙画像の解像度を
+        // 無理にAIアップスケールする代わりに、AE内で画面サイズへcoverする。
+        continuityBase = solid(master, "BG_MASTER_PAPER_CONTINUITY", C.paper, PROJECT.width, PROJECT.height, [960, 540], DURATION);
+        continuityBase.moveToEnd();
+        paperItem = findProjectItem("BG_PAPER_texture_beige");
+        if (paperItem) {
+            continuityTexture = master.layers.add(paperItem);
+            continuityTexture.name = "BG_MASTER_PAPER_TEXTURE_CONTINUITY";
+            continuityTexture.comment = SIGNATURE + "|BG_PAPER";
+            continuityTexture.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
+            scaleAssetToCover(continuityTexture, PROJECT.width, PROJECT.height);
+            continuityTexture.blendingMode = BlendingMode.MULTIPLY;
+            continuityTexture.property("ADBE Transform Group").property("ADBE Opacity").setValue(20);
+            continuityTexture.moveAfter(boardLayer);
+        }
+
         // 2xボードは75%で画面より大きく、Position の安全範囲は
-        // x=480..1440 / y=270..810。今回はズームを使わず、水平パンだけにする。
-        // これでパンの途中に黒い外側が出ず、対角線状の不自然な軌道も生まれない。
+        // x=480..1440 / y=270..810。水平パンはこの範囲の中だけで行う。
+        // 最後のズームは右の停止後に独立させ、50%・中央で全景へ着地する。
+        // この順番ならパンとズームが競合せず、対角線状の不自然な軌道も生まれない。
         //
         // 時間設計（23.976fps）:
         // F48→84: 左から中央へ 1.5秒、F84→180: 中央を約4秒静止。
         // F180→216: 中央から右へ 1.5秒、F216→312: 右を約4秒静止。
+        // F312→340: 中央へズームアウト、F340→436: 全景を約4秒静止。
         // 各移動キーには temporal ease を適用するため、ゆっくり発進して加速し、
         // 到着時は再びゆっくり止まる。
         setScaleKeys(boardLayer, [
             [at(0), [75, 75]],
-            [at(312), [75, 75]]
+            [at(312), [75, 75]],
+            [at(340), [50, 50]],
+            [at(436), [50, 50]]
         ]);
         setPositionKeys(boardLayer, [
             [at(0), [1400, 540]],
@@ -471,13 +501,15 @@
             [at(84), [960, 540]],
             [at(180), [960, 540]],
             [at(216), [520, 540]],
-            [at(312), [520, 540]]
+            [at(312), [520, 540]],
+            [at(340), [960, 540]],
+            [at(436), [960, 540]]
         ]);
 
-        // 右の静止を見せ切ったあと、紙フラッシュで黒いM6へ切り替える。
-        flash.inPoint = at(314);
-        flash.outPoint = at(322);
-        setOpacity(flash, [[at(314), 0], [at(315), 100], [at(319), 0]]);
+        // 全景の静止を見せ切ったあと、紙フラッシュで黒いM6へ切り替える。
+        flash.inPoint = at(438);
+        flash.outPoint = at(446);
+        setOpacity(flash, [[at(438), 0], [at(439), 100], [at(443), 0]]);
 
         addM6Statement(master);
         addLook(master, cam);

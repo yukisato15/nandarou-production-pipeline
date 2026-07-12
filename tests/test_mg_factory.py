@@ -175,8 +175,14 @@ class MgFactoryTests(unittest.TestCase):
         self.assertIn('"duration_frames": 408', jsx)
         self.assertIn("new KeyframeEase(0, influence)", jsx)
         self.assertIn("setTemporalEaseAtKey", jsx)
-        self.assertIn("flash.inPoint = at(330)", jsx)
-        self.assertIn("bg.inPoint = at(335)", jsx)
+        self.assertIn("[at(48), [1400, 540]]", jsx)
+        self.assertIn("[at(84), [960, 540]]", jsx)
+        self.assertIn("[at(180), [960, 540]]", jsx)
+        self.assertIn("[at(216), [520, 540]]", jsx)
+        self.assertIn("[at(312), [520, 540]]", jsx)
+        self.assertIn("flash.inPoint = at(314)", jsx)
+        self.assertIn("bg.inPoint = at(319)", jsx)
+        self.assertIn("var emphasisGap = 44", jsx)
         self.assertIsNone(re.search(r"\b(?:const|let)\b|=>", jsx))
 
     def test_ui_is_standalone_and_deterministic(self) -> None:

@@ -422,30 +422,31 @@ JSX_TEMPLATE = r'''#target aftereffects
     function addM6Statement(master) {
         var bg = solid(master, "M6_STATEMENT_BG_INK", C.ink, PROJECT.width, PROJECT.height, [960, 540], DURATION);
         var left, center, right, leftRect, centerRect, rightRect, totalWidth, cursorX;
-        bg.inPoint = at(335);
+        bg.inPoint = at(319);
         bg.outPoint = DURATION;
 
         // 強調語だけ色を変えるため3レイヤーに分けるが、座標は手入力しない。
         // AEが実際に選んだフォントの描画幅を測り、全文が中央に来るよう横組みする。
-        // フォントのフォールバックが起きても「注意」が前後の文字と重ならない。
-        left = textLayer(master, "TXT_M6_LEFT", "売られているのは、あなたの『", 78, C.white, [0, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
-        center = textLayer(master, "TXT_M6_EM_ATTENTION", "注意", 78, C.gold, [0, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
-        right = textLayer(master, "TXT_M6_RIGHT", "』です。", 78, C.white, [0, 540], F.minchoBold, 100, ParagraphJustification.CENTER_JUSTIFY);
+        // 強調語の前後には明示的な余白を置き、「『注意』」を窮屈に見せない。
+        var emphasisGap = 44;
+        left = textLayer(master, "TXT_M6_LEFT", "売られているのは、あなたの『", 78, C.white, [0, 540], F.minchoBold, 60, ParagraphJustification.CENTER_JUSTIFY);
+        center = textLayer(master, "TXT_M6_EM_ATTENTION", "注意", 78, C.gold, [0, 540], F.minchoBold, 60, ParagraphJustification.CENTER_JUSTIFY);
+        right = textLayer(master, "TXT_M6_RIGHT", "』です。", 78, C.white, [0, 540], F.minchoBold, 60, ParagraphJustification.CENTER_JUSTIFY);
         leftRect = left.sourceRectAtTime(0, false);
         centerRect = center.sourceRectAtTime(0, false);
         rightRect = right.sourceRectAtTime(0, false);
-        totalWidth = leftRect.width + centerRect.width + rightRect.width;
+        totalWidth = leftRect.width + centerRect.width + rightRect.width + emphasisGap * 2;
         cursorX = (PROJECT.width - totalWidth) / 2;
         left.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + leftRect.width / 2, 540]);
-        cursorX += leftRect.width;
+        cursorX += leftRect.width + emphasisGap;
         center.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + centerRect.width / 2, 540]);
-        cursorX += centerRect.width;
+        cursorX += centerRect.width + emphasisGap;
         right.property("ADBE Transform Group").property("ADBE Position").setValue([cursorX + rightRect.width / 2, 540]);
-        left.inPoint = at(335); center.inPoint = at(347); right.inPoint = at(355);
+        left.inPoint = at(319); center.inPoint = at(331); right.inPoint = at(339);
         left.outPoint = DURATION; center.outPoint = DURATION; right.outPoint = DURATION;
-        setOpacity(left, [[at(335), 0], [at(347), 100]]);
-        setOpacity(center, [[at(347), 0], [at(359), 100]]);
-        setOpacity(right, [[at(355), 0], [at(367), 100]]);
+        setOpacity(left, [[at(319), 0], [at(331), 100]]);
+        setOpacity(center, [[at(331), 0], [at(343), 100]]);
+        setOpacity(right, [[at(339), 0], [at(351), 100]]);
     }
 
     function addLook(master, camRig) {
@@ -478,33 +479,32 @@ JSX_TEMPLATE = r'''#target aftereffects
         boardLayer.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([1920, 1080]);
         boardLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
 
-        // 2xボードは50%で1920x1080に一致する。
-        // 寄りの75%では安全なPosition範囲が x=480..1440 / y=270..810。
-        // 全キーをこの範囲内に固定し、パン中も紙の外側（黒）が見えないようにする。
+        // 2xボードは75%で画面より大きく、Position の安全範囲は
+        // x=480..1440 / y=270..810。今回はズームを使わず、水平パンだけにする。
+        // これでパンの途中に黒い外側が出ず、対角線状の不自然な軌道も生まれない。
+        //
+        // 時間設計（23.976fps）:
+        // F48→84: 左から中央へ 1.5秒、F84→180: 中央を約4秒静止。
+        // F180→216: 中央から右へ 1.5秒、F216→312: 右を約4秒静止。
+        // 各移動キーには temporal ease を適用するため、ゆっくり発進して加速し、
+        // 到着時は再びゆっくり止まる。
         setScaleKeys(boardLayer, [
             [at(0), [75, 75]],
-            [at(77), [75, 75]],
-            [at(101), [75, 75]],
-            [at(156), [75, 75]],
-            [at(204), [75, 75]],
-            [at(228), [50, 50]],
-            [at(235), [50, 50]]
+            [at(312), [75, 75]]
         ]);
         setPositionKeys(boardLayer, [
-            [at(0), [1400, 720]],
-            [at(77), [1400, 720]],
-            [at(101), [960, 720]],
-            [at(156), [960, 720]],
-            [at(204), [520, 720]],
-            [at(228), [960, 540]],
-            [at(235), [960, 540]]
+            [at(0), [1400, 540]],
+            [at(48), [1400, 540]],
+            [at(84), [960, 540]],
+            [at(180), [960, 540]],
+            [at(216), [520, 540]],
+            [at(312), [520, 540]]
         ]);
 
-        // Zoom-out ends at F235. Hold the full board for about 4 seconds,
-        // then use the existing paper flash as the transition into the black M6 statement.
-        flash.inPoint = at(330);
-        flash.outPoint = at(338);
-        setOpacity(flash, [[at(330), 0], [at(331), 100], [at(335), 0]]);
+        // 右の静止を見せ切ったあと、紙フラッシュで黒いM6へ切り替える。
+        flash.inPoint = at(314);
+        flash.outPoint = at(322);
+        setOpacity(flash, [[at(314), 0], [at(315), 100], [at(319), 0]]);
 
         addM6Statement(master);
         addLook(master, cam);

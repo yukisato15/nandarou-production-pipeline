@@ -1,0 +1,25 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+
+# Local editor / app temporary files
+~$*.xlsx
+
+# Python environments
+.venv/
+venv/
+
+# Local secrets
+.env
+.env.*
+
+# Heavy Adobe project/render files should be shared intentionally, not by default.
+*.aep
+*.aepx
+*.aepx~
+*.mov
+*.mp4
+*.m4v
+*.wav
+*.aif
+*.aiff

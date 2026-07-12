@@ -1,0 +1,956 @@
+﻿#target aftereffects
+
+/*
+ * NANDAROU MG Factory v0.2 - Reusable AE/Data Builder
+ * PythonがMG JSONを直接埋め込んでいるためJSON.parseは使用しません。
+ * 元TC確認用リールと、カットを詰めたレビュー用リールを同時生成します。
+ */
+(function () {
+    var PAYLOAD = {"schema_version":"1.0","project":{"episode":"EP01","title":"『なんだろう』解体","width":1920,"height":1080,"fps":23.976,"fps_numerator":24000,"fps_denominator":1001,"duration_seconds":585.0010833333333},"palette":{"ink":"#1A1A1A","off_white":"#EAE6DF","gold":"#C9A063","vermilion":"#B8352E"},"cuts":[{"cut":"C01","part":"P0","tc_in":"00:00:00.000","tc_out":"00:00:10.000","in_seconds":0.0,"out_seconds":10.0,"in_frame":0,"out_frame":240,"duration_frames":240,"category":"MGテンプレート","template_id":"AE_CARD_STACK_THUMBNAIL","visual":"黒背景に煽りサムネ(自作再現・3枚)が通知音と同時に次々スタック。1枚ごとに画面が埋まっていく","automation":"3枚のサムネ画像を読み込み、通知音に合わせて順次スタック。各カードの出現遅延、105→100%スケール、最終微ズームを自動設定。","required_inputs":"サムネ画像3枚、表示順、出現間隔、背景色、最終ズーム量","support":"Canvaで架空サムネの静止画を一括作成。Claude/Codexは画像リストをAEへ流し込むJSX生成。VHSノイズはEnvato部品。","manual_check":"サムネ文言の可読性と煽りの強さだけ確認。実在チャンネル・ロゴが混入していないことを確認。","source_search":"—","ai_prompt":"—","effect_notes":"サムネにVHS風ノイズ薄く=「VHS overlay texture」","transition_notes":"カット尻で全サムネ微ズーム寄り→C02へハードカット","motion_notes":"1枚ごとにスケール105→100%のドン付き出現 [maxchar:10]","params":{"fictional":true,"card_size":[1040,360],"pop_frames":8,"final_zoom":104,"final_zoom_start":180,"cards":[{"eyebrow":"速報","headline":"日本、終わる","accent":"#B8352E","x":0.37,"y":0.34,"rotation":-3,"delay":0},{"eyebrow":"知らないと危険","headline":"年金、消える","accent":"#C9A063","x":0.63,"y":0.5,"rotation":2,"delay":18},{"eyebrow":"損する前に","headline":"知らないと、損する","accent":"#EAE6DF","x":0.49,"y":0.67,"rotation":-1,"delay":36}]}},{"cut":"C03","part":"P0","tc_in":"00:00:16.000","tc_out":"00:00:22.000","in_seconds":16.0,"out_seconds":22.0,"in_frame":384,"out_frame":527,"duration_frames":143,"category":"MGテンプレート","template_id":"AE_CARD_FOCUS_DROP","visual":"この動画自身のサムネが画面中央に落ちてきて静止。周囲のサムネは暗く沈む","automation":"C01のカード部品を再利用し、指定サムネを中央へ落下、周囲カードを暗転、静止後にモノクロ化。","required_inputs":"主役サムネ画像、落下時間、周囲暗転率、モノクロ化時間","support":"主役画像はCanvaまたは実際の本動画サムネ。微ダストのみEnvato。","manual_check":"C01からC03までのカード位置が連続して見えるか確認。","source_search":"—","ai_prompt":"—","effect_notes":"落下時に微ダスト=「dust particles overlay」","transition_notes":"静止したサムネがモノクロ化しながらC04へディゾルブ","motion_notes":"字幕フェードイン。「同じ手口」のみ字間+100に広げる","params":{"fictional":true,"kicker":"THIS VIDEO","headline":"同じ手口で作っています","subline":"『なんだろう』解体 #01","drop_frames":18,"settle_frames":8,"surrounding_opacity":16,"monochrome_frame":78}},{"cut":"C10","part":"P0","tc_in":"00:01:06.000","tc_out":"00:01:12.000","in_seconds":66.0,"out_seconds":72.0,"in_frame":1582,"out_frame":1726,"duration_frames":144,"category":"MGテンプレート","template_id":"AE_TITLE_EPISODE","visual":"タイトルカード:墨背景に「ぜんぶ、売り物になっていく」+小さく『なんだろう』解体 #01","automation":"話数、タイトル、副題を差し替え、字間収束、紙質感、フェード、次カットへの粒子化を番組プリセットで適用。","required_inputs":"話数、タイトル、副題、保持秒数、アウト方式","support":"番組用AEマスターのみ。紙テクスチャはEnvatoライブラリから固定素材を利用。","manual_check":"長い題名の改行と保持時間のみ確認。","source_search":"—","ai_prompt":"—","effect_notes":"紙テクスチャ背景=「paper texture background」","transition_notes":"タイトルが粒子化して砕け、スマホスクロール実写へ=「particle dissolve transition」","motion_notes":"タイトル:字間が広い状態から通常へ収束しつつフェードイン","params":{"episode":"#01","series":"『なんだろう』解体","title":"ぜんぶ、売り物になっていく","subtitle":"あなたの「つい」は、誰のお金になっているのか","intro_frames":18,"outro_frames":18}},{"cut":"C12","part":"P1","tc_in":"00:01:22.000","tc_out":"00:01:31.000","in_seconds":82.0,"out_seconds":91.0,"in_frame":1966,"out_frame":2182,"duration_frames":216,"category":"MG自動生成","template_id":"DATA_BAR_WORD_GROWTH","visual":"煽りワードがグラフの棒として伸びていく自作MG(ワード=棒のラベル)","automation":"JSONの語句と値から棒グラフShape Layerを生成。棒の伸長、ラベル、数値カウント、順位変化を自動設定。","required_inputs":"語句配列、各値、表示順、アクセント対象、最大値、尺","support":"PythonでMG JSONを生成し、AE Shape Layer／Trim Pathsで描画。データ案の整理にClaudeを利用。","manual_check":"値が事実データか演出値かを明記し、誤認を招かないか確認。","source_search":"—","ai_prompt":"—","effect_notes":"数字・棒に微グロー=「glow effect overlay」","transition_notes":"棒グラフが回転して→C13のカウンターへ","motion_notes":"字幕フェード/グラフラベルはカウントアップ","params":{"title":"不安ワードの『伸び』","conceptual":true,"note":"概念図（値は演出用）","draw_frames":62,"stagger_frames":12,"bars":[{"label":"経済が終わる","value":96,"accent":true},{"label":"年金が消える","value":84,"accent":false},{"label":"知らないと損","value":68,"accent":false}]}},{"cut":"C13","part":"P1","tc_in":"00:01:31.000","tc_out":"00:01:44.000","in_seconds":91.0,"out_seconds":104.0,"in_frame":2182,"out_frame":2494,"duration_frames":312,"category":"MG自動生成","template_id":"DATA_FLOW_THREE_STEP","visual":"再生回数カウンターが回る→数字が¥グラフへ変換されるフロー図の自作MG(視線→再生→広告費の3段変換)","automation":"3段のノード、矢印、アイコン、数値をJSONから生成し、視線→再生→広告費を順番に開示。","required_inputs":"ノード名3件、補足値、アイコンID、強調ノード、表示順","support":"Claude/CodexでSVGアイコンとJSXを生成。共通アイコンは番組ライブラリへ保存。","manual_check":"因果関係を断定しすぎない文言か確認。","source_search":"—","ai_prompt":"—","effect_notes":"フロー矢印にライトスウィープ=「light sweep overlay」","transition_notes":"¥グラフが編集タイムラインのUIへ変形→C14","motion_notes":"★文:中央。「注意」のみ金茶+鍵括弧を1.2倍","params":{"title":"注意がお金に変わるまで","conceptual":true,"nodes":[{"icon":"◉","label":"視線","sub":"ATTENTION"},{"icon":"▶","label":"再生","sub":"VIEW"},{"icon":"¥","label":"広告費","sub":"REVENUE"}],"reveal_frames":[8,38,68],"statement":"売られているのは、あなたの『注意』です。","statement_frame":104}},{"cut":"C15","part":"P1","tc_in":"00:02:04.000","tc_out":"00:02:18.000","in_seconds":124.0,"out_seconds":138.0,"in_frame":2973,"out_frame":3309,"duration_frames":336,"category":"MG自動生成","template_id":"DATA_RESEARCH_STAT_CARD","visual":"白背景の論文風モーショングラフ。「MIT」「2018」「126,000」の数字が大きく順に出る","automation":"出典、年、件数をJSONから論文風カードへ配置し、大数字のカウントアップとスタンプ着地を自動生成。","required_inputs":"研究機関、年、件数、単位、注記、出典URL、表示順","support":"AEデータカードマスター＋Python。Canvaは不要。紙テクスチャのみEnvato固定部品。","manual_check":"数字・単位・出典の正確性、約表記、留保文を必ず確認。","source_search":"—","ai_prompt":"—","effect_notes":"白背景に紙テクスチャ=「paper texture overlay」","transition_notes":"数字が2本の線グラフの起点へ収束→C16","motion_notes":"数字カウントアップ+スタンプ着地 [maxchar:12]","params":{"data_kind":"factual","source_verified":false,"kicker":"MIT RESEARCH","year":"2018","value":"約12万件","numeric_value":126000,"count_to":12,"count_prefix":"約","count_suffix":"万件","caption":"ニュース記事の拡散を分析","footnote":"MIT研究／約126,000件（コンテ記載値）","sequence_frames":[0,18,38]}},{"cut":"C16","part":"P1","tc_in":"00:02:18.000","tc_out":"00:02:32.000","in_seconds":138.0,"out_seconds":152.0,"in_frame":3309,"out_frame":3644,"duration_frames":335,"category":"MG自動生成","template_id":"DATA_LINE_COMPARE_TWO","visual":"2本の線のアニメーション。「ウソ」の線(朱)が「本当」の線(墨)を追い抜き、伸び続ける","automation":"2系列の点列・ラベル・色から線グラフを生成。Trim Pathsで描画し、一方が追い抜くタイミングと終点ラベルを自動設定。","required_inputs":"系列名2件、点配列、色、追い抜き時刻、軸表示有無、注記","support":"AE Shape Layer中心。試作が重い場合は無料CavalryのSpreadsheet連携も比較候補。","manual_check":"軸を省略する場合の誤解、実測値と概念図の区別を確認。","source_search":"—","ai_prompt":"—","effect_notes":"線の先端に粒子=「particle trail effect」","transition_notes":"グラフがそのままメッセージアプリの吹き出し群へ変形→C17","motion_notes":"★文:グラフ下に固定表示のまま4秒保持","params":{"title":"拡散の広がり方","conceptual":true,"note":"概念図（値は演出用）","series":[{"label":"本当","color":"#EAE6DF","values":[0.08,0.18,0.29,0.43,0.56,0.67]},{"label":"ウソ","color":"#B8352E","values":[0.05,0.22,0.48,0.7,0.87,0.96]}],"draw_frames":82}},{"cut":"C20","part":"P1","tc_in":"00:02:54.000","tc_out":"00:03:03.000","in_seconds":174.0,"out_seconds":183.0,"in_frame":4172,"out_frame":4388,"duration_frames":216,"category":"MGテンプレート","template_id":"AE_BLACK_DECLARATION","visual":"完全な黒画面。テロップのみ","automation":"黒背景、S4中央文、10Fイン・アウト、保持時間を既存テロップJSONから自動配置。","required_inputs":"本文、保持時間、フェードF数","support":"既存generate_ae_layers.jsxを利用。新規素材不要。","manual_check":"黒の純度と無音の間だけ確認。","source_search":"—","ai_prompt":"—","effect_notes":"なし(黒の純度を保つ)","transition_notes":"黒のまま→C21で白黒反転トランジションへ","motion_notes":"黒画面中央に静かにフェードイン、2.5秒保持、フェードアウト","params":{"text":"友達は、お金で買えます。","reuse_key":"FRIENDS_FOR_SALE","fade_frames":10,"fade_out_frame":178,"tracking":150}},{"cut":"C25","part":"P2","tc_in":"00:03:47.000","tc_out":"00:03:54.000","in_seconds":227.0,"out_seconds":234.0,"in_frame":5443,"out_frame":5610,"duration_frames":167,"category":"MG自動生成","template_id":"DATA_REPLACE_ARROW_DIAGRAM","visual":"白地に図解MG:「商品」→打ち消し→「なれる自分」への矢印(ミニマルな線画)","automation":"左語句を打ち消し、右語句へ矢印が伸びるミニマル図解を文字列からShape Layerとして生成。","required_inputs":"左語句、右語句、打消し方式、矢印方向、アクセント色","support":"Claude/CodexがJSX／SVGを生成。紙質感は番組AEマスター。","manual_check":"左右の意味関係と改行だけ確認。","source_search":"—","ai_prompt":"—","effect_notes":"紙テクスチャ=「paper texture overlay」","transition_notes":"図解の矢印がスマホのフィードUIへ変形→C26(現在往復)","motion_notes":"★文:図解と同期して中央下、フェード [pos:bottom]","params":{"kicker":"売っているもの","left":"商品そのもの","right":"なれる自分","strike_frame":28,"arrow_frame":48,"reveal_frame":70,"statement":"『それを買うと、どんな自分になれるか』を売る。"}},{"cut":"C26","part":"P2","tc_in":"00:03:54.000","tc_out":"00:04:10.000","in_seconds":234.0,"out_seconds":250.0,"in_frame":5610,"out_frame":5994,"duration_frames":384,"category":"HTML/UI生成","template_id":"UI_AD_FEED_SCROLL","visual":"一瞬で現代へ:スマホのフィードを流れる広告モック(架空ブランド3種)。カットは鋭く、彩度が戻る","automation":"架空ブランド広告カードをデータから生成し、スマホフィードへ挿入。高速スクロールと指定カードでの停止を自動化。","required_inputs":"ブランド名、画像、見出し、本文、CTA、配色、カード順","support":"Canva Bulk Createで広告静止カード案を作成可能。量産時はClaude/Codex製HTMLテンプレートを優先。Gemini画像は文字なし商品背景のみ。","manual_check":"実在ブランド類似、AI画像の権利・不自然さ、広告文の可読性を確認。","source_search":"—","ai_prompt":"—","effect_notes":"セピア→フルカラーの色温度ジャンプ(LUT切替)","transition_notes":"フィードを高速スクロール→急停止→セピアに戻る=「speed ramp transition」でC27へ","motion_notes":"字幕フェード","params":{"service":"DAILY FEED","scroll_pixels":980,"scroll_frames":260,"stop_card":2,"cards":[{"brand":"LUMEN","is_fictional":true,"headline":"もっと軽やかな毎日へ","body":"暮らしの選択を、シンプルに。","accent":"#C9A063"},{"brand":"MIRAI+","is_fictional":true,"headline":"あなた向けに選びました","body":"いま気になる情報をまとめてチェック。","accent":"#B8352E"},{"brand":"COMMON","is_fictional":true,"headline":"同じ商品、違う見せ方","body":"広告表現の違いを示す架空ブランドです。","accent":"#6E7770"}]}},{"cut":"C40","part":"P3","tc_in":"00:06:36.000","tc_out":"00:06:44.000","in_seconds":396.0,"out_seconds":404.0,"in_frame":9494,"out_frame":9686,"duration_frames":192,"category":"MGテンプレート","template_id":"AE_BLACK_DECLARATION","visual":"C20と同一の黒画面+テロップ(完全に同じ画で回収)","automation":"C20と同じコンポを複製せず同一マスターから生成し、同じ位置・文字・モーションを保証。","required_inputs":"C20参照ID、保持時間","support":"既存JSXのみ。","manual_check":"C20との完全な同一性を確認。","source_search":"—","ai_prompt":"—","effect_notes":"なし","transition_notes":"黒→結婚式場の白へ明転(黒白の反転でオチを作る)→C41","motion_notes":"C20と同一モーション(同一性が演出)","params":{"text":"友達は、お金で買えます。","reuse_key":"FRIENDS_FOR_SALE","fade_frames":10,"fade_out_frame":178,"tracking":150}},{"cut":"C42","part":"P3","tc_in":"00:06:54.000","tc_out":"00:06:59.000","in_seconds":414.0,"out_seconds":419.0,"in_frame":9926,"out_frame":10046,"duration_frames":120,"category":"MGテンプレート","template_id":"AE_INTERSTITIAL_SIMPLE","visual":"白背景+「もうひとつ。」のテロップだけの箸休めカット→カウンターの画がスライドイン","automation":"白／墨背景、短文、フェード、次画面の横スライドをパラメータだけで生成。","required_inputs":"本文、背景色、文字色、保持秒、アウト方向","support":"番組用AEマスター。素材不要。","manual_check":"箸休めとして長すぎないか確認。","source_search":"—","ai_prompt":"—","effect_notes":"なし","transition_notes":"横スライド(メニューボードが入ってくる動き)→C43","motion_notes":"中央フェード","params":{"text":"もうひとつ。","secondary":"笑顔にも、値段がついたことがあります。","background":"#EAE6DF","foreground":"#1A1A1A","accent":"#C9A063","fade_frames":12,"secondary_frame":54,"out_direction":"left"}},{"cut":"C45","part":"P3","tc_in":"00:07:22.000","tc_out":"00:07:29.000","in_seconds":442.0,"out_seconds":449.0,"in_frame":10597,"out_frame":10765,"duration_frames":168,"category":"MGテンプレート","template_id":"AE_DARK_STATEMENT","visual":"黒に近い無地背景に「人間に、市場価値。」のテロップのみ(言葉と2人きりになる画)","automation":"暗色背景、S2中央テロップ、静止保持、値札タグ出現を番組マスターから生成。","required_inputs":"本文、保持秒、値札表示有無、値札出現時刻","support":"既存テロップJSX＋値札部品。","manual_check":"言葉だけに集中できる余白と保持時間を確認。","source_search":"—","ai_prompt":"—","effect_notes":"なし","transition_notes":"テロップの言葉に値札タグがふっと付く→C46の値札増殖へ","motion_notes":"中央。3秒静止(モーションを止めることがモーション)","params":{"text":"人間に、市場価値。","caption":"よく考えると、すごい言葉です。","fade_frames":12,"caption_frame":58,"show_price_tag":true,"price_tag_frame":94}},{"cut":"C46","part":"P3","tc_in":"00:07:29.000","tc_out":"00:07:46.000","in_seconds":449.0,"out_seconds":466.0,"in_frame":10765,"out_frame":11173,"duration_frames":408,"category":"Envato実写+AE合成","template_id":"AE_PRICE_TAG_MULTIPLY","visual":"日常風景(通勤、公園、食卓)に次々と値札タグが貼られていく自作MG合成。最後は画面全体が値札で埋まる","automation":"実写上の指定点へ値札プリコンポを複製し、出現順、価格、スケール、密度をJSONから設定。最後に一括消去。","required_inputs":"実写、座標配列、値札文言、出現間隔、最大数、消去時刻","support":"日本人の日常Envato実写＋AE Repeater／JSX。値札デザインはCanvaで案出し可能だが正本はAE。","manual_check":"顔や重要被写体を隠さない位置、増殖テンポ、ライセンスを確認。","source_search":"Japanese commuters walking morning Tokyo\nJapanese family dinner table daily life\nJapanese person park bench everyday life","ai_prompt":"—","effect_notes":"値札増殖はエコートレイル薄く","transition_notes":"画面を埋めた値札が一斉にふっと消えて静寂の画へ=「luma fade transition」→C47","motion_notes":"★文:値札が消える直前に中央表示→値札と一緒に消える","params":{"background_mode":"replace_media","background_label":"ここへEnvato日常実写を差し替え","tag_size":[250,96],"pop_frames":6,"tags":[{"label":"通勤","price":"¥?","x":0.16,"y":0.25,"delay":0},{"label":"時間","price":"¥?","x":0.38,"y":0.31,"delay":8},{"label":"団らん","price":"¥?","x":0.63,"y":0.23,"delay":16},{"label":"安心","price":"¥?","x":0.79,"y":0.4,"delay":24},{"label":"注意","price":"¥?","x":0.22,"y":0.64,"delay":32},{"label":"感情","price":"¥?","x":0.48,"y":0.7,"delay":40},{"label":"関係","price":"¥?","x":0.76,"y":0.68,"delay":48}],"avoid_regions":[]}},{"cut":"C48","part":"P4","tc_in":"00:07:52.000","tc_out":"00:08:10.000","in_seconds":472.0,"out_seconds":490.0,"in_frame":11317,"out_frame":11748,"duration_frames":431,"category":"Envato実写+AE合成","template_id":"AE_LIST_ON_AMBIENT_PLATE","visual":"静かな背景の上に3点がテロップで順に積まれる(画は光の移ろいのみ)","automation":"光の移ろい実写へ3項目リストマスターを重ね、項目ごとの出現、既出項の減光、背景ディゾルブを自動設定。","required_inputs":"背景実写、項目配列、出現時刻、既出濃度、位置","support":"Envatoの静かな室内光実写＋AEリストテンプレート。","manual_check":"背景が主張しすぎないか、3項目の改行と読み時間を確認。","source_search":"sunlight moving through room timelapse soft","ai_prompt":"—","effect_notes":"なし","transition_notes":"3点が残ったまま背景だけ手品の画へディゾルブ→C49","motion_notes":"1項ずつフェードイン、既出項は少し暗く残す","params":{"background_mode":"replace_media","background_label":"静かな室内光の実写へ差し替え","position":"left","reveal_frames":[12,122,244],"dim_opacity":32,"items":[{"head":"ひとつ。","body":"本当は売り物じゃないものまで、\nどんどん売り物になっています。"},{"head":"ふたつ。","body":"『つい反応してしまう』心を、\n仕組みはよく知って使ってきます。"},{"head":"みっつ。","body":"仕組みは、知れば、距離が取れます。"}]}},{"cut":"C52","part":"P5","tc_in":"00:08:50.000","tc_out":"00:09:02.000","in_seconds":530.0,"out_seconds":542.0,"in_frame":12707,"out_frame":12995,"duration_frames":288,"category":"MGテンプレート","template_id":"AE_BRAND_LOGO_ASSEMBLY","visual":"『なんだろう』解体のキービジュアル(墨背景+明朝ロゴ+分解図モチーフの線画)","automation":"番組ロゴ、分解図線画、紙質感、線描アニメ、文字フェードをブランドマスター化し、話数や副題のみ差替え可能にする。","required_inputs":"ロゴSVG、話数、副題、線画バリエーション、保持秒","support":"Gemini等は文字なし分解図モチーフの案出しのみ。Claude/CodexでSVG整理と描画JSXを作り、最終デザインはAEに固定。","manual_check":"初回だけデザインを丁寧に決定。以後は変更せずブランド一貫性を優先。","source_search":"—","ai_prompt":"—","effect_notes":"紙テクスチャ+線画の描画アニメ=「line drawing animation」","transition_notes":"ロゴ画のまま→C53(note画面モックが横に開く)","motion_notes":"ロゴ:線画の分解図が組み上がってから文字がフェード","params":{"series":"『なんだろう』解体","episode":"#01","subtitle":"構造から、ひとつずつ。","line_count":8,"draw_frames":70,"logo_frame":54,"subtitle_frame":82}},{"cut":"C54","part":"P5","tc_in":"00:09:16.000","tc_out":"00:09:30.000","in_seconds":556.0,"out_seconds":570.0,"in_frame":13331,"out_frame":13666,"duration_frames":335,"category":"MGテンプレート","template_id":"AE_NEXT_EPISODE_TITLE","visual":"黒地に次回タイトルのテロップ+モヤモヤを表す粒子の揺らぎ(抽象)","automation":"次回番号、題名、問いを差し替え、黒背景、粒子ループ、フェード、保持を自動適用。","required_inputs":"次回番号、タイトル、問い、保持秒、粒子強度","support":"粒子はEnvatoの固定ループをライブラリ化。Gemini画像生成は不要。","manual_check":"次回題名の確定、改行、予告尺を確認。","source_search":"—","ai_prompt":"—","effect_notes":"粒子に微グロー","transition_notes":"タイトルが残ったままエンドカードC55へスライド","motion_notes":"黒地中央、静かにフェード、3秒保持","params":{"kicker":"NEXT EPISODE","next_episode":"#02","title":"あなたの怒りは、\n誰の収益になっているのか","question":"SNSを見たあとの、あのモヤモヤ。","fade_frames":18,"particle_count":14}},{"cut":"C55","part":"P5","tc_in":"00:09:30.000","tc_out":"00:09:45.000","in_seconds":570.0,"out_seconds":585.0,"in_frame":13666,"out_frame":14026,"duration_frames":360,"category":"MGテンプレート","template_id":"AE_END_CARD_CREDITS","visual":"エンドカード:「次回:あなたの怒りは誰の収益か」→クレジット「Score: Unsaid Works」→レーベルロゴ「Unsaid Works」の順に表示。ピアノがフェードアウト","automation":"次回表示、Score表記、レーベルロゴをJSONから順次配置し、3秒間隔クロスフェードと黒落ちを生成。","required_inputs":"次回文、Score名義、ロゴ画像、各保持秒、終了秒","support":"番組用AEマスター。外部素材不要。","manual_check":"クレジット表記、音楽終了位置、YouTube終了画面との干渉を確認。","source_search":"—","ai_prompt":"—","effect_notes":"紙テクスチャ継続","transition_notes":"クレジット→ロゴは3秒間隔のクロスフェード。最後は黒へ","motion_notes":"順次フェード(日本語の問いで始まり英語レーベル名で終わる設計)","params":{"hold_frames":72,"crossfade_frames":18,"end_fade_frames":24,"cards":[{"kind":"next","text":"次回：あなたの怒りは誰の収益か"},{"kind":"credit","text":"Score: Unsaid Works"},{"kind":"logo","text":"Unsaid Works"}]}}],"build":{"scope":"full","id":"EP01","root_name":"NANDAROU_MG_FACTORY_EP01","reel_prefix":"EP01"}};
+    var PROJECT = PAYLOAD.project;
+    var PALETTE = PAYLOAD.palette;
+    var BUILD = PAYLOAD.build || {id: PROJECT.episode, root_name: "NANDAROU_MG_FACTORY_" + PROJECT.episode, reel_prefix: PROJECT.episode};
+    var FPS = PROJECT.fps_numerator && PROJECT.fps_denominator ? PROJECT.fps_numerator / PROJECT.fps_denominator : PROJECT.fps;
+    var FD = 1 / FPS;
+    var SIGNATURE = "NMF|owner=" + BUILD.id + "|version=0.2";
+    var ROOT_NAME = BUILD.root_name;
+    var warnings = [];
+    var created = [];
+    var placedCount = 0;
+    var ASSET_FOLDER = null;
+    var SHARED_COMPS = {};
+
+    var FONTS = {
+        BOLD: ["SourceHanSans-Bold", "NotoSansCJKjp-Medium"],
+        REGULAR: ["NotoSansCJKjp-Medium", "ShipporiMincho-Regular"],
+        NUMBER: ["Oswald-Regular", "SourceHanSans-Bold"]
+    };
+
+    function logWarning(message) {
+        warnings.push(message);
+        $.writeln("[NMF WARNING] " + message);
+    }
+
+    function hexColor(value) {
+        var text = String(value || "#000000").replace("#", "");
+        return [parseInt(text.substr(0, 2), 16) / 255, parseInt(text.substr(2, 2), 16) / 255, parseInt(text.substr(4, 2), 16) / 255];
+    }
+
+    function timeOfFrame(frame) {
+        return frame / FPS;
+    }
+
+    function clampTime(value, duration) {
+        return Math.max(0, Math.min(value, Math.max(0, duration - FD)));
+    }
+
+    function fontExists(postScriptName) {
+        try {
+            return app.fonts && app.fonts.getFontsByPostScriptName(postScriptName).length > 0;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    function chooseFont(candidates, fallback, context) {
+        var i;
+        for (i = 0; i < candidates.length; i++) {
+            if (fontExists(candidates[i])) return candidates[i];
+        }
+        logWarning(context + ": 指定フォントがなくAE既定フォント " + fallback + " を使用");
+        return fallback;
+    }
+
+    function removeOwnedRoot() {
+        var i, item;
+        for (i = app.project.numItems; i >= 1; i--) {
+            item = app.project.item(i);
+            if (item instanceof FolderItem && item.name === ROOT_NAME && item.comment.indexOf("NMF|owner=" + BUILD.id + "|") === 0) {
+                item.remove();
+            } else if (item instanceof FolderItem && PROJECT.episode === "EP01" && item.name === "NANDAROU_MG_FACTORY" && item.comment.indexOf("NMF|version=") === 0) {
+                // v0.1試作の旧ルートを一度だけ掃除する後方互換処理。
+                item.remove();
+            }
+        }
+    }
+
+    function removeAbandonedBuildingRoot() {
+        var i, item;
+        for (i = app.project.numItems; i >= 1; i--) {
+            item = app.project.item(i);
+            if (item instanceof FolderItem && item.name === ROOT_NAME + "_BUILDING" && item.comment.indexOf("NMF|owner=" + BUILD.id + "|") === 0) {
+                item.remove();
+            }
+        }
+    }
+
+    function folder(parent, name) {
+        var item = app.project.items.addFolder(name);
+        item.parentFolder = parent;
+        item.comment = SIGNATURE;
+        return item;
+    }
+
+    function makeComp(parent, name, duration, role) {
+        var comp = app.project.items.addComp(name, PROJECT.width, PROJECT.height, 1, Math.max(FD, duration), FPS);
+        comp.parentFolder = parent;
+        comp.displayStartTime = 0;
+        comp.workAreaStart = 0;
+        comp.workAreaDuration = comp.duration;
+        comp.preserveNestedFrameRate = true;
+        comp.preserveNestedResolution = true;
+        comp.comment = SIGNATURE + "|role=" + role;
+        comp.time = 0;
+        return comp;
+    }
+
+    function addCompMarker(comp, time, comment) {
+        try {
+            comp.markerProperty.setValueAtTime(clampTime(time, comp.duration), new MarkerValue(comment));
+        } catch (error) {
+            logWarning(comp.name + ": comp marker失敗 " + error.toString());
+        }
+    }
+
+    function addLayerMarker(layer, time, comment) {
+        try {
+            layer.property("ADBE Marker").setValueAtTime(time, new MarkerValue(comment));
+        } catch (error) {
+            logWarning(layer.name + ": layer marker失敗 " + error.toString());
+        }
+    }
+
+    function addSolid(comp, name, color, width, height, position, duration) {
+        // AEのSolidSourceは縦横とも4px未満を受け付けないため、細線も4pxへ丸める。
+        var safeWidth = Math.max(4, Math.round(width));
+        var safeHeight = Math.max(4, Math.round(height));
+        var layer = comp.layers.addSolid(color, name, safeWidth, safeHeight, 1, duration || comp.duration);
+        if (ASSET_FOLDER && layer.source) layer.source.parentFolder = ASSET_FOLDER;
+        layer.property("ADBE Transform Group").property("ADBE Position").setValue(position || [comp.width / 2, comp.height / 2]);
+        layer.comment = SIGNATURE;
+        return layer;
+    }
+
+    function applyText(layer, value, size, color, fontCandidates, tracking, justification) {
+        var prop = layer.property("ADBE Text Properties").property("ADBE Text Document");
+        var doc = prop.value;
+        var fallback = doc.font;
+        doc.resetCharStyle();
+        doc.resetParagraphStyle();
+        doc.text = value;
+        doc.font = chooseFont(fontCandidates || FONTS.REGULAR, fallback, layer.name);
+        doc.fontSize = size;
+        doc.fillColor = color;
+        doc.applyFill = true;
+        doc.applyStroke = false;
+        doc.tracking = tracking || 0;
+        doc.justification = justification || ParagraphJustification.CENTER_JUSTIFY;
+        prop.setValue(doc);
+        layer.comment = SIGNATURE;
+        return prop;
+    }
+
+    function addText(comp, name, value, size, color, position, fontCandidates, tracking) {
+        var layer = comp.layers.addText(value);
+        layer.name = name;
+        applyText(layer, value, size, color, fontCandidates, tracking, ParagraphJustification.CENTER_JUSTIFY);
+        var transform = layer.property("ADBE Transform Group");
+        transform.property("ADBE Anchor Point").expression = "r=sourceRectAtTime(time,false);[r.left+r.width/2,r.top+r.height/2]";
+        transform.property("ADBE Position").setValue(position);
+        return layer;
+    }
+
+    // 長文用の段落テキスト。point textと違い、指定幅でAEが自動改行する。
+    function addTextBox(comp, name, value, boxSize, size, color, position, fontCandidates, tracking, leading, justification) {
+        var layer = comp.layers.addBoxText(boxSize);
+        layer.name = name;
+        var prop = applyText(layer, value, size, color, fontCandidates, tracking, justification || ParagraphJustification.LEFT_JUSTIFY);
+        var doc = prop.value;
+        doc.leading = leading || Math.round(size * 1.35);
+        doc.autoLeading = false;
+        prop.setValue(doc);
+        // Box Textの既定Anchorはbox中央になるため、Positionだけを指定すると
+        // 左端・上端が画面外へずれる。左上を基準に固定して安全領域を守る。
+        var transform = layer.property("ADBE Transform Group");
+        transform.property("ADBE Anchor Point").setValue([0, 0]);
+        transform.property("ADBE Position").setValue(position);
+        try {
+            var measured = layer.sourceRectAtTime(0, false);
+            if (measured.height > boxSize[1] + 2) logWarning(name + ": テキストがbox高を超える可能性 " + Math.round(measured.height) + "px");
+        } catch (measureError) {
+            logWarning(name + ": テキスト実測失敗 " + measureError.toString());
+        }
+        return layer;
+    }
+
+    function expressionString(value) {
+        return String(value || "").replace(/\\/g, "\\\\").replace(/\"/g, "\\\"").replace(/\r/g, "\\r").replace(/\n/g, "\\n");
+    }
+
+    function fadeLayerAt(layer, atFrame, fadeFrames, duration) {
+        var opacity = layer.property("ADBE Transform Group").property("ADBE Opacity");
+        var t0 = clampTime(timeOfFrame(atFrame), duration);
+        var t1 = clampTime(timeOfFrame(atFrame + fadeFrames), duration);
+        opacity.setValueAtTime(t0, 0);
+        opacity.setValueAtTime(t1, 100);
+    }
+
+    function fadeOutLayerAt(layer, atFrame, fadeFrames, duration) {
+        var opacity = layer.property("ADBE Transform Group").property("ADBE Opacity");
+        var t0 = clampTime(timeOfFrame(atFrame), duration);
+        var t1 = clampTime(timeOfFrame(atFrame + fadeFrames), duration);
+        opacity.setValueAtTime(t0, 100);
+        opacity.setValueAtTime(t1, 0);
+    }
+
+    function slideLayerAt(layer, fromPosition, toPosition, atFrame, moveFrames, duration) {
+        var position = layer.property("ADBE Transform Group").property("ADBE Position");
+        position.setValueAtTime(clampTime(timeOfFrame(atFrame), duration), fromPosition);
+        position.setValueAtTime(clampTime(timeOfFrame(atFrame + moveFrames), duration), toPosition);
+    }
+
+    function opacityFade(layer, inFrame, outFrame, duration) {
+        var opacity = layer.property("ADBE Transform Group").property("ADBE Opacity");
+        var inTime = clampTime(timeOfFrame(inFrame), duration);
+        var outTime = clampTime(duration - timeOfFrame(outFrame), duration);
+        opacity.setValueAtTime(0, 0);
+        opacity.setValueAtTime(inTime, 100);
+        opacity.setValueAtTime(Math.max(inTime, outTime), 100);
+        opacity.setValueAtTime(clampTime(duration, duration), 0);
+    }
+
+    function popLayer(layer, atFrame, popFrames, duration) {
+        var transform = layer.property("ADBE Transform Group");
+        var scale = transform.property("ADBE Scale");
+        var opacity = transform.property("ADBE Opacity");
+        var t0 = clampTime(timeOfFrame(atFrame), duration);
+        var t1 = clampTime(timeOfFrame(atFrame + Math.max(2, Math.floor(popFrames * 0.55))), duration);
+        var t2 = clampTime(timeOfFrame(atFrame + popFrames), duration);
+        scale.setValueAtTime(t0, [0, 0]);
+        scale.setValueAtTime(t1, [112, 112]);
+        scale.setValueAtTime(t2, [100, 100]);
+        opacity.setValueAtTime(t0, 0);
+        opacity.setValueAtTime(Math.min(t2, t0 + 2 * FD), 100);
+    }
+
+    function addRectShape(comp, name, size, position, fillColor, roundness, duration) {
+        var layer = comp.layers.addShape();
+        layer.name = name;
+        layer.comment = SIGNATURE;
+        var root = layer.property("ADBE Root Vectors Group");
+        var group = root.addProperty("ADBE Vector Group");
+        group.name = name + "_GROUP";
+        var vectors = group.property("ADBE Vectors Group");
+        var rect = vectors.addProperty("ADBE Vector Shape - Rect");
+        rect.property("ADBE Vector Rect Size").setValue(size);
+        rect.property("ADBE Vector Rect Roundness").setValue(roundness || 0);
+        var fill = vectors.addProperty("ADBE Vector Graphic - Fill");
+        fill.property("ADBE Vector Fill Color").setValue(fillColor);
+        var transform = layer.property("ADBE Transform Group");
+        transform.property("ADBE Position").setValue(position);
+        layer.outPoint = duration || comp.duration;
+        return layer;
+    }
+
+    function addLineShape(comp, name, values, graph, color, drawFrames, duration) {
+        var layer = comp.layers.addShape();
+        layer.name = name;
+        layer.comment = SIGNATURE;
+        var root = layer.property("ADBE Root Vectors Group");
+        var group = root.addProperty("ADBE Vector Group");
+        group.name = name + "_GROUP";
+        var vectors = group.property("ADBE Vectors Group");
+        var pathProp = vectors.addProperty("ADBE Vector Shape - Group").property("ADBE Vector Shape");
+        var shape = new Shape();
+        var vertices = [];
+        var tangents = [];
+        var i, x, y;
+        for (i = 0; i < values.length; i++) {
+            x = graph.left + (values.length === 1 ? 0 : i / (values.length - 1)) * graph.width;
+            y = graph.top + (1 - Number(values[i])) * graph.height;
+            vertices.push([x, y]);
+            tangents.push([0, 0]);
+        }
+        shape.vertices = vertices;
+        shape.inTangents = tangents;
+        shape.outTangents = tangents;
+        shape.closed = false;
+        pathProp.setValue(shape);
+        var stroke = vectors.addProperty("ADBE Vector Graphic - Stroke");
+        stroke.property("ADBE Vector Stroke Color").setValue(color);
+        stroke.property("ADBE Vector Stroke Width").setValue(10);
+        try { stroke.property("ADBE Vector Stroke Line Cap").setValue(2); } catch (error) {}
+        var trim = vectors.addProperty("ADBE Vector Filter - Trim");
+        var end = trim.property("ADBE Vector Trim End");
+        end.setValueAtTime(timeOfFrame(8), 0);
+        end.setValueAtTime(clampTime(timeOfFrame(drawFrames), duration), 100);
+        var transform = layer.property("ADBE Transform Group");
+        transform.property("ADBE Anchor Point").setValue([0, 0]);
+        transform.property("ADBE Position").setValue([0, 0]);
+        return {layer: layer, endPoint: vertices[vertices.length - 1]};
+    }
+
+    // 任意の線描をShape Layerとして作る。ブランド線画や矢印の共通primitive。
+    function addPolylineShape(comp, name, vertices, color, width, startFrame, endFrame, duration) {
+        var layer = comp.layers.addShape();
+        layer.name = name;
+        layer.comment = SIGNATURE;
+        var root = layer.property("ADBE Root Vectors Group");
+        var group = root.addProperty("ADBE Vector Group");
+        var vectors = group.property("ADBE Vectors Group");
+        var pathProp = vectors.addProperty("ADBE Vector Shape - Group").property("ADBE Vector Shape");
+        var shape = new Shape();
+        var tangents = [], i;
+        for (i = 0; i < vertices.length; i++) tangents.push([0, 0]);
+        shape.vertices = vertices;
+        shape.inTangents = tangents;
+        shape.outTangents = tangents;
+        shape.closed = false;
+        pathProp.setValue(shape);
+        var stroke = vectors.addProperty("ADBE Vector Graphic - Stroke");
+        stroke.property("ADBE Vector Stroke Color").setValue(color);
+        stroke.property("ADBE Vector Stroke Width").setValue(width || 4);
+        var trim = vectors.addProperty("ADBE Vector Filter - Trim");
+        var end = trim.property("ADBE Vector Trim End");
+        end.setValueAtTime(clampTime(timeOfFrame(startFrame || 0), duration), 0);
+        end.setValueAtTime(clampTime(timeOfFrame(endFrame || 1), duration), 100);
+        layer.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([0, 0]);
+        layer.property("ADBE Transform Group").property("ADBE Position").setValue([0, 0]);
+        return layer;
+    }
+
+    function addTrackingAnimator(layer, fromAmount, toAmount, endFrame) {
+        try {
+            var animators = layer.property("ADBE Text Properties").property("ADBE Text Animators");
+            var animator = animators.addProperty("ADBE Text Animator");
+            animator.name = "NMF_TRACKING_CONVERGE";
+            var props = animator.property("ADBE Text Animator Properties");
+            var tracking = props.addProperty("ADBE Text Tracking Amount");
+            tracking.setValueAtTime(0, fromAmount);
+            tracking.setValueAtTime(timeOfFrame(endFrame), toAmount);
+            var selector = animator.property("ADBE Text Selectors").addProperty("ADBE Text Selector");
+            selector.property("ADBE Text Percent Start").setValue(0);
+            selector.property("ADBE Text Percent End").setValue(100);
+        } catch (error) {
+            logWarning(layer.name + ": tracking animator失敗 " + error.toString());
+        }
+    }
+
+    function makeThumbnailComponent(parent, cut, card, index, duration) {
+        var size = cut.params.card_size || [1040, 360];
+        var comp = app.project.items.addComp("COMPONENT_" + cut.cut + "_THUMB_" + (index + 1), size[0], size[1], 1, duration, FPS);
+        comp.parentFolder = parent;
+        comp.comment = SIGNATURE + "|role=component|template=" + cut.template_id;
+        var accent = hexColor(card.accent || PALETTE.gold);
+        addRectShape(comp, "CARD_BG", [size[0] - 18, size[1] - 18], [size[0] / 2, size[1] / 2], hexColor(PALETTE.ink), 18, duration);
+        addRectShape(comp, "CARD_ACCENT", [18, size[1] - 18], [24, size[1] / 2], accent, 2, duration);
+        addText(comp, "EYEBROW", card.eyebrow || "FICTIONAL", 30, accent, [size[0] / 2, 72], FONTS.NUMBER, 150);
+        addTextBox(comp, "HEADLINE", card.headline, [size[0] - 130, 170], 82, hexColor(PALETTE.off_white), [70, 118], FONTS.BOLD, 30, 96, ParagraphJustification.CENTER_JUSTIFY);
+        addText(comp, "FICTION_NOTE", "架空サムネイル", 20, accent, [size[0] - 120, size[1] - 34], FONTS.REGULAR, 50);
+        return comp;
+    }
+
+    function thumbnailStackMaster(cut, parent, componentFolder) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_INK", hexColor(PALETTE.ink), comp.width, comp.height, [comp.width / 2, comp.height / 2], duration);
+        addText(comp, "FICTION_LABEL", "FICTIONAL THUMBNAILS / 架空再現", 22, hexColor(PALETTE.gold), [1510, 1035], FONTS.NUMBER, 100);
+        var i, card, cardComp, layer, t, finalStart;
+        for (i = 0; i < p.cards.length; i++) {
+            card = p.cards[i];
+            cardComp = makeThumbnailComponent(componentFolder, cut, card, i, duration);
+            layer = comp.layers.add(cardComp);
+            layer.name = "THUMB_" + (i + 1) + "_" + card.headline;
+            t = layer.property("ADBE Transform Group");
+            t.property("ADBE Position").setValue([Number(card.x) * comp.width, Number(card.y) * comp.height]);
+            // 2Dレイヤーの回転はローカライズ非依存のMatch Nameを使う。
+            // "ADBE Rotation" はAE環境によってnullになるため使用しない。
+            t.property("ADBE Rotate Z").setValue(Number(card.rotation || 0));
+            popLayer(layer, Number(card.delay || 0), p.pop_frames || 8, duration);
+            finalStart = Math.min(cut.duration_frames - 2, Number(p.final_zoom_start || cut.duration_frames - 40));
+            t.property("ADBE Scale").setValueAtTime(clampTime(timeOfFrame(finalStart), duration), [100, 100]);
+            t.property("ADBE Scale").setValueAtTime(clampTime(duration, duration), [Number(p.final_zoom || 104), Number(p.final_zoom || 104)]);
+        }
+        addCompMarker(comp, 0, cut.cut + " / 架空サムネのみ。実在ロゴ禁止");
+        addCompMarker(comp, duration - FD, "OUT: C02へハードカット");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function cardFocusMaster(cut, parent, componentFolder) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_INK", hexColor(PALETTE.ink), comp.width, comp.height, [960, 540], duration);
+        var i, ghost, opacity;
+        for (i = 0; i < 4; i++) {
+            ghost = addRectShape(comp, "SURROUNDING_CARD_" + (i + 1), [560, 220], [310 + (i % 2) * 1300, 250 + Math.floor(i / 2) * 560], [0.20, 0.20, 0.20], 16, duration);
+            opacity = ghost.property("ADBE Transform Group").property("ADBE Opacity");
+            opacity.setValue(Number(p.surrounding_opacity || 16));
+        }
+        var card = {eyebrow: p.kicker, headline: p.headline, accent: PALETTE.gold};
+        var cardComp = makeThumbnailComponent(componentFolder, cut, card, 0, duration);
+        var main = comp.layers.add(cardComp);
+        main.name = "FOCUS_CARD_REPLACEABLE";
+        main.property("ADBE Transform Group").property("ADBE Scale").setValue([112, 112]);
+        slideLayerAt(main, [960, -260], [960, 540], 0, p.drop_frames || 18, duration);
+        fadeLayerAt(main, 0, 3, duration);
+        addText(comp, "MONO_NOTE", "実サムネ差替え後、指定Fでモノクロ化", 22, hexColor(PALETTE.gold), [960, 1015], FONTS.REGULAR, 40);
+        addCompMarker(comp, timeOfFrame(p.monochrome_frame || 78), "実サムネ差替え後ここでモノクロ化");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function barWordMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        var ink = hexColor(PALETTE.ink), paper = hexColor(PALETTE.off_white), gold = hexColor(PALETTE.gold), red = hexColor(PALETTE.vermilion);
+        addSolid(comp, "BG_PAPER", paper, comp.width, comp.height, [960, 540], duration);
+        addText(comp, "TITLE", p.title, 54, ink, [960, 125], FONTS.BOLD, 70);
+        addSolid(comp, "HEADER_RULE", gold, 1460, 4, [960, 190], duration);
+        var i, item, y, width, track, bar, label, start, scale;
+        for (i = 0; i < p.bars.length; i++) {
+            item = p.bars[i];
+            y = 350 + i * 210;
+            width = 1050 * Math.max(0, Math.min(100, Number(item.value))) / 100;
+            track = addRectShape(comp, "BAR_TRACK_" + (i + 1), [1050, 74], [925, y], [0.78, 0.77, 0.74], 8, duration);
+            track.property("ADBE Transform Group").property("ADBE Opacity").setValue(30);
+            bar = addRectShape(comp, "BAR_FILL_" + (i + 1), [width, 74], [400 + width / 2, y], item.accent ? red : gold, 8, duration);
+            bar.property("ADBE Transform Group").property("ADBE Anchor Point").setValue([-width / 2, 0]);
+            bar.property("ADBE Transform Group").property("ADBE Position").setValue([400, y]);
+            start = 14 + i * Number(p.stagger_frames || 12);
+            scale = bar.property("ADBE Transform Group").property("ADBE Scale");
+            scale.setValueAtTime(timeOfFrame(start), [0, 100]);
+            scale.setValueAtTime(clampTime(timeOfFrame(start + Number(p.draw_frames || 62)), duration), [100, 100]);
+            label = addTextBox(comp, "BAR_LABEL_" + (i + 1), item.label, [300, 90], 38, ink, [75, y - 28], FONTS.BOLD, 20, 48, ParagraphJustification.RIGHT_JUSTIFY);
+            fadeLayerAt(label, start, 8, duration);
+        }
+        var note = addText(comp, "DISCLAIMER", p.note, 25, ink, [1540, 1005], FONTS.REGULAR, 30);
+        addLayerMarker(note, 0, "conceptual=true / 棒の長さは演出用");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function makeFlowNode(parent, cut, node, index, duration) {
+        var comp = app.project.items.addComp("COMPONENT_" + cut.cut + "_NODE_" + (index + 1), 390, 390, 1, duration, FPS);
+        comp.parentFolder = parent;
+        comp.comment = SIGNATURE + "|role=component|template=" + cut.template_id;
+        addRectShape(comp, "NODE_BG", [370, 370], [195, 195], [0.12, 0.12, 0.12], 24, duration);
+        addRectShape(comp, "NODE_RULE", [250, 5], [195, 270], hexColor(PALETTE.gold), 1, duration);
+        addText(comp, "ICON", node.icon, 88, hexColor(PALETTE.gold), [195, 110], FONTS.NUMBER, 0);
+        addText(comp, "LABEL", node.label, 58, hexColor(PALETTE.off_white), [195, 210], FONTS.BOLD, 60);
+        addText(comp, "SUB", node.sub, 24, hexColor(PALETTE.gold), [195, 320], FONTS.NUMBER, 140);
+        return comp;
+    }
+
+    function flowThreeMaster(cut, parent, componentFolder) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_INK", hexColor(PALETTE.ink), comp.width, comp.height, [960, 540], duration);
+        addText(comp, "TITLE", p.title, 48, hexColor(PALETTE.off_white), [960, 115], FONTS.BOLD, 70);
+        var xs = [360, 960, 1560];
+        var i, nodeComp, layer, arrow, arrowHead, at;
+        for (i = 0; i < p.nodes.length; i++) {
+            at = Number(p.reveal_frames[i] || i * 30);
+            nodeComp = makeFlowNode(componentFolder, cut, p.nodes[i], i, duration);
+            layer = comp.layers.add(nodeComp);
+            layer.name = "FLOW_NODE_" + (i + 1) + "_" + p.nodes[i].label;
+            layer.property("ADBE Transform Group").property("ADBE Position").setValue([xs[i], 490]);
+            popLayer(layer, at, 8, duration);
+            if (i < p.nodes.length - 1) {
+                arrow = addPolylineShape(comp, "CONNECTOR_" + (i + 1), [[xs[i] + 210, 490], [xs[i + 1] - 220, 490]], hexColor(PALETTE.gold), 5, at + 10, at + 26, duration);
+                arrowHead = addText(comp, "ARROW_HEAD_" + (i + 1), "›", 72, hexColor(PALETTE.gold), [xs[i + 1] - 205, 488], FONTS.BOLD, 0);
+                fadeLayerAt(arrowHead, at + 23, 4, duration);
+            }
+        }
+        var statement = addTextBox(comp, "STATEMENT", p.statement, [1420, 120], 48, hexColor(PALETTE.off_white), [250, 835], FONTS.BOLD, 55, 64, ParagraphJustification.CENTER_JUSTIFY);
+        fadeLayerAt(statement, Number(p.statement_frame || 104), 10, duration);
+        addCompMarker(comp, 0, cut.cut + " / conceptual flow / 因果を断定しすぎないこと");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function titleMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        var ink = hexColor(PALETTE.ink), paper = hexColor(PALETTE.off_white), gold = hexColor(PALETTE.gold);
+        addSolid(comp, "BG_INK", ink, comp.width, comp.height, [960, 540], duration);
+        addSolid(comp, "ACCENT_LINE", gold, 520, 4, [960, 655], duration);
+        var series = addText(comp, "SERIES", p.series, 34, gold, [960, 245], FONTS.REGULAR, 140);
+        var episode = addText(comp, "EPISODE", p.episode, 32, paper, [960, 320], FONTS.NUMBER, 180);
+        var title = addText(comp, "TITLE", p.title, 82, paper, [960, 500], FONTS.BOLD, 100);
+        addTrackingAnimator(title, 150, 0, p.intro_frames || 18);
+        var subtitle = addText(comp, "SUBTITLE", p.subtitle, 34, paper, [960, 740], FONTS.REGULAR, 40);
+        var layers = [series, episode, title, subtitle];
+        var i;
+        for (i = 0; i < layers.length; i++) opacityFade(layers[i], p.intro_frames || 18, p.outro_frames || 18, duration);
+        var scale = title.property("ADBE Transform Group").property("ADBE Scale");
+        scale.setValueAtTime(0, [104, 104]);
+        scale.setValueAtTime(timeOfFrame(p.intro_frames || 18), [100, 100]);
+        addCompMarker(comp, 0, cut.cut + " / " + cut.template_id);
+        addCompMarker(comp, duration - FD, "OUT: particle dissolveは将来プリセット差替え");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function researchStatMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        var ink = hexColor(PALETTE.ink), paper = hexColor(PALETTE.off_white), gold = hexColor(PALETTE.gold);
+        addSolid(comp, "BG_PAPER", paper, comp.width, comp.height, [960, 540], duration);
+        addSolid(comp, "RULE_TOP", gold, 1460, 5, [960, 175], duration);
+        addSolid(comp, "RULE_BOTTOM", ink, 1460, 2, [960, 890], duration);
+        var kicker = addText(comp, "KICKER", p.kicker, 32, gold, [960, 125], FONTS.NUMBER, 220);
+        var year = addText(comp, "YEAR", p.year, 138, ink, [590, 430], FONTS.NUMBER, 20);
+        var value = addText(comp, "VALUE", p.value, 150, ink, [1250, 430], FONTS.BOLD, 20);
+        var caption = addText(comp, "CAPTION", p.caption, 46, ink, [960, 690], FONTS.BOLD, 60);
+        var footnote = addText(comp, "FOOTNOTE", p.footnote, 27, ink, [960, 955], FONTS.REGULAR, 15);
+        var frames = p.sequence_frames || [0, 18, 38];
+        popLayer(kicker, frames[0], 8, duration);
+        popLayer(year, frames[1], 10, duration);
+        popLayer(value, frames[2], 10, duration);
+        // Source Text式で「約0万件」→「約12万件」をフレーム単位でカウントする。
+        try {
+            var valueSource = value.property("ADBE Text Properties").property("ADBE Text Document");
+            valueSource.expression = "t0=" + timeOfFrame(frames[2]) + ";t1=" + timeOfFrame(frames[2] + 22) + ";n=Math.round(linear(Math.min(Math.max(time,t0),t1),t0,t1,0," + Number(p.count_to || 12) + "));\"" + expressionString(p.count_prefix) + "\"+n+\"" + expressionString(p.count_suffix) + "\"";
+        } catch (countError) {
+            logWarning(cut.cut + ": count-up式設定失敗 " + countError.toString());
+        }
+        opacityFade(caption, frames[2] + 10, 12, duration);
+        opacityFade(footnote, frames[2] + 16, 12, duration);
+        addCompMarker(comp, 0, cut.cut + " / factual / 出典値の最終確認必須");
+        addCompMarker(comp, timeOfFrame(frames[2]), "raw numeric_value=" + p.numeric_value + " / display=" + p.value);
+        addLayerMarker(footnote, 0, cut.manual_check);
+        created.push(comp.name);
+        return comp;
+    }
+
+    function lineCompareMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        var ink = hexColor(PALETTE.ink), paper = hexColor(PALETTE.off_white), gold = hexColor(PALETTE.gold);
+        addSolid(comp, "BG_INK", ink, comp.width, comp.height, [960, 540], duration);
+        addText(comp, "TITLE", p.title, 48, paper, [960, 130], FONTS.BOLD, 70);
+        var graph = {left: 250, top: 245, width: 1320, height: 590};
+        addSolid(comp, "AXIS_X", gold, graph.width + 30, 3, [graph.left + graph.width / 2, graph.top + graph.height], duration);
+        addSolid(comp, "AXIS_Y", gold, 3, graph.height + 20, [graph.left, graph.top + graph.height / 2], duration);
+        var i, result, series, label;
+        for (i = 0; i < p.series.length; i++) {
+            series = p.series[i];
+            result = addLineShape(comp, "SERIES_" + series.label, series.values, graph, hexColor(series.color), p.draw_frames || 82, duration);
+            label = addText(comp, "LABEL_" + series.label, series.label, 42, hexColor(series.color), [result.endPoint[0] + 80, result.endPoint[1]], FONTS.BOLD, 30);
+            opacityFade(label, p.draw_frames || 82, 10, duration);
+        }
+        var note = addText(comp, "DISCLAIMER", p.note || "概念図", 26, paper, [1550, 970], FONTS.REGULAR, 30);
+        addLayerMarker(note, 0, "conceptual=true / 実測値ではない");
+        addCompMarker(comp, 0, cut.cut + " / " + cut.template_id + " / 概念図");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function blackDeclarationMaster(cut, parent) {
+        var p = cut.params;
+        var key = String(p.reuse_key || "");
+        if (key && SHARED_COMPS[key]) {
+            addCompMarker(SHARED_COMPS[key], FD, cut.cut + "も同一masterを参照");
+            return SHARED_COMPS[key];
+        }
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MASTER_DECLARATION_" + (key || cut.cut), duration, "shared|template=" + cut.template_id + "|key=" + key);
+        addSolid(comp, "BG_TRUE_BLACK", [0, 0, 0], comp.width, comp.height, [960, 540], duration);
+        var textLayer = addTextBox(comp, "DECLARATION", p.text, [1500, 260], 84, hexColor(PALETTE.off_white), [210, 410], FONTS.BOLD, Number(p.tracking || 150), 112, ParagraphJustification.CENTER_JUSTIFY);
+        var opacity = textLayer.property("ADBE Transform Group").property("ADBE Opacity");
+        var fadeFrames = Number(p.fade_frames || 10);
+        var fadeOutFrame = Math.min(cut.duration_frames - fadeFrames, Number(p.fade_out_frame || cut.duration_frames - fadeFrames));
+        opacity.setValueAtTime(0, 0);
+        opacity.setValueAtTime(timeOfFrame(fadeFrames), 100);
+        opacity.setValueAtTime(timeOfFrame(fadeOutFrame), 100);
+        opacity.setValueAtTime(clampTime(timeOfFrame(fadeOutFrame + fadeFrames), duration), 0);
+        addCompMarker(comp, 0, "shared master key=" + key + " / C20とC40は同一CompItem参照");
+        if (key) SHARED_COMPS[key] = comp;
+        created.push(comp.name);
+        return comp;
+    }
+
+    function replaceArrowMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        var ink = hexColor(PALETTE.ink), paper = hexColor(PALETTE.off_white), gold = hexColor(PALETTE.gold), red = hexColor(PALETTE.vermilion);
+        addSolid(comp, "BG_PAPER", paper, comp.width, comp.height, [960, 540], duration);
+        addText(comp, "KICKER", p.kicker || "BEFORE / AFTER", 28, gold, [960, 125], FONTS.NUMBER, 180);
+        var left = addTextBox(comp, "BEFORE_TEXT", p.left, [580, 170], 72, ink, [170, 365], FONTS.BOLD, 60, 92, ParagraphJustification.CENTER_JUSTIFY);
+        var right = addTextBox(comp, "AFTER_TEXT", p.right, [580, 170], 78, ink, [1170, 365], FONTS.BOLD, 60, 96, ParagraphJustification.CENTER_JUSTIFY);
+        fadeLayerAt(left, 6, 8, duration);
+        fadeLayerAt(right, Number(p.reveal_frame || 70), 8, duration);
+        addPolylineShape(comp, "STRIKE", [[220, 525], [745, 385]], red, 12, Number(p.strike_frame || 28), Number(p.strike_frame || 28) + 10, duration);
+        addPolylineShape(comp, "ARROW_LINE", [[780, 480], [1120, 480]], gold, 8, Number(p.arrow_frame || 48), Number(p.arrow_frame || 48) + 18, duration);
+        var head = addText(comp, "ARROW_HEAD", "›", 92, gold, [1125, 475], FONTS.BOLD, 0);
+        fadeLayerAt(head, Number(p.arrow_frame || 48) + 15, 3, duration);
+        var statement = addTextBox(comp, "STATEMENT", p.statement, [1500, 150], 42, ink, [210, 760], FONTS.REGULAR, 20, 58, ParagraphJustification.CENTER_JUSTIFY);
+        fadeLayerAt(statement, Number(p.reveal_frame || 70) + 12, 10, duration);
+        created.push(comp.name);
+        return comp;
+    }
+
+    function interstitialMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG", hexColor(p.background), comp.width, comp.height, [960, 540], duration);
+        addSolid(comp, "ACCENT_RULE", hexColor(p.accent || PALETTE.gold), 360, 5, [960, 655], duration);
+        var main = addText(comp, "PRIMARY", p.text, 92, hexColor(p.foreground), [960, 500], FONTS.BOLD, 130);
+        opacityFade(main, Number(p.fade_frames || 12), Number(p.fade_frames || 12), duration);
+        var secondary = addTextBox(comp, "SECONDARY", p.secondary, [1320, 120], 38, hexColor(p.foreground), [300, 735], FONTS.REGULAR, 30, 54, ParagraphJustification.CENTER_JUSTIFY);
+        fadeLayerAt(secondary, Number(p.secondary_frame || 54), 10, duration);
+        slideLayerAt(secondary, [comp.width + 200, 735], [300, 735], Number(p.secondary_frame || 54), 14, duration);
+        created.push(comp.name);
+        return comp;
+    }
+
+    function darkStatementMaster(cut, parent, componentFolder) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_DARK", [0.025, 0.028, 0.03], comp.width, comp.height, [960, 540], duration);
+        var main = addTextBox(comp, "STATEMENT", p.text, [1500, 220], 88, hexColor(PALETTE.off_white), [210, 390], FONTS.BOLD, 120, 112, ParagraphJustification.CENTER_JUSTIFY);
+        opacityFade(main, Number(p.fade_frames || 12), Number(p.fade_frames || 12), duration);
+        var caption = addTextBox(comp, "CAPTION", p.caption, [1200, 90], 31, hexColor(PALETTE.gold), [360, 700], FONTS.REGULAR, 40, 44, ParagraphJustification.CENTER_JUSTIFY);
+        fadeLayerAt(caption, Number(p.caption_frame || 58), 10, duration);
+        if (p.show_price_tag) {
+            var tag = makeTagComponent(componentFolder, cut, {label: "市場価値", price: "¥?"}, 0, duration);
+            var tagLayer = comp.layers.add(tag);
+            tagLayer.name = "PRICE_TAG_TEASER";
+            tagLayer.property("ADBE Transform Group").property("ADBE Position").setValue([1510, 820]);
+            tagLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([72, 72]);
+            popLayer(tagLayer, Number(p.price_tag_frame || 94), 6, duration);
+        }
+        created.push(comp.name);
+        return comp;
+    }
+
+    function buildFeedContent(cut, componentFolder) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var contentHeight = Math.max(2100, 160 + p.cards.length * 610);
+        var content = app.project.items.addComp("COMPONENT_" + cut.cut + "_FEED_CONTENT", 720, contentHeight, 1, duration, FPS);
+        content.parentFolder = componentFolder;
+        content.comment = SIGNATURE + "|role=component|template=" + cut.template_id;
+        content.time = 0;
+        addSolid(content, "CONTENT_BG", hexColor(PALETTE.off_white), 720, contentHeight, [360, contentHeight / 2], duration);
+        var header = addText(content, "SERVICE", p.service + "  /  FICTIONAL UI", 28, hexColor(PALETTE.ink), [360, 65], FONTS.NUMBER, 100);
+        var i, card, y, bg, brand, headline, body, color;
+        for (i = 0; i < p.cards.length; i++) {
+            card = p.cards[i];
+            y = 390 + i * 610;
+            color = hexColor(card.accent || PALETTE.gold);
+            bg = addRectShape(content, "CARD_BG_" + (i + 1), [620, 535], [360, y], [0.94, 0.93, 0.90], 26, duration);
+            addRectShape(content, "CARD_IMAGE_" + (i + 1), [560, 230], [360, y - 105], [color[0] * 0.35 + 0.12, color[1] * 0.35 + 0.12, color[2] * 0.35 + 0.12], 14, duration);
+            brand = addText(content, "BRAND_" + (i + 1), card.brand + "  /  架空ブランド", 25, color, [360, y + 55], FONTS.NUMBER, 100);
+            headline = addText(content, "HEADLINE_" + (i + 1), card.headline, 39, hexColor(PALETTE.ink), [360, y + 125], FONTS.BOLD, 25);
+            body = addText(content, "BODY_" + (i + 1), card.body, 25, hexColor(PALETTE.ink), [360, y + 190], FONTS.REGULAR, 5);
+        }
+        return content;
+    }
+
+    function feedMaster(cut, cutFolder, componentFolder) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var content = buildFeedContent(cut, componentFolder);
+        var viewport = app.project.items.addComp("COMPONENT_" + cut.cut + "_FEED_VIEWPORT", 720, 900, 1, duration, FPS);
+        viewport.parentFolder = componentFolder;
+        viewport.comment = SIGNATURE + "|role=component|template=" + cut.template_id;
+        viewport.time = 0;
+        var feedLayer = viewport.layers.add(content);
+        feedLayer.name = "FEED_SCROLL";
+        feedLayer.property("ADBE Transform Group").property("ADBE Position").setValueAtTime(0, [360, content.height / 2]);
+        feedLayer.property("ADBE Transform Group").property("ADBE Position").setValueAtTime(clampTime(timeOfFrame(p.scroll_frames), duration), [360, content.height / 2 - p.scroll_pixels]);
+
+        var comp = makeComp(cutFolder, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_INK", hexColor(PALETTE.ink), comp.width, comp.height, [960, 540], duration);
+        addRectShape(comp, "PHONE_FRAME", [780, 980], [960, 540], hexColor(PALETTE.gold), 70, duration);
+        addRectShape(comp, "PHONE_INNER", [738, 938], [960, 540], hexColor(PALETTE.ink), 56, duration);
+        var viewportLayer = comp.layers.add(viewport);
+        viewportLayer.name = "UI_AD_FEED_RENDER";
+        viewportLayer.property("ADBE Transform Group").property("ADBE Position").setValue([960, 540]);
+        viewportLayer.property("ADBE Transform Group").property("ADBE Scale").setValue([96, 96]);
+        addText(comp, "FICTION_LABEL", "FICTIONAL UI / 架空画面", 22, hexColor(PALETTE.gold), [960, 1030], FONTS.NUMBER, 100);
+        addCompMarker(comp, 0, cut.cut + " / HTML版とAEフォールバック版を併設");
+        addCompMarker(comp, FD, "このAE版はfallback。正本はgenerated/uiの単一HTML");
+        addCompMarker(comp, duration - FD, "OUT: 高速スクロール→急停止→セピアは目視調整");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function makeTagComponent(parent, cut, tag, index, duration) {
+        var comp = app.project.items.addComp("COMPONENT_" + cut.cut + "_TAG_" + (index + 1), 320, 128, 1, duration, FPS);
+        comp.parentFolder = parent;
+        comp.comment = SIGNATURE + "|role=component|template=" + cut.template_id;
+        comp.time = 0;
+        addRectShape(comp, "TAG_BG", [300, 108], [160, 64], hexColor(PALETTE.off_white), 10, duration);
+        addRectShape(comp, "TAG_ACCENT", [12, 108], [16, 64], hexColor(PALETTE.vermilion), 2, duration);
+        addText(comp, "TAG_LABEL", tag.label, 34, hexColor(PALETTE.ink), [112, 48], FONTS.BOLD, 20);
+        addText(comp, "TAG_PRICE", tag.price, 32, hexColor(PALETTE.vermilion), [240, 82], FONTS.NUMBER, 15);
+        return comp;
+    }
+
+    function priceTagMaster(cut, cutFolder, componentFolder) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(cutFolder, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "REPLACE_WITH_ENVATO_FOOTAGE", [0.12, 0.13, 0.13], comp.width, comp.height, [960, 540], duration);
+        addText(comp, "FOOTAGE_PLACEHOLDER", p.background_label, 42, hexColor(PALETTE.off_white), [960, 540], FONTS.BOLD, 60);
+        addText(comp, "REPLACE_NOTE", "この2レイヤーをEnvato日常実写へ差し替え", 24, hexColor(PALETTE.gold), [960, 600], FONTS.REGULAR, 20);
+        var i, tag, tagComp, layer, x, y, delay, opacity;
+        for (i = 0; i < p.tags.length; i++) {
+            tag = p.tags[i];
+            tagComp = makeTagComponent(componentFolder, cut, tag, i, duration);
+            layer = comp.layers.add(tagComp);
+            layer.name = "PRICE_TAG_" + (i + 1) + "_" + tag.label;
+            x = Number(tag.x) * comp.width;
+            y = Number(tag.y) * comp.height;
+            layer.property("ADBE Transform Group").property("ADBE Position").setValue([x, y]);
+            delay = Number(tag.delay || 0);
+            popLayer(layer, delay, p.pop_frames || 6, duration);
+            opacity = layer.property("ADBE Transform Group").property("ADBE Opacity");
+            opacity.setValueAtTime(clampTime(duration - timeOfFrame(10), duration), 100);
+            opacity.setValueAtTime(clampTime(duration, duration), 0);
+        }
+        addCompMarker(comp, 0, cut.cut + " / 実写差替え・顔回避座標を最終確認");
+        var avoidCount = p.avoid_regions && p.avoid_regions.length ? p.avoid_regions.length : 0;
+        addCompMarker(comp, FD, "placeholder footage / avoid_regions=" + avoidCount + " / tags=" + p.tags.length);
+        addLayerMarker(comp.layer("FOOTAGE_PLACEHOLDER"), 0, cut.manual_check);
+        created.push(comp.name);
+        return comp;
+    }
+
+    function ambientListMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "REPLACE_WITH_AMBIENT_FOOTAGE", [0.08, 0.085, 0.08], comp.width, comp.height, [960, 540], duration);
+        var shade = addRectShape(comp, "LEFT_SHADE", [1280, 1080], [640, 540], [0.02, 0.02, 0.02], 0, duration);
+        shade.property("ADBE Transform Group").property("ADBE Opacity").setValue(78);
+        addText(comp, "REPLACE_NOTE", p.background_label, 22, hexColor(PALETTE.gold), [1520, 1030], FONTS.REGULAR, 35);
+        var heads = [], bodies = [], i, item, y, at, head, body, j, op;
+        for (i = 0; i < p.items.length; i++) {
+            item = p.items[i];
+            y = 235 + i * 300;
+            at = Number(p.reveal_frames[i] || i * 100);
+            addSolid(comp, "DIVIDER_" + (i + 1), hexColor(PALETTE.gold), 980, 3, [680, y + 155], duration);
+            head = addTextBox(comp, "ITEM_HEAD_" + (i + 1), item.head, [250, 100], 52, hexColor(PALETTE.gold), [170, y - 35], FONTS.BOLD, 80, 66, ParagraphJustification.LEFT_JUSTIFY);
+            body = addTextBox(comp, "ITEM_BODY_" + (i + 1), item.body, [800, 150], 38, hexColor(PALETTE.off_white), [440, y - 48], FONTS.REGULAR, 25, 54, ParagraphJustification.LEFT_JUSTIFY);
+            fadeLayerAt(head, at, 12, duration);
+            fadeLayerAt(body, at + 4, 12, duration);
+            slideLayerAt(head, [140, y - 35], [170, y - 35], at, 12, duration);
+            slideLayerAt(body, [410, y - 48], [440, y - 48], at + 4, 12, duration);
+            for (j = 0; j < heads.length; j++) {
+                op = heads[j].property("ADBE Transform Group").property("ADBE Opacity");
+                op.setValueAtTime(timeOfFrame(at), j === heads.length - 1 ? 100 : Number(p.dim_opacity || 32));
+                op.setValueAtTime(clampTime(timeOfFrame(at + 8), duration), Number(p.dim_opacity || 32));
+                op = bodies[j].property("ADBE Transform Group").property("ADBE Opacity");
+                op.setValueAtTime(timeOfFrame(at), j === bodies.length - 1 ? 100 : Number(p.dim_opacity || 32));
+                op.setValueAtTime(clampTime(timeOfFrame(at + 8), duration), Number(p.dim_opacity || 32));
+            }
+            heads.push(head);
+            bodies.push(body);
+        }
+        addCompMarker(comp, 0, cut.cut + " / 背景実写差替え。文字は左安全域内");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function brandLogoMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_INK", hexColor(PALETTE.ink), comp.width, comp.height, [960, 540], duration);
+        var paths = [
+            [[170, 220], [520, 220], [650, 360]], [[1750, 220], [1400, 220], [1270, 360]],
+            [[150, 820], [480, 820], [640, 690]], [[1770, 820], [1440, 820], [1280, 690]],
+            [[300, 120], [300, 360], [500, 500]], [[1620, 120], [1620, 360], [1420, 500]],
+            [[300, 960], [300, 720], [500, 580]], [[1620, 960], [1620, 720], [1420, 580]]
+        ];
+        var i, count = Math.min(Number(p.line_count || 8), paths.length);
+        for (i = 0; i < count; i++) addPolylineShape(comp, "ASSEMBLY_LINE_" + (i + 1), paths[i], hexColor(PALETTE.gold), 3, i * 4, Number(p.draw_frames || 70) + i * 3, duration);
+        var logo = addTextBox(comp, "BRAND_LOGO", p.series, [1500, 220], 104, hexColor(PALETTE.off_white), [210, 410], FONTS.BOLD, 135, 128, ParagraphJustification.CENTER_JUSTIFY);
+        var episode = addText(comp, "EPISODE", p.episode, 30, hexColor(PALETTE.gold), [960, 350], FONTS.NUMBER, 220);
+        var subtitle = addTextBox(comp, "SUBTITLE", p.subtitle, [1100, 90], 34, hexColor(PALETTE.off_white), [410, 700], FONTS.REGULAR, 75, 48, ParagraphJustification.CENTER_JUSTIFY);
+        fadeLayerAt(logo, Number(p.logo_frame || 54), 18, duration);
+        fadeLayerAt(episode, Number(p.logo_frame || 54) + 6, 12, duration);
+        fadeLayerAt(subtitle, Number(p.subtitle_frame || 82), 14, duration);
+        addCompMarker(comp, 0, "ブランドマスター試作。最終ロゴSVG確定後に差替え");
+        created.push(comp.name);
+        return comp;
+    }
+
+    function nextEpisodeMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_INK", hexColor(PALETTE.ink), comp.width, comp.height, [960, 540], duration);
+        var i, dot, x, y, at, opacity, position;
+        for (i = 0; i < Number(p.particle_count || 14); i++) {
+            x = 180 + ((i * 347) % 1560);
+            y = 130 + ((i * 191) % 820);
+            dot = addRectShape(comp, "PARTICLE_" + (i + 1), [4 + (i % 3) * 3, 4 + (i % 3) * 3], [x, y], hexColor(PALETTE.gold), 8, duration);
+            at = (i * 7) % 36;
+            opacity = dot.property("ADBE Transform Group").property("ADBE Opacity");
+            opacity.setValueAtTime(timeOfFrame(at), 8);
+            opacity.setValueAtTime(clampTime(timeOfFrame(at + 24), duration), 65);
+            opacity.setValueAtTime(clampTime(timeOfFrame(at + 60), duration), 8);
+            position = dot.property("ADBE Transform Group").property("ADBE Position");
+            position.setValueAtTime(timeOfFrame(at), [x, y]);
+            position.setValueAtTime(clampTime(duration, duration), [x + ((i % 2) ? 28 : -24), y - 45 - (i % 4) * 10]);
+        }
+        var kicker = addText(comp, "KICKER", (p.kicker || "NEXT EPISODE") + "  " + p.next_episode, 30, hexColor(PALETTE.gold), [960, 190], FONTS.NUMBER, 220);
+        var title = addTextBox(comp, "NEXT_TITLE", p.title, [1480, 300], 76, hexColor(PALETTE.off_white), [220, 350], FONTS.BOLD, 75, 102, ParagraphJustification.CENTER_JUSTIFY);
+        var question = addTextBox(comp, "QUESTION", p.question, [1200, 90], 32, hexColor(PALETTE.off_white), [360, 775], FONTS.REGULAR, 50, 46, ParagraphJustification.CENTER_JUSTIFY);
+        opacityFade(kicker, Number(p.fade_frames || 18), Number(p.fade_frames || 18), duration);
+        opacityFade(title, Number(p.fade_frames || 18), Number(p.fade_frames || 18), duration);
+        fadeLayerAt(question, Number(p.fade_frames || 18) + 28, 12, duration);
+        fadeOutLayerAt(question, Math.max(0, cut.duration_frames - 18), 16, duration);
+        created.push(comp.name);
+        return comp;
+    }
+
+    function endCardMaster(cut, parent) {
+        var p = cut.params;
+        var duration = cut.duration_frames / FPS;
+        var comp = makeComp(parent, "MG_" + cut.cut + "_" + cut.template_id, duration, "cut|template=" + cut.template_id + "|cut=" + cut.cut);
+        addSolid(comp, "BG_INK", hexColor(PALETTE.ink), comp.width, comp.height, [960, 540], duration);
+        var guide = addRectShape(comp, "GUIDE_YOUTUBE_END_SCREEN_RESERVE", [620, 440], [1480, 540], [0.25, 0.20, 0.12], 16, duration);
+        guide.property("ADBE Transform Group").property("ADBE Opacity").setValue(18);
+        guide.guideLayer = true;
+        var i, card, layer, start, nextStart, fadeLength, opacity, size, fontSet;
+        for (i = 0; i < p.cards.length; i++) {
+            card = p.cards[i];
+            start = i * Number(p.hold_frames || 72);
+            nextStart = i < p.cards.length - 1 ? (i + 1) * Number(p.hold_frames || 72) : cut.duration_frames - Number(p.end_fade_frames || 24);
+            fadeLength = i < p.cards.length - 1 ? Number(p.crossfade_frames || 18) : Number(p.end_fade_frames || 24);
+            size = card.kind === "logo" ? 96 : (card.kind === "credit" ? 48 : 58);
+            fontSet = card.kind === "credit" || card.kind === "logo" ? FONTS.NUMBER : FONTS.BOLD;
+            layer = addTextBox(comp, "END_" + card.kind.toUpperCase(), card.text, [1120, 240], size, hexColor(PALETTE.off_white), [180, 420], fontSet, card.kind === "logo" ? 160 : 40, 112, ParagraphJustification.CENTER_JUSTIFY);
+            opacity = layer.property("ADBE Transform Group").property("ADBE Opacity");
+            opacity.setValueAtTime(clampTime(timeOfFrame(start), duration), 0);
+            opacity.setValueAtTime(clampTime(timeOfFrame(start + Number(p.crossfade_frames || 18)), duration), 100);
+            opacity.setValueAtTime(clampTime(timeOfFrame(nextStart), duration), 100);
+            opacity.setValueAtTime(clampTime(timeOfFrame(nextStart + fadeLength), duration), 0);
+            addCompMarker(comp, timeOfFrame(start), "END CARD: " + card.kind);
+        }
+        addCompMarker(comp, clampTime(duration - timeOfFrame(Number(p.end_fade_frames || 24)), duration), "音楽フェード開始目安");
+        addCompMarker(comp, 0, "右620×440はYouTube終了画面予約領域（Guide Layer）");
+        created.push(comp.name);
+        return comp;
+    }
+
+    // ExtendScript側のdispatcherも1か所に集約し、if文の増殖を避ける。
+    var BUILDERS = {
+        "AE_CARD_STACK_THUMBNAIL": thumbnailStackMaster,
+        "AE_CARD_FOCUS_DROP": cardFocusMaster,
+        "AE_TITLE_EPISODE": titleMaster,
+        "DATA_BAR_WORD_GROWTH": barWordMaster,
+        "DATA_FLOW_THREE_STEP": flowThreeMaster,
+        "DATA_RESEARCH_STAT_CARD": researchStatMaster,
+        "DATA_LINE_COMPARE_TWO": lineCompareMaster,
+        "AE_BLACK_DECLARATION": blackDeclarationMaster,
+        "DATA_REPLACE_ARROW_DIAGRAM": replaceArrowMaster,
+        "UI_AD_FEED_SCROLL": feedMaster,
+        "AE_INTERSTITIAL_SIMPLE": interstitialMaster,
+        "AE_DARK_STATEMENT": darkStatementMaster,
+        "AE_PRICE_TAG_MULTIPLY": priceTagMaster,
+        "AE_LIST_ON_AMBIENT_PLATE": ambientListMaster,
+        "AE_BRAND_LOGO_ASSEMBLY": brandLogoMaster,
+        "AE_NEXT_EPISODE_TITLE": nextEpisodeMaster,
+        "AE_END_CARD_CREDITS": endCardMaster
+    };
+
+    function buildCut(cut, cutFolder, componentFolder) {
+        var builder = BUILDERS[cut.template_id];
+        if (!builder) {
+            logWarning(cut.cut + ": 未実装template " + cut.template_id);
+            return null;
+        }
+        return builder(cut, cutFolder, componentFolder);
+    }
+
+    var ownedRoot = null;
+    var fatalMessage = "";
+    app.beginUndoGroup("NANDAROU MG Factory Build");
+    try {
+        if (!app.project) app.newProject();
+        // 前回成功版を残したまま_BUILDINGへ構築し、成功時だけ入れ替える。
+        removeAbandonedBuildingRoot();
+        ownedRoot = app.project.items.addFolder(ROOT_NAME + "_BUILDING");
+        ownedRoot.comment = SIGNATURE + "|building";
+        var cutsFolder = folder(ownedRoot, "01_CUTS");
+        var components = folder(ownedRoot, "02_COMPONENTS");
+        var assets = folder(ownedRoot, "03_ASSETS_REPLACE_ME");
+        ASSET_FOLDER = assets;
+        var outputs = folder(ownedRoot, "90_OUTPUT");
+        var reelDuration = Math.max(1, PROJECT.duration_seconds);
+        var timeline = makeComp(outputs, BUILD.reel_prefix + "_MG_TIMELINE_REEL", reelDuration, "output|timeline_reel");
+        addSolid(timeline, "MASTER_BG", hexColor(PALETTE.ink), timeline.width, timeline.height, [960, 540], reelDuration);
+        var gapFrames = 12;
+        var reviewFrames = 1;
+        var i, cut;
+        for (i = 0; i < PAYLOAD.cuts.length; i++) reviewFrames += PAYLOAD.cuts[i].duration_frames + gapFrames;
+        var review = makeComp(outputs, BUILD.reel_prefix + "_MG_REVIEW_REEL", reviewFrames / FPS, "output|packed_review_reel");
+        addSolid(review, "MASTER_BG", hexColor(PALETTE.ink), review.width, review.height, [960, 540], review.duration);
+        var child, layer, reviewLayer, reviewLabel, inTime, outTime, cutDuration, reviewStart;
+        var reviewCursor = 0;
+        for (i = 0; i < PAYLOAD.cuts.length; i++) {
+            cut = PAYLOAD.cuts[i];
+            child = buildCut(cut, cutsFolder, components);
+            if (!child) continue;
+            inTime = cut.in_frame / FPS;
+            outTime = cut.out_frame / FPS;
+            cutDuration = cut.duration_frames / FPS;
+            layer = timeline.layers.add(child);
+            layer.name = cut.cut + "_" + cut.template_id;
+            // 再利用プリコンポはローカル0秒基準なので、親TCへstartTimeで移動する。
+            layer.startTime = inTime;
+            layer.inPoint = inTime;
+            layer.outPoint = outTime;
+            layer.label = 10;
+            addLayerMarker(layer, inTime, cut.manual_check);
+
+            // 元TCの空白を待たず確認できる、カット詰めレビューリール。
+            reviewStart = reviewCursor / FPS;
+            reviewLayer = review.layers.add(child);
+            reviewLayer.name = cut.cut + "_" + cut.template_id;
+            reviewLayer.startTime = reviewStart;
+            reviewLayer.inPoint = reviewStart;
+            reviewLayer.outPoint = reviewStart + cutDuration;
+            reviewLayer.label = 10;
+            addLayerMarker(reviewLayer, reviewStart, cut.manual_check);
+            reviewLabel = addText(review, "REVIEW_LABEL_" + cut.cut, cut.cut + "  /  " + cut.template_id, 22, hexColor(PALETTE.gold), [330, 1038], FONTS.NUMBER, 60);
+            reviewLabel.inPoint = reviewStart;
+            reviewLabel.outPoint = reviewStart + cutDuration;
+            addCompMarker(review, reviewStart, cut.cut + " / " + cut.tc_in + " - " + cut.tc_out);
+            reviewCursor += cut.duration_frames + gapFrames;
+            placedCount++;
+        }
+        removeOwnedRoot();
+        ownedRoot.name = ROOT_NAME;
+        ownedRoot.comment = SIGNATURE;
+        review.openInViewer();
+    } catch (fatalError) {
+        fatalMessage = fatalError.toString() + " line=" + fatalError.line;
+        logWarning("処理中断: " + fatalMessage);
+        try { if (ownedRoot) ownedRoot.remove(); } catch (cleanupError) { logWarning("失敗後の掃除にも失敗: " + cleanupError.toString()); }
+    } finally {
+        app.endUndoGroup();
+    }
+    if (fatalMessage) {
+        alert("MG Factory生成失敗\n" + fatalMessage + "\n\n生成途中の専用フォルダは削除しました。\n詳細はJavaScript Consoleを確認してください。");
+    } else {
+        alert("MG Factory生成完了\n配置カット: " + placedCount + "\n生成コンポ: " + created.length + "\n警告: " + warnings.length + "\n\n" + BUILD.reel_prefix + "_MG_REVIEW_REELを確認してください。\n詳細はJavaScript Consoleへ出力しています。");
+    }
+}());

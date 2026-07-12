@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unsaid.works/schemas/nandaro-mg-1.0.json",
+  "title": "Nandaro MG Factory Data",
+  "type": "object",
+  "required": ["schema_version", "project", "palette", "cuts"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "project": {
+      "type": "object",
+      "required": ["episode", "width", "height", "fps", "duration_seconds"],
+      "properties": {
+        "episode": {"type": "string"},
+        "title": {"type": "string"},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "fps": {"type": "number", "exclusiveMinimum": 0},
+        "fps_numerator": {"type": ["integer", "null"], "minimum": 1},
+        "fps_denominator": {"type": ["integer", "null"], "minimum": 1},
+        "duration_seconds": {"type": "number", "minimum": 0}
+      }
+    },
+    "palette": {
+      "type": "object",
+      "required": ["ink", "off_white", "gold", "vermilion"],
+      "additionalProperties": {"type": "string", "pattern": "^#[0-9A-Fa-f]{6}$"}
+    },
+    "cuts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cut", "part", "tc_in", "tc_out", "in_frame", "out_frame",
+          "duration_frames", "category", "template_id", "params"
+        ],
+        "properties": {
+          "cut": {"type": "string", "pattern": "^[A-Za-z]+[0-9]+$"},
+          "part": {"type": "string"},
+          "tc_in": {"type": "string", "pattern": "^[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}$"},
+          "tc_out": {"type": "string", "pattern": "^[0-9]{2}:[0-9]{2}:[0-9]{2}\\.[0-9]{3}$"},
+          "in_seconds": {"type": "number", "minimum": 0},
+          "out_seconds": {"type": "number", "exclusiveMinimum": 0},
+          "in_frame": {"type": "integer", "minimum": 0},
+          "out_frame": {"type": "integer", "minimum": 1},
+          "duration_frames": {"type": "integer", "minimum": 1},
+          "category": {
+            "enum": [
+              "MGテンプレート", "MG自動生成", "HTML/UI生成", "Envatoテンプレート",
+              "Envato実写+AE合成", "AI静止画+2.5D", "画面収録", "固有MG"
+            ]
+          },
+          "template_id": {"type": "string", "minLength": 1},
+          "visual": {"type": "string"},
+          "automation": {"type": "string"},
+          "required_inputs": {"type": "string"},
+          "support": {"type": "string"},
+          "manual_check": {"type": "string"},
+          "source_search": {"type": "string"},
+          "ai_prompt": {"type": "string"},
+          "effect_notes": {"type": "string"},
+          "transition_notes": {"type": "string"},
+          "motion_notes": {"type": "string"},
+          "params": {"type": "object"}
+        }
+      }
+    }
+  }
+}

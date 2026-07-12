@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C25 Design Frame v3</title>
+<style>
+  :root {
+    --ink: #111214;
+    --paper: #e7e2d8;
+    --paper-deep: #d9d2c4;
+    --gold: #b68b45;
+    --red: #a52320;
+    --muted: #77736b;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #202124; display: grid; min-height: 100vh; place-items: center; }
+  .frame {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    overflow: hidden;
+    color: var(--ink);
+    background:
+      linear-gradient(90deg, rgba(17,18,20,.035) 1px, transparent 1px) 0 0 / 96px 100%,
+      repeating-linear-gradient(0deg, transparent 0, transparent 53px, rgba(17,18,20,.035) 54px),
+      var(--paper);
+    font-family: "Source Han Sans JP", "Noto Sans CJK JP", "Hiragino Sans", sans-serif;
+  }
+  .edge { position: absolute; inset: 0; border: 24px solid var(--ink); pointer-events: none; }
+  .index { position:absolute; top: 104px; left: 138px; font: 500 22px/1 "Oswald", sans-serif; letter-spacing: .14em; color: var(--gold); }
+  .series { position:absolute; top: 104px; right: 138px; font-size: 19px; letter-spacing: .12em; color: var(--muted); }
+  .rule { position:absolute; top: 168px; left: 138px; right: 138px; height: 3px; background: var(--ink); }
+  .kicker { position:absolute; top: 222px; left: 138px; font: 500 24px/1 "Oswald", sans-serif; letter-spacing:.16em; color: var(--gold); }
+  .question { position:absolute; top: 274px; left: 138px; font-size: 52px; font-weight: 700; letter-spacing:.04em; }
+  .left-block, .right-block { position:absolute; top: 424px; width: 590px; }
+  .left-block { left: 164px; }
+  .right-block { right: 164px; }
+  .meta { font: 500 20px/1 "Oswald", sans-serif; letter-spacing:.16em; color: var(--muted); }
+  .term { margin-top: 30px; font-size: 90px; font-weight: 800; letter-spacing: -.065em; white-space: nowrap; }
+  .left-block .term { position:relative; color: #5b5955; }
+  .strike-a, .strike-b { position:absolute; height: 13px; background: var(--red); transform-origin:left center; }
+  .strike-a { width: 520px; top: 113px; left: -12px; transform: rotate(-8deg); }
+  .strike-b { width: 180px; top: 131px; left: 274px; transform: rotate(-8deg); opacity:.52; }
+  .right-block .meta { color: var(--gold); }
+  .right-block .term { color: var(--ink); }
+  .operator { position:absolute; left: 50%; top: 486px; width: 200px; margin-left:-100px; text-align:center; color:var(--gold); }
+  .operator .line { height: 4px; width: 156px; margin: 0 auto 25px; background:var(--gold); }
+  .operator .arrow { font: 500 86px/.6 "Oswald", sans-serif; letter-spacing:-.08em; }
+  .caption { position:absolute; left:138px; right:138px; bottom: 142px; padding-top:28px; border-top: 3px solid var(--ink); font-size: 45px; font-weight: 700; letter-spacing:.02em; }
+  .caption em { font-style:normal; color:var(--red); }
+  .note { position:absolute; right:138px; bottom:84px; font-size:17px; color:var(--muted); letter-spacing:.06em; }
+</style>
+</head>
+<body>
+  <main class="frame">
+    <div class="edge"></div>
+    <div class="index">C25 / 03:47</div>
+    <div class="series">『なんだろう』解体　—　構造をほどく</div>
+    <div class="rule"></div>
+    <div class="kicker">WHAT IS ACTUALLY SOLD?</div>
+    <div class="question">売っているのは、何なのか。</div>
+
+    <section class="left-block">
+      <div class="meta">01 / WHAT YOU SEE</div>
+      <div class="term">商品そのもの</div>
+      <div class="strike-a"></div><div class="strike-b"></div>
+    </section>
+
+    <div class="operator"><div class="line"></div><div class="arrow">→</div></div>
+
+    <section class="right-block">
+      <div class="meta">02 / WHAT YOU BUY</div>
+      <div class="term">なれる自分</div>
+    </section>
+
+    <div class="caption">商品ではなく、<em>「その先の自分」</em>を売る。</div>
+    <div class="note">CONCEPTUAL DIAGRAM / C25</div>
+  </main>
+</body>
+</html>

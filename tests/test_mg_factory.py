@@ -176,6 +176,8 @@ class MgFactoryTests(unittest.TestCase):
         self.assertIn("new KeyframeEase(0, influence)", jsx)
         self.assertIn("setTemporalEaseAtKey", jsx)
         self.assertIn("function applyCameraRig(boardLayer, keys, fps, baseScale)", jsx)
+        self.assertIn("function twoDEase(influence)", jsx)
+        self.assertIn("return [new KeyframeEase(0, influence), new KeyframeEase(0, influence)]", jsx)
         self.assertIn('cam.name = "CAM_DRIFT"', jsx)
         self.assertIn("boardLayer.parent = cam", jsx)
         self.assertIn("pos.setValue([960, 540])", jsx)

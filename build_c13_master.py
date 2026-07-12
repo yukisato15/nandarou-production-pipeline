@@ -327,6 +327,13 @@ JSX_TEMPLATE = r'''#target aftereffects
         var pos = tr.property("ADBE Position");
         var i, tk, zoomScale, inEase, outEase, finalInEase, finalOutEase;
 
+        // Anchor Point と Scale は必ず2次元のプロパティ。
+        // prop.value から次元数を推測すると、AE 2026ではキー追加直後に
+        // 1次元として返る場合があり setTemporalEaseAtKey が失敗する。
+        function twoDEase(influence) {
+            return [new KeyframeEase(0, influence), new KeyframeEase(0, influence)];
+        }
+
         while (ap.numKeys) ap.removeKey(1);
         while (sc.numKeys) sc.removeKey(1);
         while (pos.numKeys) pos.removeKey(1);
@@ -342,11 +349,11 @@ JSX_TEMPLATE = r'''#target aftereffects
         }
 
         // 通常の移動は「ゆっくり発進→加速→短めに減速して停止」。
-        inEase = easeArrayFor(ap, 33);
-        outEase = easeArrayFor(ap, 60);
+        inEase = twoDEase(33);
+        outEase = twoDEase(60);
         for (i = 1; i <= ap.numKeys; i++) {
             ap.setTemporalEaseAtKey(i, inEase, outEase);
-            sc.setTemporalEaseAtKey(i, easeArrayFor(sc, 33), easeArrayFor(sc, 60));
+            sc.setTemporalEaseAtKey(i, twoDEase(33), twoDEase(60));
             try {
                 // オートベジェ由来の弧を禁止し、注視点は直線だけを移動する。
                 ap.setSpatialAutoBezierAtKey(i, false);
@@ -357,12 +364,12 @@ JSX_TEMPLATE = r'''#target aftereffects
 
         // 最後の引きだけは、少し長めに抜けて全景で止める。
         // keys[5] = F204（引き開始）、keys[6] = F230（全景着）。
-        finalInEase = easeArrayFor(ap, 25);
-        finalOutEase = easeArrayFor(ap, 70);
-        ap.setTemporalEaseAtKey(6, easeArrayFor(ap, 33), finalOutEase);
-        ap.setTemporalEaseAtKey(7, finalInEase, easeArrayFor(ap, 60));
-        sc.setTemporalEaseAtKey(6, easeArrayFor(sc, 33), easeArrayFor(sc, 70));
-        sc.setTemporalEaseAtKey(7, easeArrayFor(sc, 25), easeArrayFor(sc, 60));
+        finalInEase = twoDEase(25);
+        finalOutEase = twoDEase(70);
+        ap.setTemporalEaseAtKey(6, twoDEase(33), finalOutEase);
+        ap.setTemporalEaseAtKey(7, finalInEase, twoDEase(60));
+        sc.setTemporalEaseAtKey(6, twoDEase(33), twoDEase(70));
+        sc.setTemporalEaseAtKey(7, twoDEase(25), twoDEase(60));
     }
 
     function easeArrayFor(prop, influence) {

@@ -307,6 +307,12 @@
             return [new KeyframeEase(0, influence), new KeyframeEase(0, influence)];
         }
 
+        // Anchor Point は空間プロパティなので、座標は2次元でも
+        // temporal ease だけは1要素を要求する（AEの仕様）。
+        function spatialEase(influence) {
+            return [new KeyframeEase(0, influence)];
+        }
+
         while (ap.numKeys) ap.removeKey(1);
         while (sc.numKeys) sc.removeKey(1);
         while (pos.numKeys) pos.removeKey(1);
@@ -322,8 +328,8 @@
         }
 
         // 通常の移動は「ゆっくり発進→加速→短めに減速して停止」。
-        inEase = twoDEase(33);
-        outEase = twoDEase(60);
+        inEase = spatialEase(33);
+        outEase = spatialEase(60);
         for (i = 1; i <= ap.numKeys; i++) {
             ap.setTemporalEaseAtKey(i, inEase, outEase);
             sc.setTemporalEaseAtKey(i, twoDEase(33), twoDEase(60));
@@ -337,10 +343,10 @@
 
         // 最後の引きだけは、少し長めに抜けて全景で止める。
         // keys[5] = F204（引き開始）、keys[6] = F230（全景着）。
-        finalInEase = twoDEase(25);
-        finalOutEase = twoDEase(70);
-        ap.setTemporalEaseAtKey(6, twoDEase(33), finalOutEase);
-        ap.setTemporalEaseAtKey(7, finalInEase, twoDEase(60));
+        finalInEase = spatialEase(25);
+        finalOutEase = spatialEase(70);
+        ap.setTemporalEaseAtKey(6, spatialEase(33), finalOutEase);
+        ap.setTemporalEaseAtKey(7, finalInEase, spatialEase(60));
         sc.setTemporalEaseAtKey(6, twoDEase(33), twoDEase(70));
         sc.setTemporalEaseAtKey(7, twoDEase(25), twoDEase(60));
     }

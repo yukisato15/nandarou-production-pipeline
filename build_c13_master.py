@@ -474,14 +474,14 @@ JSX_TEMPLATE = r'''#target aftereffects
     }
 
     function saveQa(master) {
-        var folder = new Folder(PATHS.qa_dir);
-        if (!folder.exists) folder.create();
         try {
+            var folder = new Folder(PATHS.qa_dir);
+            if (!folder.exists) folder.create();
             master.saveFrameToPng(0, new File(PATHS.qa_dir + "/C13_qa_000.png"));
             master.saveFrameToPng(DURATION * 0.50, new File(PATHS.qa_dir + "/C13_qa_050.png"));
             master.saveFrameToPng(DURATION * 0.95, new File(PATHS.qa_dir + "/C13_qa_095.png"));
         } catch (error) {
-            warn("QA PNG export failed: " + error.toString());
+            warn("QA PNG export skipped or failed. Enable AE Preferences > Scripting & Expressions > Allow Scripts to Write Files and Access Network, then rerun if QA stills are needed. " + error.toString());
         }
     }
 

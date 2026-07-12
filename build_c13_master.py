@@ -325,19 +325,33 @@ JSX_TEMPLATE = r'''#target aftereffects
         var ap = tr.property("ADBE Anchor Point");
         var sc = tr.property("ADBE Scale");
         var pos = tr.property("ADBE Position");
-        var i, tk, zoomScale, inEase, outEase, finalInEase, finalOutEase;
+        var i, tk, zoomScale;
 
-        // Anchor Point と Scale は必ず2次元のプロパティ。
-        // prop.value から次元数を推測すると、AE 2026ではキー追加直後に
-        // 1次元として返る場合があり setTemporalEaseAtKey が失敗する。
-        function twoDEase(influence) {
-            return [new KeyframeEase(0, influence), new KeyframeEase(0, influence)];
+        // AEのバージョン／プロパティ種別により、temporal ease の配列長の
+        // 要求が1・2・3で揺れることがある。各候補を安全に試し、成功した
+        // 形式だけを採用する。失敗してもアニメーション全体は止めない。
+        function easeArray(dimensions, influence) {
+            var result = [];
+            var j;
+            for (j = 0; j < dimensions; j++) result.push(new KeyframeEase(0, influence));
+            return result;
         }
 
-        // Anchor Point は空間プロパティなので、座標は2次元でも
-        // temporal ease だけは1要素を要求する（AEの仕様）。
-        function spatialEase(influence) {
-            return [new KeyframeEase(0, influence)];
+        function setTemporalEaseCompat(prop, keyIndex, inInfluence, outInfluence) {
+            var dimensions, lastError;
+            for (dimensions = 1; dimensions <= 3; dimensions++) {
+                try {
+                    prop.setTemporalEaseAtKey(
+                        keyIndex,
+                        easeArray(dimensions, inInfluence),
+                        easeArray(dimensions, outInfluence)
+                    );
+                    return;
+                } catch (error) {
+                    lastError = error;
+                }
+            }
+            warn("camera ease skipped: " + prop.name + " key " + keyIndex + " / " + lastError.toString());
         }
 
         while (ap.numKeys) ap.removeKey(1);
@@ -355,11 +369,9 @@ JSX_TEMPLATE = r'''#target aftereffects
         }
 
         // 通常の移動は「ゆっくり発進→加速→短めに減速して停止」。
-        inEase = spatialEase(33);
-        outEase = spatialEase(60);
         for (i = 1; i <= ap.numKeys; i++) {
-            ap.setTemporalEaseAtKey(i, inEase, outEase);
-            sc.setTemporalEaseAtKey(i, twoDEase(33), twoDEase(60));
+            setTemporalEaseCompat(ap, i, 33, 60);
+            setTemporalEaseCompat(sc, i, 33, 60);
             try {
                 // オートベジェ由来の弧を禁止し、注視点は直線だけを移動する。
                 ap.setSpatialAutoBezierAtKey(i, false);
@@ -370,12 +382,10 @@ JSX_TEMPLATE = r'''#target aftereffects
 
         // 最後の引きだけは、少し長めに抜けて全景で止める。
         // keys[5] = F204（引き開始）、keys[6] = F230（全景着）。
-        finalInEase = spatialEase(25);
-        finalOutEase = spatialEase(70);
-        ap.setTemporalEaseAtKey(6, spatialEase(33), finalOutEase);
-        ap.setTemporalEaseAtKey(7, finalInEase, spatialEase(60));
-        sc.setTemporalEaseAtKey(6, twoDEase(33), twoDEase(70));
-        sc.setTemporalEaseAtKey(7, twoDEase(25), twoDEase(60));
+        setTemporalEaseCompat(ap, 6, 33, 70);
+        setTemporalEaseCompat(ap, 7, 25, 60);
+        setTemporalEaseCompat(sc, 6, 33, 70);
+        setTemporalEaseCompat(sc, 7, 25, 60);
     }
 
     function easeArrayFor(prop, influence) {

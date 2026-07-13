@@ -9,7 +9,10 @@
     "render:c13": "remotion render C13AttentionFlow out/c13_attention_flow.mp4",
     "typecheck": "tsc --noEmit",
     "render:scenes": "remotion render JsonScenes out/json_scenes_demo.mp4",
-    "still:scenes": "remotion still JsonScenes out/json_scenes_still.png"
+    "still:scenes": "remotion still JsonScenes out/json_scenes_still.png",
+    "still:telops": "remotion still TelopOverlay out/telop_overlay_still.png --frame=900",
+    "render:telops": "remotion render TelopOverlay out/ep01_telops_overlay.mov --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
+    "render:telops:sample": "remotion render TelopOverlay out/telop_overlay_sample.mov --frames=850-930 --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png"
   },
   "dependencies": {
     "@fontsource/oswald": "^5.2.8",
@@ -19,7 +22,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remotion": "^4.0.0",
-    "zod": "^3.25.76"
+    "zod": "4.3.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

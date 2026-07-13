@@ -11,6 +11,7 @@
 |---|---|
 | `JsonScenes` | **本命。** シーンJSON→レジストリのコンポーネントを連結して動画化 |
 | `C13AttentionFlow` | 第1回C13のプロトタイプ(視線→再生→広告費ボード) |
+| `TelopOverlay` | `data/ep01_telops.json` → 背景透過テロップ動画 |
 
 ## コマンド
 
@@ -19,11 +20,27 @@ npm install
 npm run dev            # Remotion Studio (プレビュー)
 npm run render:scenes  # data/ep02_demo.json → out/json_scenes_demo.mp4
 npm run render:c13     # C13 → out/c13_attention_flow.mp4
+npm run still:telops   # テロップ透明PNGの確認
+npm run render:telops:sample # テロップ透過MOVの短尺サンプル
+npm run render:telops  # ep01_telops.json → ProRes 4444透過MOV
 npm run typecheck
 
 # 別のJSONで書き出し
 npx remotion render JsonScenes out/xxx.mp4 --props=./data/xxx.json
 ```
+
+## テロップ透過オーバーレイ
+
+`TelopOverlay` は `data/ep01_telops.json` を読み、S1-S6テロップを
+1920x1080の透明タイムラインに配置します。Premiereで本編映像の上に重ねる用途です。
+
+```bash
+npm run render:telops:sample # まず短尺でPremiere読み込み確認
+npm run render:telops        # 全尺 out/ep01_telops_overlay.mov
+```
+
+出力は ProRes 4444 のMOVです。全尺はファイルサイズが大きくなるので、
+最初は必ずサンプルでアルファ付き読み込みを確認してください。
 
 ## シーンJSONの書き方
 

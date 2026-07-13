@@ -1,0 +1,79 @@
+.telopOverlay {
+  overflow: hidden;
+  background: transparent;
+  pointer-events: none;
+}
+
+.telopItem {
+  position: absolute;
+  color: #eae6df;
+  text-align: center;
+  white-space: pre-line;
+  line-height: 1.36;
+  text-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.58),
+    0 0 2px rgba(0, 0, 0, 0.92);
+  font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+  font-weight: 800;
+  will-change: transform, opacity;
+}
+
+.telop-S1 {
+  width: 1540px;
+  padding: 0 24px;
+  font-size: 38px;
+  line-height: 1.32;
+  font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  font-weight: 700;
+  color: #fff;
+  text-shadow:
+    0 2px 7px rgba(0, 0, 0, 0.82),
+    0 0 2px rgba(0, 0, 0, 1);
+}
+
+.telop-S2 {
+  width: 1600px;
+  font-size: 74px;
+  letter-spacing: 0.06em;
+}
+
+.telop-S3 {
+  width: 1180px;
+  font-size: 60px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.telop-S4 {
+  width: 980px;
+  padding: 34px 52px;
+  background: rgba(13, 13, 13, 0.92);
+  font-size: 84px;
+  letter-spacing: 0.08em;
+}
+
+.telop-S5 {
+  width: 980px;
+  font-family: Oswald, 'Noto Sans JP', sans-serif;
+  font-size: 96px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.telop-S6 {
+  width: 1320px;
+  font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  font-size: 112px;
+  line-height: 1.1;
+  color: #fff;
+  -webkit-text-stroke: 4px #ffd700;
+  text-shadow:
+    0 7px 0 rgba(0, 0, 0, 0.42),
+    0 16px 34px rgba(0, 0, 0, 0.62);
+}
+
+.telopAccent {
+  color: #c9a063;
+  display: inline-block;
+  margin: 0 0.18em;
+}

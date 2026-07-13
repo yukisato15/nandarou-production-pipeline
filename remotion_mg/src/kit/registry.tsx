@@ -80,7 +80,7 @@ export const scenesDocSchema = z.object({
         type: z.string(),
         id: z.string().optional(),
         durationInFrames: z.number().int().positive().optional(),
-        props: z.record(z.unknown()).default({}),
+        props: z.record(z.string(), z.unknown()).default({}),
       })
     )
     .min(1),
@@ -98,7 +98,7 @@ export const resolveScenes = (docInput: unknown): {fps: number; scenes: Resolved
         `未知のシーンtype "${s.type}" (index ${i})。使用可能: ${Object.keys(registry).join(', ')}`
       );
     }
-    const props = entry.schema.parse(s.props ?? {});
+    const props = entry.schema.parse(s.props ?? {}) as Record<string, unknown>;
     return {
       type: s.type,
       id: s.id ?? `${s.type}_${i}`,

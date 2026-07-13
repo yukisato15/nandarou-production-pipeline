@@ -1,0 +1,139 @@
+<meta charset="utf-8">
+<title>C01 偽サムネ styleframe v1</title>
+<style>
+  :root{
+    --yt-yellow:#FFE600; --yt-red:#E60012; --yt-black:#111;
+  }
+  body{background:#17181a;color:#bbb;font-family:"Hiragino Sans","Noto Sans JP",sans-serif;margin:0;padding:40px 0 80px;}
+  .page-head{max-width:740px;margin:0 auto 36px;padding:0 20px;}
+  .page-head h1{color:#e8e4d8;font-size:20px;font-weight:600;margin:0 0 8px;}
+  .page-head p{font-size:13px;line-height:1.8;margin:0;}
+  .frame-wrap{width:704px;margin:0 auto 14px;}
+  .frame-scale{width:1280px;height:720px;transform:scale(.55);transform-origin:top left;}
+  .frame-wrap{height:412px;}
+  .thumb{position:relative;width:1280px;height:720px;overflow:hidden;border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.6);}
+  .caption{max-width:704px;margin:0 auto 56px;font-size:12.5px;line-height:1.9;color:#9a968c;border-left:3px solid #C9A063;padding-left:14px;}
+  .caption b{color:#d8d2c2;font-weight:600;}
+  .dur{position:absolute;right:18px;bottom:16px;background:rgba(0,0,0,.85);color:#fff;
+       font-size:26px;font-weight:600;padding:4px 12px;border-radius:6px;letter-spacing:1px;z-index:30;}
+  /* 写真プレースホルダ共通 */
+  .photo{position:absolute;display:flex;align-items:center;justify-content:center;text-align:center;}
+  .photo .label{border:3px dashed rgba(255,255,255,.55);background:rgba(0,0,0,.35);color:#fff;
+       font-size:24px;line-height:1.7;padding:22px 30px;border-radius:10px;font-weight:600;}
+  /* 極太アウトライン文字(8方向シャドウ) */
+  .slam{font-weight:900;line-height:1.02;letter-spacing:.01em;
+    text-shadow:
+      -10px -10px 0 var(--o), 10px -10px 0 var(--o), -10px 10px 0 var(--o), 10px 10px 0 var(--o),
+      -14px 0 0 var(--o), 14px 0 0 var(--o), 0 -14px 0 var(--o), 0 14px 0 var(--o),
+      0 22px 18px rgba(0,0,0,.55);}
+  /* ---------- THUMB 1 日本、終わる ---------- */
+  .t1{background:radial-gradient(120% 140% at 70% 10%,#4a0d0d 0%,#230404 55%,#0c0102 100%);}
+  .t1 .photo{left:0;top:0;width:520px;height:720px;
+    background:linear-gradient(160deg,#3a3a40,#1c1c22 70%);}
+  .t1 .chart{position:absolute;inset:0;z-index:5;opacity:.95;}
+  .t1 .banner{position:absolute;left:0;top:34px;background:var(--yt-red);color:#fff;z-index:20;
+    font-size:52px;font-weight:900;padding:10px 38px 12px 30px;letter-spacing:.12em;
+    clip-path:polygon(0 0,100% 0,94% 100%,0 100%);box-shadow:0 8px 24px rgba(0,0,0,.5);}
+  .t1 .copy{position:absolute;right:44px;top:120px;text-align:right;z-index:20;transform:rotate(-2deg);}
+  .t1 .l1{--o:#000;color:#fff;font-size:120px;}
+  .t1 .l2{--o:#000;color:var(--yt-yellow);font-size:250px;}
+  .t1 .sub{position:absolute;right:56px;bottom:64px;color:#fff;font-size:44px;font-weight:800;z-index:20;
+    text-shadow:0 0 18px rgba(230,0,18,.9),0 4px 10px #000;}
+  /* ---------- THUMB 2 年金、消える ---------- */
+  .t2{background:linear-gradient(180deg,#f7f5ef 0%,#e9e6dc 100%);}
+  .t2 .photo{right:0;top:0;width:560px;height:720px;
+    background:linear-gradient(200deg,#cfc9bb,#a79f8e 70%);}
+  .t2 .strip{position:absolute;left:0;top:0;width:100%;background:var(--yt-yellow);color:#111;z-index:20;
+    font-size:46px;font-weight:900;text-align:left;padding:8px 0 10px 36px;letter-spacing:.14em;
+    border-bottom:8px solid #111;}
+  .t2 .copy{position:absolute;left:48px;top:170px;z-index:20;transform:rotate(-1deg);}
+  .t2 .l1{--o:#fff;color:#111;font-size:150px;}
+  .t2 .l2{--o:#fff;color:var(--yt-red);font-size:215px;position:relative;display:inline-block;}
+  .t2 .marker{position:absolute;left:-12px;right:-18px;top:52%;height:44%;background:var(--yt-yellow);
+    z-index:-1;transform:skew(-8deg) rotate(-1deg);}
+  .t2 .zero{position:absolute;right:210px;bottom:150px;z-index:25;--o:#fff;color:#111;font-size:120px;
+    font-weight:900;transform:rotate(-6deg);}
+  .t2 svg{position:absolute;inset:0;z-index:26;pointer-events:none;}
+  /* ---------- THUMB 3 知らないと、損する ---------- */
+  .t3{background:#FFD900;}
+  .t3 .rays{position:absolute;inset:-40%;z-index:1;opacity:.16;
+    background:repeating-conic-gradient(from 0deg at 50% 50%, #111 0deg .9deg, transparent .9deg 7deg);}
+  .t3 .photo{right:-20px;top:30px;width:540px;height:690px;z-index:10;
+    background:linear-gradient(200deg,#d9c9a8,#b09a72 70%);}
+  .t3 .copy{position:absolute;left:52px;top:255px;z-index:20;transform:rotate(-2deg);}
+  .t3 .l1{--o:#fff;color:#111;font-size:130px;}
+  .t3 .l2{--o:#fff;color:var(--yt-red);font-size:225px;}
+  .t3 .badge{position:absolute;left:44px;top:26px;width:230px;height:230px;border-radius:50%;z-index:25;
+    background:var(--yt-red);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:48px;font-weight:900;line-height:1.25;transform:rotate(-12deg);
+    box-shadow:0 10px 30px rgba(0,0,0,.35);border:8px solid #fff;}
+  .t3 svg{position:absolute;inset:0;z-index:15;pointer-events:none;}
+</style>
+
+<div class="page-head">
+  <h1>C01 偽サムネ×3 スタイルフレーム v1</h1>
+  <p>意図的に番組パレットを破り、YouTube煽りサムネの文法(純黄 #FFE600・純赤 #E60012・極太ゴシック・黒/白フチ・集中線)で作る。
+  破線ブロックはAI生成写真の差し替え位置。実在チャンネル・ロゴ・実在人物は使用しない。完成解像度は各1280×720。</p>
+</div>
+
+<!-- ============ 1枚目 ============ -->
+<div class="frame-wrap"><div class="frame-scale"><div class="thumb t1">
+  <div class="photo"><div class="label">AI画像①<br>40代日本人男性<br>驚愕・両手を頭に<br>暗い部屋・顔に赤い光</div></div>
+  <svg class="chart" viewBox="0 0 1280 720">
+    <polyline points="80,300 300,340 470,320 640,430 820,520 1020,660"
+      fill="none" stroke="#FF2A2A" stroke-width="20" stroke-linejoin="round"
+      style="filter:drop-shadow(0 0 22px rgba(255,42,42,.9))"/>
+    <polygon points="1035,700 960,640 1010,612" fill="#FF2A2A"/>
+  </svg>
+  <div class="banner">【緊急】</div>
+  <div class="copy"><div class="slam l1">日本、</div><div class="slam l2">終わる</div></div>
+  <div class="sub">※もう間に合いません</div>
+  <div class="dur">10:24</div>
+</div></div></div>
+<p class="caption"><b>①経済崩壊系。</b>黒＋赤の恐怖グラデ、下落する赤いグラフ、黄色の「終わる」。
+写真は左1/3。文字は右に寄せてわずかに回転。「※もう間に合いません」の小さい嘘の断定が悪趣味の核。<br>
+AI画像プロンプト例: <b>「40代の日本人男性、スーツ、両手で頭を抱えて驚愕、口が開いている、暗い部屋、顔に赤いモニター光、望遠レンズ、YouTubeサムネイル風の過剰な表情」</b></p>
+
+<!-- ============ 2枚目 ============ -->
+<div class="frame-wrap"><div class="frame-scale"><div class="thumb t2">
+  <div class="photo"><div class="label">AI画像②<br>高齢者の手＋年金手帳/通帳<br>残高欄が見える俯瞰<br>蛍光灯の生活感ある光</div></div>
+  <div class="strip">知らないと危険</div>
+  <div class="copy">
+    <div class="slam l1">年金、</div>
+    <div class="slam l2">消える<span class="marker"></span></div>
+  </div>
+  <div class="slam zero">¥0</div>
+  <svg viewBox="0 0 1280 720">
+    <ellipse cx="810" cy="555" rx="175" ry="105" fill="none" stroke="#E60012" stroke-width="14"
+      stroke-dasharray="480 40" transform="rotate(-7 810 555)"/>
+    <path d="M 560 620 L 690 585" stroke="#E60012" stroke-width="22" fill="none"/>
+    <polygon points="712,578 655,560 668,612" fill="#E60012"/>
+  </svg>
+  <div class="dur">15:02</div>
+</div></div></div>
+<p class="caption"><b>②老後不安系。</b>白背景に黒＋赤文字のワイドショー文法。「消える」の背後に黄色マーカー。
+通帳の「¥0」に赤の手描き風丸＋矢印。3枚の中で唯一の白背景にして、スタック時の明暗リズムを作る。<br>
+AI画像プロンプト例: <b>「日本の高齢者のしわのある両手が年金手帳と銀行通帳を持っている、俯瞰、テーブルの上、蛍光灯の光、生活感、ドキュメンタリー写真風」</b></p>
+
+<!-- ============ 3枚目 ============ -->
+<div class="frame-wrap"><div class="frame-scale"><div class="thumb t3">
+  <div class="rays"></div>
+  <div class="photo"><div class="label">AI画像③<br>30代日本人男性<br>カメラ目線で指差し<br>口を開けて訴える表情</div></div>
+  <div class="badge"><span>9割が</span><span>知らない</span></div>
+  <div class="copy"><div class="slam l1">知らないと</div><div class="slam l2">損する</div></div>
+  <svg viewBox="0 0 1280 720">
+    <path d="M 700 560 C 620 620, 500 640, 420 590" stroke="#E60012" stroke-width="24" fill="none"/>
+    <polygon points="398,575 460,565 442,620" fill="#E60012"/>
+  </svg>
+  <div class="dur">8:47</div>
+</div></div></div>
+<p class="caption"><b>③情報商材系。</b>黄色一色＋集中線＋指差し人物＋赤丸バッジ「9割が知らない」。
+最後に着弾する1枚なので、3枚の中で最も彩度が高くうるさい=画面が「占拠された」感覚のピークを作る。<br>
+AI画像プロンプト例: <b>「30代の日本人男性、カメラに向かって人差し指を突き出す、口を開けて何かを訴える表情、明るいリングライト、YouTuber風、上半身、背景は単色」</b></p>
+
+<div class="page-head" style="margin-top:20px">
+  <p><b style="color:#d8d2c2">仕上げ工程:</b> このHTMLは構図・文言・配色の確定用。実制作はAI画像を生成 →
+  Photoshop/Canvaで文字を載せて1280×720 PNGへ書き出し → <code>assets/mg/c01/C01_thumb_01〜03.png</code> に保存 →
+  AE側は既存の AE_CARD_STACK_THUMBNAIL パラメータ(位置・回転・delay)でスタックのみ行う。
+  フォントは極太ゴシック(ヒラギノ角ゴ W9 / Noto Sans JP Black 等)。番組フォント(しっぽり明朝)は偽サムネには使わない。</p>
+</div>

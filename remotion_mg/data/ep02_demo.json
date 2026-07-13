@@ -1,0 +1,64 @@
+{
+  "fps": 23.976,
+  "scenes": [
+    {
+      "type": "title_card",
+      "id": "C10_title",
+      "props": {
+        "title": "怒りは、燃料になる",
+        "subtitle": "あなたの怒りは、誰の収益になっているのか",
+        "episode": "『なんだろう』解体 #02"
+      }
+    },
+    {
+      "type": "bar_chart",
+      "id": "C12_moral_words",
+      "durationInFrames": 240,
+      "props": {
+        "title": "感情語の数と、拡散のされやすさ",
+        "bars": [
+          {"label": "感情語 0語", "value": 100, "suffix": ""},
+          {"label": "1語", "value": 120, "suffix": ""},
+          {"label": "2語", "value": 144, "suffix": ""},
+          {"label": "3語", "value": 173, "suffix": ""}
+        ],
+        "accentIndex": 3,
+        "source": "Brady et al. 2017の要約(演出値)",
+        "conceptual": true
+      }
+    },
+    {
+      "type": "line_compare",
+      "id": "C16_reach",
+      "durationInFrames": 216,
+      "props": {
+        "title": "フィードでの到達(概念図)",
+        "series": [
+          {"label": "通常の投稿", "values": [10, 14, 18, 22, 25, 27, 28], "color": "ink"},
+          {"label": "怒らせた投稿", "values": [10, 18, 30, 46, 66, 84, 100], "color": "red"}
+        ],
+        "xLabels": ["0h", "6h", "12h", "18h", "24h", "30h", "36h"],
+        "conceptual": true
+      }
+    },
+    {
+      "type": "quote",
+      "id": "C24_hearst",
+      "durationInFrames": 180,
+      "props": {
+        "text": "君は絵を用意しろ、戦争は私が用意する。",
+        "attribution": "W・R・ハーストに帰される言葉",
+        "note": "実話かどうかは定かではない(逸話として伝わる)"
+      }
+    },
+    {
+      "type": "statement",
+      "id": "C18_statement",
+      "durationInFrames": 132,
+      "props": {
+        "text": "怒りっぽさは、性格ではなく学習です。",
+        "emphasis": "学習"
+      }
+    }
+  ]
+}

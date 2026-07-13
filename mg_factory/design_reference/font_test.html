@@ -1,0 +1,66 @@
+<meta charset="utf-8">
+<title>フォント・テキスト書き換え診断</title>
+<style>
+  body{background:#1a1a1a;color:#eae6df;font-family:sans-serif;padding:40px;max-width:900px;margin:0 auto;}
+  h1{font-size:20px;} p{line-height:1.8;font-size:14px;color:#bbb;}
+  .row{display:flex;align-items:baseline;gap:24px;border-bottom:1px solid #333;padding:18px 0;}
+  .row .name{width:280px;font-size:13px;color:#8b8b85;flex:none;}
+  .sample{font-size:56px;color:#eae6df;}
+  .f1{font-family:'Shippori Mincho',serif;}
+  .f2{font-family:'ShipporiMincho-Regular';}
+  .f3{font-family:'Hiragino Mincho ProN',serif;}
+  .f4{font-family:serif;}
+  #watch-banner{display:none;background:#B8352E;color:#fff;padding:16px 20px;border-radius:8px;
+    font-size:16px;font-weight:700;margin:24px 0;}
+  #ok-banner{background:#2e5c38;color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;margin:24px 0;}
+  code{background:#2a2a2a;padding:2px 6px;border-radius:4px;}
+  #log{font-size:12px;color:#8b8b85;white-space:pre-wrap;}
+</style>
+
+<h1>フォント・テキスト書き換え診断</h1>
+<p>すべての行に「<b>視線</b>」と表示されていれば正常です。
+どこかが「せ」など別の文字になっていたら、その行の左のラベルをFableに伝えてください。</p>
+
+<div id="watch-banner">⚠️ テキストがブラウザによって書き換えられました!
+原因はChromeの翻訳機能または拡張機能です。下のログを確認してください。</div>
+<div id="ok-banner">監視中… 5秒間書き換えが起きなければ「書き換えなし」と表示されます。</div>
+
+<div class="row"><div class="name">① Shippori Mincho(システム)</div><div class="sample f1 watch">視線</div></div>
+<div class="row"><div class="name">② PostScript名で直接指定</div><div class="sample f2 watch">視線</div></div>
+<div class="row"><div class="name">③ ヒラギノ明朝</div><div class="sample f3 watch">視線</div></div>
+<div class="row"><div class="name">④ ブラウザ標準の明朝</div><div class="sample f4 watch">視線</div></div>
+<div class="row"><div class="name">⑤ 比較用: ひらがなの「せん」</div><div class="sample f1">せん</div></div>
+
+<div id="log"></div>
+
+<script>
+const log = (m)=>{document.getElementById('log').textContent += m + '\n';};
+log('charset=' + document.characterSet + ' / lang=' + (document.documentElement.lang||'(なし)'));
+log('UA=' + navigator.userAgent);
+
+// 正しいテキストのスナップショット
+const targets = [...document.querySelectorAll('.watch')];
+const expected = targets.map(el=>el.textContent);
+
+const check = (label)=>{
+  targets.forEach((el,i)=>{
+    if (el.textContent !== expected[i] || el.querySelector('font,span')) {
+      document.getElementById('watch-banner').style.display='block';
+      document.getElementById('ok-banner').style.display='none';
+      log(`[${label}] 行${i+1}が書き換えられた: "${expected[i]}" → "${el.textContent}" / innerHTML=${el.innerHTML}`);
+    }
+  });
+  if (document.documentElement.className.match(/translated/)) {
+    document.getElementById('watch-banner').style.display='block';
+    log(`[${label}] Chrome翻訳が有効: html class="${document.documentElement.className}"`);
+  }
+};
+
+new MutationObserver(()=>check('mutation')).observe(document.body,
+  {subtree:true, childList:true, characterData:true});
+setTimeout(()=>{ check('5s');
+  if (document.getElementById('watch-banner').style.display!=='block') {
+    document.getElementById('ok-banner').textContent = '✅ 書き換えなし(5秒経過)。このページでは問題は再現していません。';
+  }
+}, 5000);
+</script>

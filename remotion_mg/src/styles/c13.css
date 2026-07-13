@@ -1,0 +1,336 @@
+/* フォントは @remotion/google-fonts が読み込む(local()頼みをやめ、Studio/書き出しで同一に) */
+
+:root {
+  --paper: #e3ded1;
+  --paper-light: #efeae0;
+  --ink: #0e0f10;
+  --ink-2: #17181a;
+  --gold: #c9a063;
+  --gold-deep: #a9814a;
+  --red: #b8352e;
+  --ash: #6e6d66;
+  --white: #eae6df;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.scene {
+  overflow: hidden;
+  background: var(--ink);
+}
+
+.board {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  background-size: cover;
+  color: var(--ink);
+  overflow: hidden;
+  font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+}
+
+.board::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(14, 15, 16, 0.032) 0, rgba(14, 15, 16, 0.032) 1px, transparent 1px, transparent 108px),
+    radial-gradient(circle at 45% 40%, rgba(255, 255, 255, 0.2), transparent 36%),
+    radial-gradient(circle at 70% 70%, rgba(80, 70, 45, 0.08), transparent 38%);
+  pointer-events: none;
+}
+
+.board::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(20, 20, 20, 0.22) 0.6px, transparent 0.8px);
+  background-size: 7px 7px;
+  mix-blend-mode: multiply;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.paper-unit {
+  position: absolute;
+  background: rgba(245, 240, 225, 0.62);
+  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.2);
+}
+
+.eye-unit {
+  left: 430px;
+  top: 630px;
+  width: 720px;
+  height: 405px;
+  transform: rotate(-2.2deg);
+  overflow: hidden;
+}
+
+/* 素材PNG自体が「紙+目」の完成画。二重の紙にせず、ユニット全面に貼る */
+.eye-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.8) contrast(0.98);
+}
+
+.tape {
+  position: absolute;
+  width: 260px;
+  height: 42px;
+  background: rgba(220, 212, 190, 0.78);
+  box-shadow: 0 7px 12px rgba(0, 0, 0, 0.08);
+}
+
+.tape-left {
+  left: 70px;
+  top: -17px;
+  transform: rotate(-4deg);
+  background: rgba(18, 18, 18, 0.94);
+}
+
+.tape-right {
+  right: -4px;
+  top: -12px;
+  width: 150px;
+  transform: rotate(34deg);
+}
+
+.label {
+  position: absolute;
+  width: 520px;
+  text-align: center;
+  font-size: 72px;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  white-space: nowrap;
+}
+
+.sub-label {
+  position: absolute;
+  width: 520px;
+  text-align: center;
+  font-family: Oswald, sans-serif;
+  color: var(--ash);
+  font-size: 27px;
+  letter-spacing: 0.32em;
+  white-space: nowrap;
+}
+
+.label-eye {
+  left: 520px;
+  top: 1240px;
+}
+
+.sub-eye {
+  left: 520px;
+  top: 1410px;
+}
+
+.label-counter {
+  left: 1665px;
+  top: 1240px;
+}
+
+.sub-counter {
+  left: 1665px;
+  top: 1410px;
+}
+
+.label-yen {
+  left: 2850px;
+  top: 1240px;
+}
+
+.sub-yen {
+  left: 2850px;
+  top: 1410px;
+}
+
+.stamp {
+  position: absolute;
+  width: 82px;
+  height: 82px;
+  border: 5px solid var(--red);
+  border-radius: 50%;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 800;
+  opacity: 0.86;
+  transform: rotate(-6deg);
+}
+
+.stamp-eye {
+  left: 520px;
+  top: 690px;
+}
+
+.stamp-counter {
+  left: 1450px;
+  top: 615px;
+}
+
+.stamp-yen {
+  left: 2890px;
+  top: 760px;
+}
+
+.board-lines {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.flow-line,
+.flow-arrow {
+  fill: none;
+  stroke: var(--gold-deep);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ledger-line {
+  fill: none;
+  stroke: rgba(14, 15, 16, 0.52);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.counter-wrap {
+  position: absolute;
+  left: 1540px;
+  top: 720px;
+  width: 720px;
+  height: 300px;
+  transform-origin: center center;
+}
+
+/* フォールバック時でも数字が枠に当たらないよう、中央寄せのフレックスで組む */
+.counter-card {
+  position: relative;
+  width: 720px;
+  height: 300px;
+  border-radius: 20px;
+  background: var(--ink-2);
+  border: 2px solid #2c2d30;
+  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.32);
+  color: var(--white);
+  font-family: Oswald, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding: 0 56px 44px;
+}
+
+.play-triangle {
+  width: 0;
+  height: 0;
+  border-top: 40px solid transparent;
+  border-bottom: 40px solid transparent;
+  border-left: 54px solid var(--white);
+  flex: none;
+}
+
+.counter-number {
+  font-size: 86px;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.counter-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 30px;
+  text-align: center;
+  color: #8b8b85;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 26px;
+  letter-spacing: 0.32em;
+}
+
+.red-pin {
+  position: absolute;
+  left: 350px;
+  top: -20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: inset -4px -6px 8px rgba(0, 0, 0, 0.18);
+}
+
+.yen-card {
+  position: absolute;
+  left: 2820px;
+  top: 640px;
+  width: 660px;
+  height: 460px;
+  clip-path: polygon(4% 5%, 97% 0, 94% 94%, 0 89%);
+  box-shadow: 0 34px 70px rgba(0, 0, 0, 0.18);
+  text-align: center;
+  transform-origin: center center;
+}
+
+.yen-mark {
+  margin-top: 75px;
+  color: var(--gold-deep);
+  font-size: 210px;
+  line-height: 1;
+  font-weight: 900;
+}
+
+.yen-caption {
+  margin-top: 26px;
+  color: #4a4a45;
+  font-size: 34px;
+}
+
+.flash {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  pointer-events: none;
+}
+
+.m6 {
+  background: var(--ink);
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+}
+
+.m6::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(234, 230, 223, 0.18) 0.7px, transparent 0.9px);
+  background-size: 8px 8px;
+  opacity: 0.16;
+}
+
+.m6-text {
+  font-size: 64px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+
+.m6-gold {
+  color: var(--gold);
+  margin: 0 0.18em;
+}

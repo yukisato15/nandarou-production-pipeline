@@ -23,3 +23,7 @@ venv/
 *.wav
 *.aif
 *.aiff
+
+# Remotion local dependencies and render outputs
+node_modules/
+remotion_mg/out/

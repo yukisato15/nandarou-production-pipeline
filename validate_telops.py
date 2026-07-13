@@ -50,7 +50,8 @@ def validate(path: str) -> int:
                 continue
             if not body.strip():
                 problems.append(f'{tag}: 本文が空 → {line}')
-            if '+' in body or '＋' in body:
+            # 「+20%」のような数値表記は合法。それ以外の+は連結の疑い
+            if re.search(r'[+＋](?![0-9])', body):
                 problems.append(f'{tag}: 「+」連結は禁止。1行1テロップに分ける → {line}')
             if re.search(r'[()（）]', body):
                 problems.append(f'{tag}: 括弧内指示の疑い。指示はモーション列へ → {line}')

@@ -3,6 +3,7 @@ import {z} from 'zod';
 import {BarChart, barChartSchema} from './components/BarChart';
 import {LineCompare, lineCompareSchema} from './components/LineCompare';
 import {Quote, quoteSchema} from './components/Quote';
+import {StatCard, statCardSchema} from './components/StatCard';
 import {Statement, statementSchema} from './components/Statement';
 import {TitleCard, titleCardSchema} from './components/TitleCard';
 
@@ -35,6 +36,12 @@ export const registry: Record<string, Entry> = {
     schema: quoteSchema,
     defaultDurationInFrames: 168,
     description: '紙片の上の引用。歴史上の発言・逸話に。帰属と真偽注記を付ける。',
+  },
+  stat_card: {
+    component: StatCard,
+    schema: statCardSchema,
+    defaultDurationInFrames: 216,
+    description: '研究・論文の要点カード。大きな数字/固有名(最大4つ)を順に提示。',
   },
   bar_chart: {
     component: BarChart,

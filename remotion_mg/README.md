@@ -43,7 +43,14 @@ npx remotion render JsonScenes out/xxx.mp4 --props=./data/xxx.json
 
 ## 使用可能なtype (v1)
 
-`title_card` / `statement`(M6★宣言) / `quote` / `bar_chart` / `line_compare`
+`title_card` / `statement`(M6★宣言) / `quote` / `stat_card`(研究要点) / `bar_chart` / `line_compare`
+
+## シーンJSON一覧
+
+| ファイル | 内容 |
+|---|---|
+| `data/ep01_scenes.json` | 第1回のRemotion対象カット9本(C10/C12/C15/C16/C20/C23/C29/C45/C54) |
+| `data/ep02_demo.json` | 第2回のデモ5本 |
 
 ## ルール
 

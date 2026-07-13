@@ -1,0 +1,102 @@
+{
+  "fps": 23.976,
+  "scenes": [
+    {
+      "type": "title_card",
+      "id": "C10_title",
+      "props": {
+        "title": "ぜんぶ、売り物になっていく",
+        "episode": "『なんだろう』解体 #01"
+      }
+    },
+    {
+      "type": "bar_chart",
+      "id": "C12_word_growth",
+      "durationInFrames": 216,
+      "props": {
+        "title": "見出しの煽り度と、再生の伸び",
+        "bars": [
+          {"label": "ふつうの見出し", "value": 100},
+          {"label": "「閲覧注意」", "value": 138},
+          {"label": "「知らないと損」", "value": 164},
+          {"label": "「日本、終わる」", "value": 195}
+        ],
+        "accentIndex": 3,
+        "conceptual": true
+      }
+    },
+    {
+      "type": "stat_card",
+      "id": "C15_mit_study",
+      "durationInFrames": 216,
+      "props": {
+        "title": "ウソはどう広がるか——検証した研究",
+        "items": [
+          {"value": "MIT", "label": "マサチューセッツ工科大学"},
+          {"value": "2018", "label": "『Science』誌に掲載"},
+          {"value": "126,000", "label": "検証されたニュースの件数"}
+        ],
+        "source": "Vosoughi, Roy & Aral 2018"
+      }
+    },
+    {
+      "type": "line_compare",
+      "id": "C16_false_vs_true",
+      "durationInFrames": 216,
+      "props": {
+        "title": "ウソと本当の広がり方(概念図)",
+        "series": [
+          {"label": "本当", "values": [10, 16, 22, 27, 31, 34, 36], "color": "ink"},
+          {"label": "ウソ", "values": [10, 20, 34, 52, 72, 88, 100], "color": "red"}
+        ],
+        "source": "Vosoughi, Roy & Aral 2018を基にした概念図",
+        "conceptual": true
+      }
+    },
+    {
+      "type": "statement",
+      "id": "C20_declaration",
+      "durationInFrames": 120,
+      "props": {
+        "text": "友達は、お金で買えます。"
+      }
+    },
+    {
+      "type": "quote",
+      "id": "C23_tobacco",
+      "durationInFrames": 168,
+      "props": {
+        "text": "女性にも、たばこを吸わせたい。",
+        "attribution": "1920年代・米たばこ産業の思惑(要約)",
+        "note": "E・バーネイズの「自由のたいまつ」キャンペーンの背景"
+      }
+    },
+    {
+      "type": "quote",
+      "id": "C29_propaganda",
+      "durationInFrames": 168,
+      "props": {
+        "text": "ウソも、繰り返せば、本当になる。",
+        "attribution": "プロパガンダの格言として伝わる言葉",
+        "note": "ゲッベルスに帰されることが多いが、出典は確認されていない"
+      }
+    },
+    {
+      "type": "statement",
+      "id": "C45_market_value",
+      "durationInFrames": 120,
+      "props": {
+        "text": "人間に、市場価値。"
+      }
+    },
+    {
+      "type": "title_card",
+      "id": "C54_next_episode",
+      "durationInFrames": 120,
+      "props": {
+        "title": "あなたの怒りは、誰の収益になっているのか",
+        "episode": "次回 『なんだろう』解体 #02"
+      }
+    }
+  ]
+}

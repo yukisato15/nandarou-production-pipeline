@@ -55,6 +55,7 @@
       "endSec": 47.0,
       "telops": [
         {
+          "delaySec": 10.79,
           "style": "S2",
           "text": "狂っている、とすら思いました。",
           "latin": false,
@@ -105,6 +106,7 @@
       "endSec": 66.0,
       "telops": [
         {
+          "delaySec": 2.96,
           "style": "S2",
           "text": "このチャンネルは、その記録です。",
           "latin": false,
@@ -125,6 +127,7 @@
       "endSec": 82.0,
       "telops": [
         {
+          "delaySec": 3.57,
           "style": "S2",
           "text": "不安は、商品ではありません。エサです。",
           "latin": false,
@@ -146,6 +149,7 @@
       "endSec": 124.0,
       "telops": [
         {
+          "delaySec": 17.52,
           "style": "S2",
           "text": "感情は、編集で作れます。",
           "latin": false,
@@ -166,6 +170,7 @@
       "endSec": 152.0,
       "telops": [
         {
+          "delaySec": 2.03,
           "style": "S2",
           "text": "ウソのほうが、速く、遠くまで広がっていました。",
           "latin": false,
@@ -187,6 +192,7 @@
       "endSec": 168.0,
       "telops": [
         {
+          "delaySec": 1.51,
           "style": "S2",
           "text": "あなたの弱さではありません。人間の、仕様です。",
           "latin": false,
@@ -242,6 +248,7 @@
       "endSec": 227.0,
       "telops": [
         {
+          "delaySec": 12.32,
           "style": "S3",
           "text": "——これは、「自由のたいまつ」だ、と。",
           "latin": false,
@@ -257,6 +264,7 @@
       "endSec": 234.0,
       "telops": [
         {
+          "delaySec": 2.1,
           "style": "S2",
           "text": "「それを買うと、どんな自分になれるか」を売る。",
           "latin": false,
@@ -273,6 +281,7 @@
       "endSec": 276.0,
       "telops": [
         {
+          "delaySec": 6.58,
           "style": "S3",
           "text": "「ウソも、繰り返せば、本当になる」。",
           "latin": false,
@@ -320,6 +329,7 @@
       "endSec": 296.0,
       "telops": [
         {
+          "delaySec": 5.85,
           "style": "S2",
           "text": "変わったのは、「届け方」です。",
           "latin": false,
@@ -340,6 +350,7 @@
       "endSec": 316.0,
       "telops": [
         {
+          "delaySec": 4.46,
           "style": "S2",
           "text": "あなた専用に調整して、届けてくる。",
           "latin": false,
@@ -384,6 +395,7 @@
       "endSec": 356.0,
       "telops": [
         {
+          "delaySec": 9.42,
           "style": "S2",
           "text": "その手口が実際に使われたことは、事実です。",
           "latin": false,
@@ -404,6 +416,7 @@
       "endSec": 386.0,
       "telops": [
         {
+          "delaySec": 2.69,
           "style": "S2",
           "text": "「画面の向こうから、一人ひとりに届く動画」",
           "latin": false,
@@ -419,6 +432,7 @@
       "endSec": 419.0,
       "telops": [
         {
+          "delaySec": 0.9,
           "style": "S2",
           "text": "笑顔にも、値段がついたことがあります。",
           "latin": false,
@@ -439,6 +453,7 @@
       "endSec": 432.0,
       "telops": [
         {
+          "delaySec": 9.57,
           "style": "S2",
           "text": "人の感情が、商品として提示されている。",
           "latin": false,
@@ -480,6 +495,7 @@
       "endSec": 466.0,
       "telops": [
         {
+          "delaySec": 13.34,
           "style": "S2",
           "text": "ぜんぶ、売り物になっていくんです。",
           "latin": false,
@@ -545,6 +561,7 @@
       "endSec": 510.0,
       "telops": [
         {
+          "delaySec": 4.47,
           "style": "S2",
           "text": "怖がらなくて済むように、することです。",
           "latin": false,
@@ -565,6 +582,7 @@
       "endSec": 530.0,
       "telops": [
         {
+          "delaySec": 7.35,
           "style": "S2",
           "text": "たぶん、その感覚のほうが、正しい。",
           "latin": false,

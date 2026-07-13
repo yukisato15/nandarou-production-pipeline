@@ -242,10 +242,16 @@ def validate(cuts: list[Cut], warnings: list[str], cps: float) -> None:
         previous = cut
 
 
-def s1_text(telop_text: str, narration: str) -> str:
+def s1_text(telop_text: str, narration: str, telops: list[dict[str, str]]) -> str:
     # 記法v2の特殊値「全文」(旧「字幕全文」)はナレーション全文への参照として展開する。
     if telop_text == "全文" or telop_text.startswith("字幕全文"):
-        return narration
+        # 重複禁止ルール(2026-07-13): 同カットのS2/S4テロップと同じ文は
+        # S1字幕から除く(同じ文が画面に二重に出るのを防ぐ)
+        base = narration
+        for telop in telops:
+            if telop["style"] in ("S2", "S4") and telop["text"]:
+                base = base.replace(telop["text"], "")
+        return base
     # 明示本文の後ろに付いた「+画面隅に…」等は字幕本文ではなく制作指示(旧記法互換)。
     return telop_text.split("+", 1)[0].strip()
 
@@ -257,7 +263,7 @@ def build_srt(cuts: list[Cut], fps: float) -> tuple[str, int]:
         captions: list[str] = []
         for telop in cut.telops:
             if telop["style"] == "S1":
-                captions.extend(split_long_caption(s1_text(telop["text"], cut.narration)))
+                captions.extend(split_long_caption(s1_text(telop["text"], cut.narration, cut.telops)))
         if not captions:
             continue
         usable = max(0.0, cut.end - cut.start - gap * (len(captions) - 1))

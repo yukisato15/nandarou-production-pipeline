@@ -68,6 +68,7 @@ def main(src: str, dst: str) -> None:
         p['startSec'] = min(p['startSec'], start_s)
         p['endSec'] = max(p['endSec'], end_s)
 
+        narration = str(row[3] or '').replace('★', '').replace('\n', '')
         p_lines = [l for l in str(row[COL_TELOP - 1] or '').split('\n') if l.strip()]
         q_raw = [l for l in str(row[COL_MOTION - 1] or '').split('\n') if l.strip()]
         # 〃 は直前と同じ
@@ -95,7 +96,18 @@ def main(src: str, dst: str) -> None:
                 emphasis = [x for x in emphasis if x['text'] != e['text']]
                 emphasis.append(e)
             text = EMPH_RE.sub(lambda mm: mm.group(1), body)
+            # タイミングルール(2026-07-13): S2/S3はナレーション内で該当文が
+            # 始まる位置(文字数比例)から出す。見つからなければカット頭から
+            delay_sec = 0.0
+            if style in ('S2', 'S3') and not tags.get('seq') and narration:
+                idx = narration.find(text)
+                if idx < 0:
+                    idx = narration.find(text[:8])
+                if idx > 0:
+                    frac = idx / len(narration)
+                    delay_sec = max(0.0, round(frac * (end_s - start_s) - 0.3, 2))
             telops.append({
+                **({'delaySec': delay_sec} if delay_sec > 0.2 else {}),
                 'style': style,
                 'text': text,
                 'latin': latin,

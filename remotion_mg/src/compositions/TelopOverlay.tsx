@@ -22,6 +22,7 @@ type TelopInput = {
   offset?: [number, number];
   maxchar?: number;
   seq?: 'stack' | 'replace';
+  delaySec?: number; // ナレーション内で該当文が読まれる位置(conte2telops.pyが推定)
 };
 
 type CutInput = {
@@ -155,10 +156,14 @@ const CutTelops: React.FC<{cut: CutInput; dur: number}> = ({cut, dur}) => {
         // 同一カット内の非スタック複数テロップ(例: S5が2つ)は軽く縦にずらす
         const autoY = rest.length > 1 && !t.offset ? (i - (rest.length - 1) / 2) * 130 : 0;
         const [ox, oy] = t.offset ?? [0, 0];
+        // 該当文が読まれるタイミングから出す(カット末まで保持)
+        const delayF = Math.min(Math.max(0, dur - 24), Math.round((t.delaySec ?? 0) * 23.976));
         return (
-          <div key={i} style={wrapperStyle(t.pos ?? 'center', [ox, oy + autoY])}>
-            <TelopBody t={t} dur={dur} appearDelay={0} />
-          </div>
+          <Sequence key={i} from={delayF} durationInFrames={dur - delayF}>
+            <div style={wrapperStyle(t.pos ?? 'center', [ox, oy + autoY])}>
+              <TelopBody t={t} dur={dur - delayF} appearDelay={0} />
+            </div>
+          </Sequence>
         );
       })}
       {void n}

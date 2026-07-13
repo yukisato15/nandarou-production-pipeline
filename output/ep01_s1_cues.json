@@ -88,12 +88,12 @@
       {
         "style": "S2",
         "text": "狂っている、とすら思いました。",
-        "motion": "★文:画面が一瞬暗転し中央に1文字ずつ2Fずらしでフェードイン [pos:center]\n下部字幕"
+        "motion": "★文:画面が一瞬暗転し中央に1文字ずつ2Fずらしでフェードイン [pos:center] [emph:狂っている、|朱]\n下部字幕"
       },
       {
         "style": "S1",
         "text": "全文",
-        "motion": "★文:画面が一瞬暗転し中央に1文字ずつ2Fずらしでフェードイン [pos:center]\n下部字幕"
+        "motion": "★文:画面が一瞬暗転し中央に1文字ずつ2Fずらしでフェードイン [pos:center] [emph:狂っている、|朱]\n下部字幕"
       }
     ]
   },
@@ -248,17 +248,17 @@
       {
         "style": "S2",
         "text": "ウソのほうが、速く、遠くまで広がっていました。",
-        "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom]\n線ラベル(グラフ内) [role:in-graph]\n〃"
+        "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom] [emph:ウソ|朱]\n線ラベル(グラフ内) [role:in-graph]\n〃"
       },
       {
         "style": "S5",
         "text": "ウソ",
-        "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom]\n線ラベル(グラフ内) [role:in-graph]\n〃"
+        "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom] [emph:ウソ|朱]\n線ラベル(グラフ内) [role:in-graph]\n〃"
       },
       {
         "style": "S5",
         "text": "本当",
-        "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom]\n線ラベル(グラフ内) [role:in-graph]\n〃"
+        "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom] [emph:ウソ|朱]\n線ラベル(グラフ内) [role:in-graph]\n〃"
       }
     ]
   },

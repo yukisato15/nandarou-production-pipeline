@@ -1,7 +1,9 @@
 # Remotion MG基盤 『なんだろう』解体
 
 番組のMG(グラフ・引用・宣言・タイトル等)をJSONから半自動生成する基盤。
-設計の全体像: `../mg_factory/design_reference/Remotion基盤_調査設計_v1.md`
+
+- **はじめての人**: [使い方マニュアル.md](./使い方マニュアル.md) を読む
+- 設計の全体像: `../mg_factory/design_reference/Remotion基盤_調査設計_v1.md`
 
 ## コンポジション
 

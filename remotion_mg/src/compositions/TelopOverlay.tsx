@@ -10,11 +10,13 @@ import {theme} from '../kit/theme';
 
 type Pos = 'center' | 'bottom' | 'top' | 'left' | 'right';
 
+type Emphasis = {text: string; color?: 'gold' | 'red'};
+
 type TelopInput = {
   style: 'S2' | 'S3' | 'S5';
   text: string;
   latin?: boolean;
-  emphasis?: string[];
+  emphasis?: Emphasis[];
   motion?: string;
   pos?: Pos;
   offset?: [number, number];
@@ -215,8 +217,7 @@ const TelopBody: React.FC<{
   }
 
   const isQuote = t.style === 'S3';
-  const fontSize = fontSizeFor(t.text, isQuote, Boolean(stackInfo));
-  const lines = toLines(t.text, t.maxchar ?? (isQuote ? 24 : 22));
+  const {fontSize, lines} = layoutText(t.text, isQuote, Boolean(stackInfo), t.maxchar);
   const chars = markEmphasis(lines.join('\n'), t.emphasis ?? []);
   const charStep = isQuote ? 0 : 2; // S2はテロップ規定の1文字2Fずらし。S3はゆっくり全体フェード
   const blockIn = isQuote
@@ -238,21 +239,26 @@ const TelopBody: React.FC<{
       }}
     >
       {chars.map((c, i) => {
+        // 強調語はワンテンポ(12F)遅れて、すっと浮き上がって出る
+        const delay = 10 + i * charStep + (c.emph ? EMPH_BEAT : 0);
         const charIn =
           charStep === 0
             ? 1
-            : interpolate(local, [10 + i * charStep, 10 + i * charStep + 8], [0, 1], {
+            : interpolate(local, [delay, delay + 8], [0, 1], {
                 extrapolateLeft: 'clamp',
                 extrapolateRight: 'clamp',
               });
+        const rise = c.emph && charStep > 0 ? (1 - charIn) * 8 : 0;
         return c.ch === '\n' ? (
           <br key={i} />
         ) : (
           <span
             key={i}
             style={{
+              display: 'inline-block',
               opacity: charIn,
-              color: c.emph ? theme.gold : undefined,
+              transform: rise ? `translateY(${rise}px)` : undefined,
+              color: c.emph ? (c.emph === 'red' ? RED_ON_DARK : theme.gold) : undefined,
               fontSize: c.emph ? '1.12em' : undefined,
             }}
           >
@@ -264,50 +270,74 @@ const TelopBody: React.FC<{
   );
 };
 
-const fontSizeFor = (text: string, isQuote: boolean, stacked: boolean) => {
-  if (stacked) return 44;
-  if (isQuote) return 50;
-  if (text.length <= 14) return 66;
-  if (text.length <= 24) return 58;
-  return 48;
-};
+const EMPH_BEAT = 12; // 強調語の出現遅延(フレーム)
+const RED_ON_DARK = '#D14A42'; // 実写の上でも沈まない明るめの朱
+const CHAR_W = 1.13; // 字間込みの実効文字幅係数
+const maxCharsAt = (fontSize: number) => Math.floor(1560 / (fontSize * CHAR_W));
 
-// 。で改行し、長い行は、や助詞で折る
-const toLines = (text: string, max: number): string[] => {
-  const sentences = text.split('。').filter(Boolean).map((s, i, arr) =>
-    i < arr.length - 1 || text.endsWith('。') ? s + '。' : s
-  );
-  const lines: string[] = [];
-  for (const s of sentences) {
-    let rest = s;
-    while (rest.length > max) {
-      const at = findBreak(rest, max);
-      lines.push(rest.slice(0, at));
-      rest = rest.slice(at);
+// 改行ルール(2026-07-13制定):
+// 1) 1行に収まるなら1行(収まらない場合はフォントを1段落として再判定)
+// 2) 折るときは句点>読点>助詞の自然な位置で、各行が均等に近くなる点を選ぶ
+// 3) 端数だけの行(「う。」等)を作らない
+const layoutText = (
+  text: string,
+  isQuote: boolean,
+  stacked: boolean,
+  maxcharOverride?: number
+): {fontSize: number; lines: string[]} => {
+  const sentences = splitSentences(text);
+  const sizes = stacked ? [44] : isQuote ? [50, 44] : [66, 58, 48];
+  for (const size of sizes) {
+    const max = maxcharOverride ?? maxCharsAt(size);
+    if (sentences.every((s) => s.length <= max)) {
+      return {fontSize: size, lines: sentences};
     }
-    if (rest) lines.push(rest);
   }
-  return lines;
+  const size = sizes[sizes.length - 1];
+  const max = maxcharOverride ?? maxCharsAt(size);
+  return {fontSize: size, lines: sentences.flatMap((s) => balancedBreak(s, max))};
 };
 
-const findBreak = (text: string, max: number) => {
-  const comma = text.lastIndexOf('、', max);
-  if (comma > Math.floor(max * 0.4)) return comma + 1;
+const splitSentences = (text: string): string[] =>
+  text
+    .split('。')
+    .filter(Boolean)
+    .map((s, i, arr) => (i < arr.length - 1 || text.endsWith('。') ? s + '。' : s));
+
+const balancedBreak = (s: string, max: number): string[] => {
+  if (s.length <= max) return [s];
+  const n = Math.ceil(s.length / max);
+  const target = s.length / n;
+  const points = naturalPoints(s).filter(
+    (p) => p.pos >= 4 && s.length - p.pos >= 4 && p.pos <= max
+  );
+  if (points.length === 0) {
+    return [s.slice(0, max), ...balancedBreak(s.slice(max), max)];
+  }
+  const best = points.reduce((a, b) =>
+    Math.abs(a.pos - target) + a.prio * 3 <= Math.abs(b.pos - target) + b.prio * 3 ? a : b
+  );
+  return [s.slice(0, best.pos), ...balancedBreak(s.slice(best.pos), max)];
+};
+
+const naturalPoints = (s: string): {pos: number; prio: number}[] => {
   const particles = ['は', 'が', 'を', 'に', 'で', 'と', 'も', 'へ', 'の'];
-  for (let i = max; i > Math.floor(max * 0.5); i--) {
-    if (particles.includes(text[i - 1])) return i;
+  const points: {pos: number; prio: number}[] = [];
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === '、') points.push({pos: i + 1, prio: 0});
+    else if (particles.includes(s[i])) points.push({pos: i + 1, prio: 1});
   }
-  return max;
+  return points;
 };
 
-const markEmphasis = (text: string, emphasis: string[]) => {
-  const flags = new Array<boolean>(text.length).fill(false);
+const markEmphasis = (text: string, emphasis: Emphasis[]) => {
+  const flags = new Array<'gold' | 'red' | null>(text.length).fill(null);
   for (const e of emphasis) {
-    if (!e) continue;
-    let idx = text.indexOf(e);
+    if (!e?.text) continue;
+    let idx = text.indexOf(e.text);
     while (idx >= 0) {
-      for (let k = idx; k < idx + e.length; k++) flags[k] = true;
-      idx = text.indexOf(e, idx + e.length);
+      for (let k = idx; k < idx + e.text.length; k++) flags[k] = e.color ?? 'gold';
+      idx = text.indexOf(e.text, idx + e.text.length);
     }
   }
   return [...text].map((ch, i) => ({ch, emph: flags[i]}));

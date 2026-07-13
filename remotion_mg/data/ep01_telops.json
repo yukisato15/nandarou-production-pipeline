@@ -58,8 +58,13 @@
           "style": "S2",
           "text": "狂っている、とすら思いました。",
           "latin": false,
-          "emphasis": [],
-          "motion": "★文:画面が一瞬暗転し中央に1文字ずつ2Fずらしでフェードイン [pos:center]",
+          "emphasis": [
+            {
+              "text": "狂っている、",
+              "color": "red"
+            }
+          ],
+          "motion": "★文:画面が一瞬暗転し中央に1文字ずつ2Fずらしでフェードイン [pos:center] [emph:狂っている、|朱]",
           "pos": "center"
         }
       ]
@@ -82,7 +87,12 @@
           "style": "S2",
           "text": "なぜ、みんな、数字に取り憑かれてしまうんだろう。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "数字",
+              "color": "gold"
+            }
+          ],
           "motion": "中央・フェードイン→アウト。字間広め [seq:順次]",
           "seq": "replace"
         }
@@ -98,7 +108,12 @@
           "style": "S2",
           "text": "このチャンネルは、その記録です。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "記録",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:中央、ゆっくりフェードイン、3秒保持"
         }
       ]
@@ -114,7 +129,10 @@
           "text": "不安は、商品ではありません。エサです。",
           "latin": false,
           "emphasis": [
-            "エサです。"
+            {
+              "text": "エサです。",
+              "color": "gold"
+            }
           ],
           "motion": "★文:下1/3中央 [pos:bottom] [emph:エサです。|金茶,2F遅れて出現]",
           "pos": "bottom"
@@ -131,7 +149,12 @@
           "style": "S2",
           "text": "感情は、編集で作れます。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "編集",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:デモ終了直後に中央、静かにフェード"
         }
       ]
@@ -146,8 +169,13 @@
           "style": "S2",
           "text": "ウソのほうが、速く、遠くまで広がっていました。",
           "latin": false,
-          "emphasis": [],
-          "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom]",
+          "emphasis": [
+            {
+              "text": "ウソ",
+              "color": "red"
+            }
+          ],
+          "motion": "★文:グラフ下に固定表示のまま4秒保持 [pos:bottom] [emph:ウソ|朱]",
           "pos": "bottom"
         }
       ]
@@ -162,7 +190,12 @@
           "style": "S2",
           "text": "あなたの弱さではありません。人間の、仕様です。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "仕様",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:中央2段。上段→下段の順に3秒かけて"
         }
       ]
@@ -290,7 +323,12 @@
           "style": "S2",
           "text": "変わったのは、「届け方」です。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "「届け方」",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:変遷の最後(スマホ)に重ねて中央"
         }
       ]
@@ -305,7 +343,12 @@
           "style": "S2",
           "text": "あなた専用に調整して、届けてくる。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "あなた専用",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:スマホ画面内に表示される演出(画面の中の言葉)"
         }
       ]
@@ -344,7 +387,12 @@
           "style": "S2",
           "text": "その手口が実際に使われたことは、事実です。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "事実",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:紙面の上に静かに固定表示"
         }
       ]
@@ -374,7 +422,12 @@
           "style": "S2",
           "text": "笑顔にも、値段がついたことがあります。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "値段",
+              "color": "gold"
+            }
+          ],
           "motion": "中央フェード"
         }
       ]
@@ -389,7 +442,12 @@
           "style": "S2",
           "text": "人の感情が、商品として提示されている。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "商品",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:静かに中央下 [pos:bottom]",
           "pos": "bottom"
         }
@@ -405,7 +463,12 @@
           "style": "S2",
           "text": "人間に、市場価値。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "市場価値",
+              "color": "gold"
+            }
+          ],
           "motion": "中央。3秒静止(モーションを止めることがモーション)"
         }
       ]
@@ -420,7 +483,12 @@
           "style": "S2",
           "text": "ぜんぶ、売り物になっていくんです。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "売り物",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:値札が消える直前に中央表示→値札と一緒に消える #タイトル呼応"
         }
       ]
@@ -444,7 +512,12 @@
           "style": "S2",
           "text": "ふたつ。その仕組みは、ぼくたちの「つい反応してしまう」心を、よく知って使ってきます。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "「つい反応してしまう」",
+              "color": "gold"
+            }
+          ],
           "motion": "画面左に縦積み。1項ずつフェードイン、既出項は少し暗く残す [pos:left] [seq:順次]",
           "pos": "left",
           "seq": "stack"
@@ -453,7 +526,12 @@
           "style": "S2",
           "text": "みっつ。——でも、仕組みは、知れば、距離が取れます。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "距離",
+              "color": "gold"
+            }
+          ],
           "motion": "画面左に縦積み。1項ずつフェードイン、既出項は少し暗く残す [pos:left] [seq:順次]",
           "pos": "left",
           "seq": "stack"
@@ -470,7 +548,12 @@
           "style": "S2",
           "text": "怖がらなくて済むように、することです。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "怖がらなくて済む",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:中央、ゆっくり"
         }
       ]
@@ -485,7 +568,12 @@
           "style": "S2",
           "text": "たぶん、その感覚のほうが、正しい。",
           "latin": false,
-          "emphasis": [],
+          "emphasis": [
+            {
+              "text": "正しい",
+              "color": "gold"
+            }
+          ],
           "motion": "★文:中央、4秒保持"
         }
       ]

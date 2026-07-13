@@ -108,21 +108,59 @@ def choose_break(value: str, limit: int) -> int:
     return max(candidates, default=limit)
 
 
-def split_long_caption(value: str, max_chars: int = 44) -> list[str]:
-    """1字幕44字以内へ。まず句点付近、それが無ければ機械的に分ける。"""
+def natural_points(value: str) -> list[tuple[int, int]]:
+    """(位置, 優先度)のリスト。優先度: 0=句点 1=読点 2=助詞。"""
+    points: list[tuple[int, int]] = []
+    for i, ch in enumerate(value):
+        if ch == "。":
+            points.append((i + 1, 0))
+        elif ch == "、":
+            points.append((i + 1, 1))
+    for p in PARTICLE_BREAKS:
+        start = 0
+        while True:
+            i = value.find(p, start)
+            if i < 0:
+                break
+            points.append((i + len(p), 2))
+            start = i + 1
+    return points
+
+
+def split_long_caption(value: str, max_chars: int = 48, min_piece: int = 10) -> list[str]:
+    """1字幕48字(=2行×24字)以内へ、均等に近い自然な位置で分ける。
+
+    改行・分割ルール(2026-07-13制定):
+    - 端数の短い字幕(「しなかったからです」だけ等)を作らない。
+      末尾がmin_piece未満になる分割は選ばず、残った場合は前の字幕へ結合する
+    - 分割位置は句点>読点>助詞の優先で、各片が均等に近くなる点を選ぶ
+    """
     value = clean_caption(value).replace("\r", "").replace("\n", "")
     pieces: list[str] = []
     while len(value) > max_chars:
-        period = value.rfind("。", 1, max_chars)
-        cut = period + 1 if period >= max_chars // 3 else choose_break(value, max_chars)
+        n_left = -(-len(value) // max_chars)  # 残りの想定分割数(切り上げ)
+        target = len(value) / n_left
+        candidates = [
+            (pos, priority)
+            for pos, priority in natural_points(value)
+            if min_piece <= pos <= max_chars and len(value) - pos >= min_piece
+        ]
+        if candidates:
+            # 優先度ボーナス付きで、目標長に近い位置を選ぶ
+            cut = min(candidates, key=lambda t: abs(t[0] - target) + t[1] * 4)[0]
+        else:
+            cut = choose_break(value, max_chars)
         pieces.append(value[:cut].strip())
         value = value[cut:].strip()
     if value:
-        pieces.append(value)
+        if pieces and len(value) < min_piece and len(pieces[-1]) + len(value) <= max_chars + 4:
+            pieces[-1] = pieces[-1] + value  # 端数は前の字幕へ結合
+        else:
+            pieces.append(value)
     return pieces
 
 
-def wrap_caption(value: str, line_limit: int = 22) -> str:
+def wrap_caption(value: str, line_limit: int = 24) -> str:
     if len(value) <= line_limit:
         return value
     # 両方の行が上限内に収まる範囲だけを候補にする。
@@ -205,10 +243,10 @@ def validate(cuts: list[Cut], warnings: list[str], cps: float) -> None:
 
 
 def s1_text(telop_text: str, narration: str) -> str:
-    # 実コンテで使われている「字幕全文」はナレーション全文への参照として展開する。
-    if telop_text.startswith("字幕全文"):
+    # 記法v2の特殊値「全文」(旧「字幕全文」)はナレーション全文への参照として展開する。
+    if telop_text == "全文" or telop_text.startswith("字幕全文"):
         return narration
-    # 明示本文の後ろに付いた「+画面隅に…」等は字幕本文ではなく制作指示。
+    # 明示本文の後ろに付いた「+画面隅に…」等は字幕本文ではなく制作指示(旧記法互換)。
     return telop_text.split("+", 1)[0].strip()
 
 
@@ -252,8 +290,11 @@ def main() -> int:
         "telops": cut.telops,
     } for cut in cuts]
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    (args.out_dir / "ep01_S1.srt").write_text(srt, encoding="utf-8")
-    (args.out_dir / "ep01_telops.json").write_text(
+    # 出力名は入力ファイル名から導出(第1回→ep01)。誤命名事故を防ぐ
+    m = re.search(r"第(\d+)回", args.input.name)
+    prefix = f"ep{int(m.group(1)):02d}" if m else args.input.stem
+    (args.out_dir / f"{prefix}_S1.srt").write_text(srt, encoding="utf-8")
+    (args.out_dir / f"{prefix}_s1_cues.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 

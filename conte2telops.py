@@ -44,9 +44,9 @@ def parse_tags(motion: str) -> dict:
         tags['maxchar'] = int(m.group(1))
     if '[seq:順次]' in motion:
         tags['seq'] = 'replace' if 'フェードイン→アウト' in motion else 'stack'
-    if re.search(r'\[emph:([^|\]]+)\|[^\]]*\]', motion):
-        tags.setdefault('emphasis', []).extend(
-            re.findall(r'\[emph:([^|\]]+)\|[^\]]*\]', motion)
+    for word, effect in re.findall(r'\[emph:([^|\]]+)\|([^\]]*)\]', motion):
+        tags.setdefault('emphasis', []).append(
+            {'text': word, 'color': 'red' if '朱' in effect else 'gold'}
         )
     return tags
 
@@ -89,7 +89,11 @@ def main(src: str, dst: str) -> None:
             if re.search(r'\[role:[^\]]+\]', motion):
                 continue  # MG・画像の内部で描画される
             tags = parse_tags(motion)
-            emphasis = list(dict.fromkeys(EMPH_RE.findall(body) + tags.get('emphasis', [])))
+            # 《》=金茶。Q列の[emph:語|朱]=朱。同語はQ列の色が勝つ
+            emphasis: list[dict] = [{'text': w, 'color': 'gold'} for w in EMPH_RE.findall(body)]
+            for e in tags.get('emphasis', []):
+                emphasis = [x for x in emphasis if x['text'] != e['text']]
+                emphasis.append(e)
             text = EMPH_RE.sub(lambda mm: mm.group(1), body)
             telops.append({
                 'style': style,
@@ -118,7 +122,8 @@ def main(src: str, dst: str) -> None:
             flags = ' '.join(
                 filter(None, [t['style'], 'seq:' + t.get('seq', '') if t.get('seq') else '',
                               'pos:' + t.get('pos', '') if t.get('pos') else '',
-                              '強調:' + '/'.join(t['emphasis']) if t['emphasis'] else ''])
+                              '強調:' + '/'.join(f"{e['text']}({e['color']})" for e in t['emphasis'])
+                              if t['emphasis'] else ''])
             )
             print(f"  {c['cut']} [{flags}] {t['text'][:34]}")
 

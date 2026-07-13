@@ -36,7 +36,7 @@ export const RemotionRoot = () => {
         width={1920}
         height={1080}
         durationInFrames={1}
-        defaultProps={{cuts: ep01Telops} as never}
+        defaultProps={ep01Telops as never}
         calculateMetadata={calculateTelopOverlayMetadata}
       />
     </>

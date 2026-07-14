@@ -183,6 +183,30 @@ def main(src: str, dst: str) -> None:
                 'motion': motion,
                 **{k: v for k, v in tags.items() if k in ('pos', 'offset', 'maxchar', 'seq')},
             })
+        # seq:replace(差し替え表示)は等分でなく、各文が必要とするフレーム数の
+        # 比率で配分する(2026-07-14制定)。均等割りだと長い/強調入りの文が
+        # 尺不足で切れる(C08で実際に発生)。
+        replace_group = [t for t in telops if t.get('seq') == 'replace']
+        if replace_group:
+            cut_frames = round((end_s - start_s) * FPS)
+            needs = [required_frames(t['style'], t['text'], t['emphasis']) for t in replace_group]
+            total_need = sum(needs)
+            if total_need <= cut_frames:
+                # 必要分を確保した上で、余りは比率配分
+                slack = cut_frames - total_need
+                weights = [n / total_need for n in needs] if total_need else needs
+                seg_frames = [needs[i] + round(slack * weights[i]) for i in range(len(needs))]
+            else:
+                conflicts.append({
+                    'cut': no, 'text': ' / '.join(t['text'] for t in replace_group),
+                    'cut_sec': round(end_s - start_s, 2),
+                    'need_sec': round(total_need / FPS, 2),
+                    'deficit_sec': round((total_need - cut_frames) / FPS, 2),
+                })
+                seg_frames = [round(cut_frames * n / total_need) for n in needs]  # 比例縮小(best effort)
+            for t, f in zip(replace_group, seg_frames):
+                t['segFrames'] = max(1, f)
+
         if telops:
             cuts.append({
                 'cut': str(no),

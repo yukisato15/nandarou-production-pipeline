@@ -23,6 +23,7 @@ type TelopInput = {
   maxchar?: number;
   seq?: 'stack' | 'replace';
   delaySec?: number; // ナレーション内で該当文が読まれる位置(conte2telops.pyが推定)
+  segFrames?: number; // seq:replace時の割当フレーム数(均等割りでなく必要尺で比例配分)
 };
 
 type CutInput = {
@@ -42,6 +43,7 @@ export type TelopDoc = {
 
 type Props = TelopDoc & {
   part?: string; // 指定するとそのパートだけ・パート先頭を0秒として書き出す
+  cut?: string; // 指定するとそのカット単体を0秒始まりで書き出す(実編集のTCドリフトに強い納品形式)
   backdrop?: boolean; // 見本帳用の仮背景(納品movでは使わない)
 };
 
@@ -54,6 +56,13 @@ export const calculateTelopOverlayMetadata: CalculateMetadataFunction<Props> = (
 };
 
 const windowFor = (props: Props) => {
+  if (props.cut) {
+    const c = props.cuts.find((x) => x.cut === props.cut);
+    if (!c) {
+      throw new Error(`カット"${props.cut}"がJSONに無い。`);
+    }
+    return {startSec: c.startSec, endSec: c.endSec};
+  }
   if (props.part) {
     const p = props.parts[props.part];
     if (!p) {
@@ -67,7 +76,9 @@ const windowFor = (props: Props) => {
 
 export const TelopOverlay: React.FC<Props> = (props) => {
   const win = windowFor(props);
-  const cuts = props.cuts.filter((c) => !props.part || c.part === props.part);
+  const cuts = props.cuts.filter(
+    (c) => (props.cut ? c.cut === props.cut : true) && (!props.part || c.part === props.part)
+  );
 
   return (
     <AbsoluteFill style={{background: 'transparent', overflow: 'hidden'}}>
@@ -142,30 +153,36 @@ const CutTelops: React.FC<{cut: CutInput; dur: number}> = ({cut, dur}) => {
         </div>
       ) : null}
 
-      {rest.map((t, i) => {
-        if (t.seq === 'replace') {
-          const seg = Math.floor(dur / Math.max(1, rest.length));
+      {(() => {
+        // seq:replace は先頭からの累積オフセットで並べる(conte2telops.pyのsegFramesに従う)
+        let replaceCursor = 0;
+        return rest.map((t, i) => {
+          if (t.seq === 'replace') {
+            const seg = t.segFrames ?? Math.floor(dur / Math.max(1, rest.length));
+            const from = replaceCursor;
+            replaceCursor += seg;
+            return (
+              <Sequence key={i} from={from} durationInFrames={seg}>
+                <div style={wrapperStyle(t.pos ?? 'center', t.offset ?? [0, 0])}>
+                  <TelopBody t={t} dur={seg} appearDelay={0} />
+                </div>
+              </Sequence>
+            );
+          }
+          // 同一カット内の非スタック複数テロップ(例: S5が2つ)は軽く縦にずらす
+          const autoY = rest.length > 1 && !t.offset ? (i - (rest.length - 1) / 2) * 130 : 0;
+          const [ox, oy] = t.offset ?? [0, 0];
+          // 該当文が読まれるタイミングから出す(カット末まで保持)
+          const delayF = Math.min(Math.max(0, dur - 24), Math.round((t.delaySec ?? 0) * 23.976));
           return (
-            <Sequence key={i} from={i * seg} durationInFrames={seg}>
-              <div style={wrapperStyle(t.pos ?? 'center', t.offset ?? [0, 0])}>
-                <TelopBody t={t} dur={seg} appearDelay={0} />
+            <Sequence key={i} from={delayF} durationInFrames={dur - delayF}>
+              <div style={wrapperStyle(t.pos ?? 'center', [ox, oy + autoY])}>
+                <TelopBody t={t} dur={dur - delayF} appearDelay={0} />
               </div>
             </Sequence>
           );
-        }
-        // 同一カット内の非スタック複数テロップ(例: S5が2つ)は軽く縦にずらす
-        const autoY = rest.length > 1 && !t.offset ? (i - (rest.length - 1) / 2) * 130 : 0;
-        const [ox, oy] = t.offset ?? [0, 0];
-        // 該当文が読まれるタイミングから出す(カット末まで保持)
-        const delayF = Math.min(Math.max(0, dur - 24), Math.round((t.delaySec ?? 0) * 23.976));
-        return (
-          <Sequence key={i} from={delayF} durationInFrames={dur - delayF}>
-            <div style={wrapperStyle(t.pos ?? 'center', [ox, oy + autoY])}>
-              <TelopBody t={t} dur={dur - delayF} appearDelay={0} />
-            </div>
-          </Sequence>
-        );
-      })}
+        });
+      })()}
       {void n}
     </>
   );

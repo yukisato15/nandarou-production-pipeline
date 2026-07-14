@@ -82,7 +82,8 @@
           "latin": false,
           "emphasis": [],
           "motion": "中央・フェードイン→アウト。字間広め [seq:順次]",
-          "seq": "replace"
+          "seq": "replace",
+          "segFrames": 71
         },
         {
           "style": "S2",
@@ -95,7 +96,8 @@
             }
           ],
           "motion": "中央・フェードイン→アウト。字間広め [seq:順次]",
-          "seq": "replace"
+          "seq": "replace",
+          "segFrames": 97
         }
       ]
     },

@@ -4,27 +4,27 @@
   "parts": {
     "P0": {
       "startSec": 0.0,
-      "endSec": 72.0
+      "endSec": 78.0
     },
     "P1": {
-      "startSec": 72.0,
-      "endSec": 190.0
+      "startSec": 78.0,
+      "endSec": 197.0
     },
     "P2": {
-      "startSec": 190.0,
-      "endSec": 386.0
+      "startSec": 197.0,
+      "endSec": 393.0
     },
     "P3": {
-      "startSec": 386.0,
-      "endSec": 466.0
+      "startSec": 393.0,
+      "endSec": 475.0
     },
     "P4": {
-      "startSec": 466.0,
-      "endSec": 530.0
+      "startSec": 475.0,
+      "endSec": 539.0
     },
     "P5": {
-      "startSec": 530.0,
-      "endSec": 585.0
+      "startSec": 539.0,
+      "endSec": 594.0
     }
   },
   "cuts": [
@@ -74,7 +74,7 @@
       "cut": "C08",
       "part": "P0",
       "startSec": 53.0,
-      "endSec": 60.0,
+      "endSec": 66.0,
       "telops": [
         {
           "style": "S2",
@@ -83,7 +83,7 @@
           "emphasis": [],
           "motion": "中央・フェードイン→アウト。字間広め [seq:順次]",
           "seq": "replace",
-          "segFrames": 68
+          "segFrames": 127
         },
         {
           "style": "S2",
@@ -97,15 +97,15 @@
           ],
           "motion": "中央・フェードイン→アウト。字間広め [seq:順次]",
           "seq": "replace",
-          "segFrames": 100
+          "segFrames": 185
         }
       ]
     },
     {
       "cut": "C09",
       "part": "P0",
-      "startSec": 60.0,
-      "endSec": 66.0,
+      "startSec": 66.0,
+      "endSec": 72.0,
       "telops": [
         {
           "delaySec": 0.58,
@@ -125,8 +125,8 @@
     {
       "cut": "C11",
       "part": "P1",
-      "startSec": 72.0,
-      "endSec": 82.0,
+      "startSec": 78.0,
+      "endSec": 88.0,
       "telops": [
         {
           "delaySec": 3.57,
@@ -147,8 +147,8 @@
     {
       "cut": "C14",
       "part": "P1",
-      "startSec": 104.0,
-      "endSec": 124.0,
+      "startSec": 110.0,
+      "endSec": 130.0,
       "telops": [
         {
           "delaySec": 15.68,
@@ -168,8 +168,8 @@
     {
       "cut": "C16",
       "part": "P1",
-      "startSec": 138.0,
-      "endSec": 152.0,
+      "startSec": 144.0,
+      "endSec": 158.0,
       "telops": [
         {
           "delaySec": 2.03,
@@ -190,10 +190,11 @@
     {
       "cut": "C18",
       "part": "P1",
-      "startSec": 161.0,
-      "endSec": 168.0,
+      "startSec": 167.0,
+      "endSec": 175.0,
       "telops": [
         {
+          "delaySec": 0.75,
           "style": "S2",
           "text": "あなたの弱さではありません。人間の、仕様です。",
           "latin": false,
@@ -210,8 +211,8 @@
     {
       "cut": "C22",
       "part": "P2",
-      "startSec": 190.0,
-      "endSec": 202.0,
+      "startSec": 197.0,
+      "endSec": 209.0,
       "telops": [
         {
           "style": "S5",
@@ -230,8 +231,8 @@
     {
       "cut": "C23",
       "part": "P2",
-      "startSec": 202.0,
-      "endSec": 211.0,
+      "startSec": 209.0,
+      "endSec": 218.0,
       "telops": [
         {
           "style": "S3",
@@ -245,8 +246,8 @@
     {
       "cut": "C24",
       "part": "P2",
-      "startSec": 211.0,
-      "endSec": 227.0,
+      "startSec": 218.0,
+      "endSec": 234.0,
       "telops": [
         {
           "delaySec": 11.47,
@@ -261,8 +262,8 @@
     {
       "cut": "C25",
       "part": "P2",
-      "startSec": 227.0,
-      "endSec": 234.0,
+      "startSec": 234.0,
+      "endSec": 241.0,
       "telops": [
         {
           "delaySec": 0.25,
@@ -278,8 +279,8 @@
     {
       "cut": "C29",
       "part": "P2",
-      "startSec": 265.0,
-      "endSec": 276.0,
+      "startSec": 272.0,
+      "endSec": 283.0,
       "telops": [
         {
           "delaySec": 6.58,
@@ -294,8 +295,8 @@
     {
       "cut": "C30",
       "part": "P2",
-      "startSec": 276.0,
-      "endSec": 286.0,
+      "startSec": 283.0,
+      "endSec": 293.0,
       "telops": [
         {
           "style": "S2",
@@ -326,8 +327,8 @@
     {
       "cut": "C31",
       "part": "P2",
-      "startSec": 286.0,
-      "endSec": 296.0,
+      "startSec": 293.0,
+      "endSec": 303.0,
       "telops": [
         {
           "delaySec": 4.88,
@@ -347,8 +348,8 @@
     {
       "cut": "C33",
       "part": "P2",
-      "startSec": 308.0,
-      "endSec": 316.0,
+      "startSec": 315.0,
+      "endSec": 323.0,
       "telops": [
         {
           "delaySec": 2.34,
@@ -368,8 +369,8 @@
     {
       "cut": "C34",
       "part": "P2",
-      "startSec": 316.0,
-      "endSec": 330.0,
+      "startSec": 323.0,
+      "endSec": 337.0,
       "telops": [
         {
           "style": "S5",
@@ -392,8 +393,8 @@
     {
       "cut": "C36",
       "part": "P2",
-      "startSec": 340.0,
-      "endSec": 356.0,
+      "startSec": 347.0,
+      "endSec": 363.0,
       "telops": [
         {
           "delaySec": 9.26,
@@ -413,8 +414,8 @@
     {
       "cut": "C38",
       "part": "P2",
-      "startSec": 376.0,
-      "endSec": 386.0,
+      "startSec": 383.0,
+      "endSec": 393.0,
       "telops": [
         {
           "delaySec": 2.69,
@@ -429,10 +430,11 @@
     {
       "cut": "C42",
       "part": "P3",
-      "startSec": 414.0,
-      "endSec": 419.0,
+      "startSec": 421.0,
+      "endSec": 428.0,
       "telops": [
         {
+          "delaySec": 0.79,
           "style": "S2",
           "text": "笑顔にも、値段がついたことがあります。",
           "latin": false,
@@ -449,8 +451,8 @@
     {
       "cut": "C43",
       "part": "P3",
-      "startSec": 419.0,
-      "endSec": 432.0,
+      "startSec": 428.0,
+      "endSec": 441.0,
       "telops": [
         {
           "delaySec": 6.8,
@@ -471,8 +473,8 @@
     {
       "cut": "C45",
       "part": "P3",
-      "startSec": 442.0,
-      "endSec": 449.0,
+      "startSec": 451.0,
+      "endSec": 458.0,
       "telops": [
         {
           "style": "S2",
@@ -491,8 +493,8 @@
     {
       "cut": "C46",
       "part": "P3",
-      "startSec": 449.0,
-      "endSec": 466.0,
+      "startSec": 458.0,
+      "endSec": 475.0,
       "telops": [
         {
           "delaySec": 11.34,
@@ -512,8 +514,8 @@
     {
       "cut": "C48",
       "part": "P4",
-      "startSec": 472.0,
-      "endSec": 490.0,
+      "startSec": 481.0,
+      "endSec": 499.0,
       "telops": [
         {
           "style": "S2",
@@ -557,8 +559,8 @@
     {
       "cut": "C50",
       "part": "P4",
-      "startSec": 502.0,
-      "endSec": 510.0,
+      "startSec": 511.0,
+      "endSec": 519.0,
       "telops": [
         {
           "delaySec": 1.79,
@@ -578,8 +580,8 @@
     {
       "cut": "C51",
       "part": "P4",
-      "startSec": 510.0,
-      "endSec": 530.0,
+      "startSec": 519.0,
+      "endSec": 539.0,
       "telops": [
         {
           "delaySec": 7.35,

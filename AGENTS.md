@@ -3,7 +3,7 @@
 このリポジトリで作業するAI(Claude / Codex / その他)は、まずこのファイルを読むこと。
 ここには「何のプロジェクトか」「どう作業するか」「何をしてはいけないか」を集約してある。
 
-最終更新: 2026-07-13
+最終更新: 2026-07-14
 
 ---
 
@@ -38,8 +38,9 @@ YouTube番組**『なんだろう』解体**の制作パイプライン。
    ├─ conte2srt.py → S1字幕SRT(Premiere用)
    ├─ テロップJSON → Remotion TelopOverlay → 透過ProRes(S2/S3/S5)
    ├─ シーンJSON  → Remotion JsonScenes  → データMG(グラフ・引用・宣言)
+   ├─ モンタージュJSON → Remotion MontageScene → 資料モンタージュ(実写+紙+数字+注釈)★設計段階
    ├─ AEマスター複製 → 質感重視カット(C13ボード型)
-   └─ Envato/Runway/Canva → 実写・AI画像・偽サムネ
+   └─ Envato/自撮り/Runway/Gemini/Canva → 実写・AI画像・偽サムネ
    ↓
 Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終判断の場所
 ```
@@ -58,19 +59,26 @@ Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終�
 
 ## 4. Remotion MG基盤(remotion_mg/)の原則
 
-**2ループ構成。これを崩さない:**
+**Remotionには二つの役割がある(同じ基盤=theme/stages/registry/zod/カット単位書き出しを共有):**
+- **① 情報カット生成**: グラフ・年表・引用・宣言・タイトル(抽象・データ)。JsonScenes+レジストリ。実装済み
+- **② 資料モンタージュ編集台**: 実写+静止画+紙+数字+注釈をコードで合成(VOX的)。MontageScene。**設計段階**。
+  素材は完成品でなくてよい(Remotion側でクロップ・切り抜き・グレード・合成)。生成AIの補完として
+  要所で使い、正確な資料の図示・数字はここへ寄せる。詳細: `mg_factory/design_reference/資料モンタージュ設計_v1.md`
 
-- **制作ループ**(毎カット): シーンJSONを書く→`src/kit/registry.tsx`の型から選ぶ→レンダー。
+**2ループ構成。これを崩さない(①②共通):**
+
+- **制作ループ**(毎カット): JSONを書く→`src/kit/registry.tsx`の型から選ぶ→レンダー。
   **AIはJSONだけを書く。コード生成禁止。** schema違反はzodが弾く
 - **拡張ループ**(新しい画の型が必要なとき): コンポーネントを起案→静止画(スタイルフレーム)を
   人間に見せる→**承認されてから**registryに登録【人間ゲート2】
 
 その他:
-- 色・フォント・質感は `src/kit/theme.ts` と `stages.tsx` だけが持つ。コンポーネントに直書きしない
+- 色・フォント・質感は `src/kit/theme.ts` と `stages.tsx` だけが持つ。コンポーネントに直書きしない。
+  モンタージュの実写も**番組ルック(紙・墨・金茶・朱)へグレードして馴染ませる**(新ルックを発明しない)
 - フォントは@fontsource同梱、素材は`public/`配下(OSフォント・外部CDN禁止)
 - 型は「番組で3回以上使う画」だけ。1回きりの演出は単発コンポジション(例: C13AttentionFlow)
 - 詳細: `remotion_mg/README.md` / 初心者向け: `remotion_mg/使い方マニュアル.md`
-- 設計の全経緯: `mg_factory/design_reference/Remotion基盤_調査設計_v1.md`
+- 設計の全経緯: `mg_factory/design_reference/Remotion基盤_調査設計_v1.md`(①) / `資料モンタージュ設計_v1.md`(②)
 
 ## 5. デザイン規則(絶対)
 
@@ -162,7 +170,9 @@ TelopOverlayは**パート単位の絶対時間で書き出さない**。カッ�
 | チャンネル設計・15回ロードマップ・KPI | `チャンネル設計書_v4_確定版.md.docx`(抽出md: 同上) |
 | 台本の書き方・番組の声 | `mg_factory/design_reference/台本文体ガイド_v1.md` |
 | Remotionの使い方(初心者向け) | `remotion_mg/使い方マニュアル.md` |
-| Remotion設計思想・OSS評価 | `mg_factory/design_reference/Remotion基盤_調査設計_v1.md` |
+| Remotion設計思想・OSS評価(役割①情報カット) | `mg_factory/design_reference/Remotion基盤_調査設計_v1.md` |
+| Remotion資料モンタージュ(役割②編集台) | `mg_factory/design_reference/資料モンタージュ設計_v1.md` |
+| チャンネル設計の改訂差分 | `mg_factory/design_reference/チャンネル設計書_改訂記録_v4.1.md`(人物写真) / `_v4.2.md`(映像素材) |
 | テロップ記法v2 | 各コンテ表の「テロップ記法v2」シート + `validate_telops.py` |
 | 記法移行の経緯 | `mg_factory/design_reference/第N回_テロップ記法v2_修正ログ.md` |
 | 偽サムネの作り方 | `mg_factory/design_reference/C01_偽サムネ制作仕様_v1.md` |
@@ -172,6 +182,9 @@ TelopOverlayは**パート単位の絶対時間で書き出さない**。カッ�
 
 **新しい回のコンテを作る**: 第1回・第2回の表を開き、列構成(25列)と密度をそのまま踏襲。
 台本→カット割り→各列を埋める→conte2srt.pyとvalidate_telops.pyを警告ゼロまで回す。
+素材ソースは5カテゴリから選ぶ(v4.2): Remotion情報カット / **Remotion(モンタージュ)** /
+ストック・自撮り / 生成AI(Runway・Gemini) / 偽サムネ。歴史・戦史・「資料を構造的に見せる」
+カットはRunway一択にせず、モンタージュ(MGテンプレID=`MNT_*`)を第一候補に検討する。
 
 **データMGを1本作る**: `remotion_mg/data/`にJSONを書く(型は`registry.tsx`から選ぶ)→
 Studioで確認→`npx remotion render JsonScenes out/xxx.mp4 --props=./data/xxx.json`。

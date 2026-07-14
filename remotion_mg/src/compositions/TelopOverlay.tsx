@@ -228,6 +228,20 @@ const TelopBody: React.FC<{
   const blockIn = isQuote
     ? interpolate(local, [0, 26], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'})
     : 1;
+  // 強調ランの手前でひと呼吸置きつつ、以降の文字が追い越さないよう単調増加で並べる
+  // (conte2telops.pyのrequired_frames()と同一ロジック。値がずれると尺フィット計算が崩れる)
+  const charDelays = ((): number[] => {
+    let t2 = BASE_DELAY;
+    let prevEmph = false;
+    return chars.map((c) => {
+      const isEmph = Boolean(c.emph);
+      if (isEmph && !prevEmph) t2 += EMPH_BEAT;
+      const d = t2;
+      t2 += charStep;
+      prevEmph = isEmph;
+      return d;
+    });
+  })();
 
   return (
     <div
@@ -244,8 +258,7 @@ const TelopBody: React.FC<{
       }}
     >
       {chars.map((c, i) => {
-        // 強調語はワンテンポ(12F)遅れて、すっと浮き上がって出る
-        const delay = 10 + i * charStep + (c.emph ? EMPH_BEAT : 0);
+        const delay = charDelays[i];
         const charIn =
           charStep === 0
             ? 1
@@ -275,7 +288,10 @@ const TelopBody: React.FC<{
   );
 };
 
-const EMPH_BEAT = 12; // 強調語の出現遅延(フレーム)
+// conte2telops.py の required_frames() と同一の定数(2026-07-14制定)。
+// ここを変えたらPython側の BASE_DELAY_F / EMPH_BEAT_F / CHAR_FADE_F / HOLD_MIN_F も揃えること
+const BASE_DELAY = 10; // 最初の文字が動き出すまでの助走
+const EMPH_BEAT = 12; // 強調ランに入る手前で挿む「ため」(このランの手前だけ・追い越しなし)
 const RED_ON_DARK = '#D14A42'; // 実写の上でも沈まない明るめの朱
 const CHAR_W = 1.13; // 字間込みの実効文字幅係数
 const maxCharsAt = (fontSize: number) => Math.floor(1560 / (fontSize * CHAR_W));

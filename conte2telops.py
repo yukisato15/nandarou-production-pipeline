@@ -22,6 +22,51 @@ COL_TELOP, COL_MOTION = 16, 17
 OVERLAY_STYLES = {'S2', 'S3', 'S5'}
 LINE_RE = re.compile(r'^(S[1-6])(\(欧文\))?/(.*)$')
 EMPH_RE = re.compile(r'《(.+?)》')
+FPS = 23.976
+
+# TelopOverlay.tsx の表示アルゴリズムと必ず一致させる定数(2026-07-14制定)。
+# 「読める時間」を先に確保し、足りなければ表示開始を早める。それでも
+# 足りない場合はコンテのカット尺そのものが不足している(=報告対象)。
+BASE_DELAY_F = 10   # 最初の文字が動き出すまでの助走
+CHAR_STEP_F = 2      # 1文字ごとのずらし幅(S2)
+EMPH_BEAT_F = 12     # 強調ランの手前に挿む「ため」
+CHAR_FADE_F = 8       # 1文字がフェードインし切るまでの幅
+QUOTE_BLOCKIN_F = 26  # S3(引用)は文字送りせず全体フェード
+HOLD_MIN_F = 24        # 表示完了後、フェードアウト(末尾)を含めた最低保持
+
+
+def char_emphasis_flags(text: str, emphasis: list[dict]) -> list[str | None]:
+    """TSXのmarkEmphasisと同一ロジック: 後勝ちで色を割り当てる。"""
+    flags: list[str | None] = [None] * len(text)
+    for e in emphasis:
+        word = e.get('text', '')
+        if not word:
+            continue
+        idx = text.find(word)
+        while idx >= 0:
+            for k in range(idx, idx + len(word)):
+                flags[k] = e.get('color', 'gold')
+            idx = text.find(word, idx + len(word))
+    return flags
+
+
+def required_frames(style: str, text: str, emphasis: list[dict]) -> int:
+    """このテロップが「読める」ために最低限必要なフレーム数(表示開始〜保持完了)。"""
+    if style == 'S3':
+        reveal_complete = QUOTE_BLOCKIN_F
+    else:
+        flags = char_emphasis_flags(text, emphasis)
+        t = BASE_DELAY_F
+        last_delay = t
+        prev_emph = False
+        for is_emph in (bool(f) for f in flags):
+            if is_emph and not prev_emph:
+                t += EMPH_BEAT_F  # 強調ランに入る手前でひと呼吸
+            last_delay = t
+            t += CHAR_STEP_F
+            prev_emph = is_emph
+        reveal_complete = last_delay + CHAR_FADE_F
+    return reveal_complete + HOLD_MIN_F
 
 
 def tc_to_sec(tc: str) -> float:
@@ -56,6 +101,7 @@ def main(src: str, dst: str) -> None:
     ws = wb['コンテ']
     cuts = []
     parts: dict[str, dict] = {}
+    conflicts: list[dict] = []
 
     for row in ws.iter_rows(min_row=2, values_only=True):
         no = row[COL_NO - 1]
@@ -106,6 +152,28 @@ def main(src: str, dst: str) -> None:
                 if idx > 0:
                     frac = idx / len(narration)
                     delay_sec = max(0.0, round(frac * (end_s - start_s) - 0.3, 2))
+
+            # 表示尺フィットルール(2026-07-14制定): 「話される瞬間」から出すと
+            # 読み切れない場合、表示開始を前倒しする。それでも足りなければ
+            # カット尺そのものが不足しているのでconflictsに記録し、報告する。
+            if style in ('S2', 'S3') and not tags.get('seq'):
+                cut_frames = round((end_s - start_s) * FPS)
+                need = required_frames(style, text, emphasis)
+                naive_delay_f = round(delay_sec * FPS)
+                available = cut_frames - naive_delay_f
+                if available < need:
+                    shift = need - available
+                    new_delay_f = max(0, naive_delay_f - shift)
+                    if cut_frames - new_delay_f < need:
+                        conflicts.append({
+                            'cut': no, 'text': text,
+                            'cut_sec': round(end_s - start_s, 2),
+                            'need_sec': round(need / FPS, 2),
+                            'deficit_sec': round((need - cut_frames) / FPS, 2),
+                        })
+                        new_delay_f = 0
+                    delay_sec = round(new_delay_f / FPS, 2)
+
             telops.append({
                 **({'delaySec': delay_sec} if delay_sec > 0.2 else {}),
                 'style': style,
@@ -129,6 +197,17 @@ def main(src: str, dst: str) -> None:
         json.dump(doc, f, ensure_ascii=False, indent=2)
     n = sum(len(c['telops']) for c in cuts)
     print(f'✓ {dst}: {len(cuts)}カット / テロップ{n}本 / パート{sorted(parts)}')
+
+    if conflicts:
+        print(f'\n⚠ 尺不足で表示しきれないテロップ: {len(conflicts)}件'
+              '(カット先頭から出しても読み切れません。コンテのTC延長が必要です)')
+        for cf in conflicts:
+            print(
+                f"  {cf['cut']}: 「{cf['text']}」"
+                f" 現尺{cf['cut_sec']}秒 / 必要{cf['need_sec']}秒"
+                f" (最低+{cf['deficit_sec']}秒 延長が必要)"
+            )
+
     for c in cuts:
         for t in c['telops']:
             flags = ' '.join(

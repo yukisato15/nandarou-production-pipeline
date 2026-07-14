@@ -32,7 +32,16 @@ CHAR_STEP_F = 2      # 1文字ごとのずらし幅(S2)
 EMPH_BEAT_F = 12     # 強調ランの手前に挿む「ため」
 CHAR_FADE_F = 8       # 1文字がフェードインし切るまでの幅
 QUOTE_BLOCKIN_F = 26  # S3(引用)は文字送りせず全体フェード
-HOLD_MIN_F = 24        # 表示完了後、フェードアウト(末尾)を含めた最低保持
+READ_CPS = 5.5          # 番組の可読速度基準(conte2srt.pyの--cpsと同一。ここを変えたら揃えること)
+HOLD_ABS_MIN_F = 24      # 保持の絶対下限(ごく短い語でもこれより短くしない)
+
+
+def hold_frames(text: str) -> int:
+    """表示完了後、フェードアウト前に「くっきり静止して読める」時間(フレーム)。
+    番組の可読速度基準(5.5文字/秒)を満たす長さを保証する。フェードで消えていく
+    末尾10Fぶんは可読時間に数えない(保守的に見積もる)。"""
+    read_f = round(len(text) / READ_CPS * FPS)
+    return max(HOLD_ABS_MIN_F, read_f)
 
 
 def char_emphasis_flags(text: str, emphasis: list[dict]) -> list[str | None]:
@@ -51,7 +60,9 @@ def char_emphasis_flags(text: str, emphasis: list[dict]) -> list[str | None]:
 
 
 def required_frames(style: str, text: str, emphasis: list[dict]) -> int:
-    """このテロップが「読める」ために最低限必要なフレーム数(表示開始〜保持完了)。"""
+    """このテロップが「読める」ために最低限必要なフレーム数(表示開始〜保持完了)。
+    保持時間は番組の可読速度基準(5.5文字/秒)から算出する(2026-07-14修正:
+    以前は根拠のない固定24Fを使っており、長い文が読み切る前にフェードしていた)。"""
     if style == 'S3':
         reveal_complete = QUOTE_BLOCKIN_F
     else:
@@ -66,7 +77,7 @@ def required_frames(style: str, text: str, emphasis: list[dict]) -> int:
             t += CHAR_STEP_F
             prev_emph = is_emph
         reveal_complete = last_delay + CHAR_FADE_F
-    return reveal_complete + HOLD_MIN_F
+    return reveal_complete + hold_frames(text)
 
 
 def tc_to_sec(tc: str) -> float:

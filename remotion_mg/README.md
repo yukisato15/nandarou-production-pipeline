@@ -12,6 +12,7 @@
 | `JsonScenes` | **本命。** シーンJSON→レジストリのコンポーネントを連結して動画化 |
 | `C13AttentionFlow` | 第1回C13のプロトタイプ(視線→再生→広告費ボード) |
 | `TelopOverlay` | `data/ep01_telops.json` → 背景透過テロップ動画 |
+| `EpisodeTitle` | `episode_title` props → C10直後のエピソードタイトルカード(144F) |
 
 ## コマンド
 

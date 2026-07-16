@@ -12,6 +12,7 @@ import {NandarouKaitaiIdent, defaultIdentProps} from './compositions/NandarouKai
 import {IDENT_DURATION_FRAMES} from './ident/timing';
 import demoDoc from '../data/ep02_demo.json';
 import ep01Telops from '../data/ep01_telops.json';
+import {EpisodeTitle} from './kit/components/EpisodeTitle';
 
 export const RemotionRoot = () => {
   return (
@@ -35,6 +36,20 @@ export const RemotionRoot = () => {
         schema={scenesDocSchema}
         defaultProps={demoDoc as never}
         calculateMetadata={calculateJsonScenesMetadata}
+      />
+      <Composition
+        id="EpisodeTitle"
+        component={EpisodeTitle}
+        durationInFrames={144}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          episodeNumber: '#01',
+          titleParts: ['ぜんぶ、', '売り物になっていく'],
+          hudLabelTL: 'ANALYSIS MODE',
+          hudLabelBR: 'EP-01',
+        }}
       />
       <Still
         id="Ep01Thumbnail"

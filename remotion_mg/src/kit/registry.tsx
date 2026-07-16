@@ -2,9 +2,11 @@ import React from 'react';
 import {z} from 'zod';
 import {BarChart, barChartSchema} from './components/BarChart';
 import {LineCompare, lineCompareSchema} from './components/LineCompare';
+import {PhoneFeedHesitation, phoneFeedHesitationSchema} from './components/PhoneFeedHesitation';
 import {Quote, quoteSchema} from './components/Quote';
 import {StatCard, statCardSchema} from './components/StatCard';
 import {Statement, statementSchema} from './components/Statement';
+import {ThumbnailStack, thumbnailStackSchema} from './components/ThumbnailStack';
 import {TitleCard, titleCardSchema} from './components/TitleCard';
 
 // Component Selectorの本体。
@@ -24,6 +26,18 @@ export const registry: Record<string, Entry> = {
     schema: titleCardSchema,
     defaultDurationInFrames: 96,
     description: '墨背景のタイトルカード。回タイトル・章見出しに。',
+  },
+  thumbnail_stack: {
+    component: ThumbnailStack,
+    schema: thumbnailStackSchema,
+    defaultDurationInFrames: 240,
+    description: '偽サムネPNGを3枚順に着弾スタック。C01などフック用。',
+  },
+  phone_feed_hesitation: {
+    component: PhoneFeedHesitation,
+    schema: phoneFeedHesitationSchema,
+    defaultDurationInFrames: 240,
+    description: 'スマホYouTube風フィード。縦スクロール停止、指の逡巡、主役サムネ着弾。',
   },
   statement: {
     component: Statement,

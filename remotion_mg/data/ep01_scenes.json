@@ -2,6 +2,36 @@
   "fps": 23.976,
   "scenes": [
     {
+      "type": "thumbnail_stack",
+      "id": "C01_thumbnail_stack",
+      "durationInFrames": 240,
+      "props": {
+        "images": [
+          "c01/C01_thumb_01.png",
+          "c01/C01_thumb_02.png",
+          "c01/C01_thumb_03.png"
+        ],
+        "beatFrames": [
+          8,
+          48,
+          88
+        ]
+      }
+    },
+    {
+      "type": "phone_feed_hesitation",
+      "id": "C02_phone_feed_hesitation",
+      "durationInFrames": 240,
+      "props": {
+        "images": [
+          "c02/C01_single_01.png",
+          "c02/C01_single_02.png",
+          "c02/C01_single_03.png"
+        ],
+        "heroImage": "c02/ep01_thumb_A_reviewed.png"
+      }
+    },
+    {
       "type": "title_card",
       "id": "C10_title",
       "props": {
@@ -16,10 +46,22 @@
       "props": {
         "title": "見出しの煽り度と、再生の伸び",
         "bars": [
-          {"label": "ふつうの見出し", "value": 100},
-          {"label": "「閲覧注意」", "value": 138},
-          {"label": "「知らないと損」", "value": 164},
-          {"label": "「日本、終わる」", "value": 195}
+          {
+            "label": "ふつうの見出し",
+            "value": 100
+          },
+          {
+            "label": "「閲覧注意」",
+            "value": 138
+          },
+          {
+            "label": "「知らないと損」",
+            "value": 164
+          },
+          {
+            "label": "「日本、終わる」",
+            "value": 195
+          }
         ],
         "accentIndex": 3,
         "conceptual": true
@@ -32,9 +74,18 @@
       "props": {
         "title": "ウソはどう広がるか——検証した研究",
         "items": [
-          {"value": "MIT", "label": "マサチューセッツ工科大学"},
-          {"value": "2018", "label": "『Science』誌に掲載"},
-          {"value": "126,000", "label": "検証されたニュースの件数"}
+          {
+            "value": "MIT",
+            "label": "マサチューセッツ工科大学"
+          },
+          {
+            "value": "2018",
+            "label": "『Science』誌に掲載"
+          },
+          {
+            "value": "126,000",
+            "label": "検証されたニュースの件数"
+          }
         ],
         "source": "Vosoughi, Roy & Aral 2018"
       }
@@ -46,8 +97,32 @@
       "props": {
         "title": "ウソと本当の広がり方(概念図)",
         "series": [
-          {"label": "本当", "values": [10, 16, 22, 27, 31, 34, 36], "color": "ink"},
-          {"label": "ウソ", "values": [10, 20, 34, 52, 72, 88, 100], "color": "red"}
+          {
+            "label": "本当",
+            "values": [
+              10,
+              16,
+              22,
+              27,
+              31,
+              34,
+              36
+            ],
+            "color": "ink"
+          },
+          {
+            "label": "ウソ",
+            "values": [
+              10,
+              20,
+              34,
+              52,
+              72,
+              88,
+              100
+            ],
+            "color": "red"
+          }
         ],
         "source": "Vosoughi, Roy & Aral 2018を基にした概念図",
         "conceptual": true

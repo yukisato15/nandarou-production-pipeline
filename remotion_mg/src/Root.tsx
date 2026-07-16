@@ -3,7 +3,13 @@ import {C13AttentionFlow} from './compositions/C13AttentionFlow';
 import {Ep01Thumbnail} from './compositions/Ep01Thumbnail';
 import {calculateJsonScenesMetadata, JsonScenes} from './compositions/JsonScenes';
 import {calculateTelopOverlayMetadata, TelopOverlay} from './compositions/TelopOverlay';
+import {C06GreenPhoneScreens} from './compositions/C06GreenPhoneScreens';
+import {PhoneCloudTransparent} from './compositions/PhoneCloudTransparent';
 import {scenesDocSchema} from './kit/registry';
+import {FakeThumbnail} from './kit/components/ThumbnailStack';
+import {PhoneFeedHesitation} from './kit/components/PhoneFeedHesitation';
+import {NandarouKaitaiIdent, defaultIdentProps} from './compositions/NandarouKaitaiIdent';
+import {IDENT_DURATION_FRAMES} from './ident/timing';
 import demoDoc from '../data/ep02_demo.json';
 import ep01Telops from '../data/ep01_telops.json';
 
@@ -37,6 +43,47 @@ export const RemotionRoot = () => {
         height={720}
         defaultProps={{variant: 'A' as const}}
       />
+      <Still
+        id="C01SingleThumbnail"
+        component={FakeThumbnail}
+        width={1280}
+        height={720}
+        defaultProps={{image: 'c01/C01_thumb_01.png', index: 0}}
+      />
+      <Composition
+        id="C02PhoneFeedPreview"
+        component={PhoneFeedHesitation}
+        durationInFrames={240}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          images: [
+            'c02/C01_single_01.png',
+            'c02/C01_single_02.png',
+            'c02/C01_single_03.png',
+          ],
+          heroImage: 'c02/ep01_thumb_A_reviewed.png',
+        }}
+      />
+      <Composition
+        id="C06GreenPhoneScreens"
+        component={C06GreenPhoneScreens}
+        durationInFrames={201}
+        fps={25}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
+      <Composition
+        id="PhoneCloudTransparent"
+        component={PhoneCloudTransparent}
+        durationInFrames={240}
+        fps={25}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
       <Composition
         id="TelopOverlay"
         component={TelopOverlay}
@@ -46,6 +93,60 @@ export const RemotionRoot = () => {
         durationInFrames={1}
         defaultProps={ep01Telops as never}
         calculateMetadata={calculateTelopOverlayMetadata}
+      />
+      <Composition
+        id="NandarouKaitaiLong"
+        component={NandarouKaitaiIdent}
+        durationInFrames={IDENT_DURATION_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{...defaultIdentProps, variant: 'long' as const}}
+      />
+      <Composition
+        id="NandarouKaitaiStandard"
+        component={NandarouKaitaiIdent}
+        durationInFrames={IDENT_DURATION_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{...defaultIdentProps, variant: 'standard' as const}}
+      />
+      <Composition
+        id="NandarouKaitaiShort"
+        component={NandarouKaitaiIdent}
+        durationInFrames={IDENT_DURATION_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{...defaultIdentProps, variant: 'short' as const}}
+      />
+      <Composition
+        id="NandarouKaitaiSeOnly"
+        component={NandarouKaitaiIdent}
+        durationInFrames={IDENT_DURATION_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{...defaultIdentProps, audioMode: 'se-only' as const}}
+      />
+      <Composition
+        id="NandarouKaitaiVoiceOnly"
+        component={NandarouKaitaiIdent}
+        durationInFrames={IDENT_DURATION_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{...defaultIdentProps, audioMode: 'voice-only' as const}}
+      />
+      <Composition
+        id="NandarouKaitaiCompleteAudio"
+        component={NandarouKaitaiIdent}
+        durationInFrames={IDENT_DURATION_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{...defaultIdentProps, audioMode: 'complete' as const}}
       />
     </>
   );

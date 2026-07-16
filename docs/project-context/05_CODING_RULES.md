@@ -45,6 +45,6 @@ remotion_mg/
 
 1. `npm run typecheck`が通る。
 2. JSONがZod schemaに適合する。
-3. `validate_telops.py`と`conte2srt.py`の警告を確認する。
+3. `tools/validate_telops.py`と`tools/conte2srt.py`の警告を確認する。
 4. 静止画をStudio/`remotion still`で確認し、余白・可読性・出典・権利を確認する。
 5. 既存のtheme/registry/カット単位ルールを壊していない。

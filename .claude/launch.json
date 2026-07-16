@@ -9,7 +9,7 @@
         "http.server",
         "8791",
         "--directory",
-        "mg_factory/design_reference"
+        "docs/design_reference"
       ],
       "port": 8791
     },

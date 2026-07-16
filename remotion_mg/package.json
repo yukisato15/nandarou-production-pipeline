@@ -12,7 +12,7 @@
     "still:scenes": "remotion still JsonScenes out/json_scenes_still.png",
     "render:telops": "remotion render TelopOverlay out/ep01_telops_overlay.mov --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
     "render:telops:sample": "remotion render TelopOverlay out/telop_overlay_sample.mov --frames=3880-3960 --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
-    "telops:json": "cd .. && python3 conte2telops.py 第1回_コンテ表_v1.xlsx remotion_mg/data/ep01_telops.json",
+    "telops:json": "cd .. && python3 tools/conte2telops.py conte/第1回_コンテ表_v1.xlsx remotion_mg/data/ep01_telops.json",
     "render:telops:p0": "remotion render TelopOverlay out/ep01_P0_telops.mov --props='{\"part\":\"P0\"}' --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
     "render:telops:p1": "remotion render TelopOverlay out/ep01_P1_telops.mov --props='{\"part\":\"P1\"}' --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",
     "render:telops:p2": "remotion render TelopOverlay out/ep01_P2_telops.mov --props='{\"part\":\"P2\"}' --codec=prores --prores-profile=4444 --pixel-format=yuva444p10le --image-format=png",

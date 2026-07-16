@@ -15,22 +15,20 @@ C20とC40は、AE上でも同じ`MASTER_DECLARATION_FRIENDS_FOR_SALE`コンポ�
 ## 再生成
 
 ```bash
-python3 update_mg_production_plan.py
-python3 conte2mg.py 第1回_コンテ表_v1.xlsx --output output/ep01_mg.json
-python3 build_ui_previews.py output/ep01_mg.json
-python3 build_mg_factory.py output/ep01_mg.json
+python3 archive/oneshot_tools/update_mg_production_plan.py
+python3 tools/conte2mg.py conte/第1回_コンテ表_v1.xlsx --output out/ep01/ep01_mg.json
 ```
 
 JSONと必須パラメータだけを検証する場合:
 
 ```bash
-python3 build_mg_factory.py output/ep01_mg.json --check
+python3 archive/ae_pipeline/build_mg_factory.py out/ep01/ep01_mg.json --check
 ```
 
 少数カットだけを安全に試す場合:
 
 ```bash
-python3 build_mg_factory.py output/ep01_mg.json --cuts C01,C12
+python3 archive/ae_pipeline/build_mg_factory.py out/ep01/ep01_mg.json --cuts C01,C12
 ```
 
 部分生成は`NANDAROU_MG_FACTORY_EP01_TEST_C01_C12`へ出力され、本番のEP01フォルダを削除しません。EP02も別ownerとして共存できます。
@@ -55,14 +53,14 @@ JSXは最初に`_BUILDING`フォルダへ構築し、成功時だけ同じowner�
 v0.2の機能試作とは別に、C01・C13・C25だけを番組の完成ルックとして作り直しています。
 
 ```bash
-python3 build_mg_factory_design_v2.py output/ep01_mg.json
+python3 archive/ae_pipeline/build_mg_factory_design_v2.py out/ep01/ep01_mg.json
 ```
 
-AEでは`generated/generate_mg_factory_design_v2.jsx`を実行します。出力先は`NANDAROU_MG_FACTORY_EP01_DESIGN_V2`で、v0.2の生成物とは別に共存します。デザイン原則は[DESIGN_V2.md](DESIGN_V2.md)を参照してください。
+AEでは`archive/ae_pipeline/generated/generate_mg_factory_design_v2.jsx`を実行します。これは旧路線の保管物で、新規制作ではRemotionを使用します。
 
 ## C26 HTMLプレビュー
 
-`generated/ui/C26_UI_AD_FEED_SCROLL.html`をChromeで開きます。
+`archive/ae_pipeline/generated/ui/C26_UI_AD_FEED_SCROLL.html`をChromeで開きます(旧方式の参照用)。
 
 - Space: 再生／停止
 - 左右矢印: 1フレーム移動
@@ -108,14 +106,7 @@ python3 -m unittest tests/test_mg_factory.py -v
 ```text
 mg_factory/
 ├── README.md
-├── DESIGN_V2.md
 ├── template_registry.py
-├── generated/
-│   ├── generate_mg_factory.jsx
-│   ├── generate_mg_factory_smoke.jsx
-│   ├── generate_mg_factory_design_v2.jsx
-│   └── ui/
-│       └── C26_UI_AD_FEED_SCROLL.html
 └── schema/
     └── mg.schema.json
 ```

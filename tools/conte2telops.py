@@ -2,7 +2,7 @@
 """コンテ表(テロップ記法v2)→ TelopOverlay用JSON変換器。
 
 使い方:
-    python3 conte2telops.py 第1回_コンテ表_v1.xlsx remotion_mg/data/ep01_telops.json
+    python3 tools/conte2telops.py conte/第1回_コンテ表_v1.xlsx remotion_mg/data/ep01_telops.json
 
 方針:
 - 記法v2を前提にした厳密パース。疑わしい入力は黙って直さずエラーで止める

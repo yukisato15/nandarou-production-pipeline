@@ -13,6 +13,9 @@ from pathlib import Path
 from openpyxl import load_workbook
 
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
 REQUIRED_HEADERS = {
     "cut": "No",
     "part": "パート",
@@ -39,7 +42,7 @@ class Cut:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="コンテ表xlsxからSRT/JSONを生成します")
     parser.add_argument("input", type=Path, help="入力xlsx")
-    parser.add_argument("--out-dir", type=Path, default=Path("output"))
+    parser.add_argument("--out-dir", type=Path, default=REPO_ROOT / "out")
     parser.add_argument("--fps", type=float, default=23.976)
     parser.add_argument("--cps", type=float, default=5.5, help="ナレーション文字数/秒")
     return parser.parse_args()
@@ -283,7 +286,8 @@ def main() -> int:
         print("エラー: --fps と --cps は正数で指定してください", file=sys.stderr)
         return 2
     try:
-        cuts, warnings, narration_chars = load_cuts(args.input)
+        input_path = args.input if args.input.is_absolute() else REPO_ROOT / args.input
+        cuts, warnings, narration_chars = load_cuts(input_path)
         validate(cuts, warnings, args.cps)
     except (OSError, ValueError) as exc:
         print(f"エラー: {exc}", file=sys.stderr)
@@ -297,10 +301,13 @@ def main() -> int:
     } for cut in cuts]
     args.out_dir.mkdir(parents=True, exist_ok=True)
     # 出力名は入力ファイル名から導出(第1回→ep01)。誤命名事故を防ぐ
-    m = re.search(r"第(\d+)回", args.input.name)
-    prefix = f"ep{int(m.group(1)):02d}" if m else args.input.stem
-    (args.out_dir / f"{prefix}_S1.srt").write_text(srt, encoding="utf-8")
-    (args.out_dir / f"{prefix}_s1_cues.json").write_text(
+    m = re.search(r"第(\d+)回", input_path.name)
+    prefix = f"ep{int(m.group(1)):02d}" if m else input_path.stem
+    out_dir = args.out_dir if args.out_dir.is_absolute() else REPO_ROOT / args.out_dir
+    out_dir = out_dir / prefix
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / f"{prefix}_S1.srt").write_text(srt, encoding="utf-8")
+    (out_dir / f"{prefix}_s1_cues.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
 

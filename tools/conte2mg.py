@@ -16,6 +16,9 @@ from openpyxl import load_workbook
 from mg_factory.template_registry import IMPLEMENTED_TEMPLATES, validate_cut
 
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
 HEADERS = {
     "cut": "No",
     "part": "パート",
@@ -44,7 +47,7 @@ CUT_RANGE_RE = re.compile(r"^([A-Za-z]+)(\d+)(?:-([A-Za-z]+)(\d+))?$")
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="コンテxlsxからMG Factory用JSONを生成")
     parser.add_argument("input", type=Path)
-    parser.add_argument("--output", type=Path, default=Path("output/ep01_mg.json"))
+    parser.add_argument("--output", type=Path, default=REPO_ROOT / "out/ep01/ep01_mg.json")
     parser.add_argument("--sheet", default="コンテ")
     parser.add_argument("--episode", default="EP01")
     parser.add_argument("--fps", type=float, default=23.976)
@@ -204,6 +207,10 @@ def load_mg(args: argparse.Namespace) -> tuple[dict[str, Any], list[str]]:
 
 def main() -> int:
     args = parse_args()
+    if not args.input.is_absolute():
+        args.input = REPO_ROOT / args.input
+    if not args.output.is_absolute():
+        args.output = REPO_ROOT / args.output
     try:
         payload, warnings = load_mg(args)
     except (OSError, ValueError) as exc:

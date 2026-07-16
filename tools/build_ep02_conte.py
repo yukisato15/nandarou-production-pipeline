@@ -4,9 +4,11 @@
 Canva+AI静止画 / Envato / 実撮影 / 画面収録 のみで構成する。
 """
 import openpyxl, math, sys
+from pathlib import Path
 
-SRC = "第1回_コンテ表_v1.xlsx"
-DST = "第2回_コンテ表_v1.xlsx"
+ROOT = Path(__file__).resolve().parent.parent
+SRC = ROOT / "conte" / "第1回_コンテ表_v1.xlsx"
+DST = ROOT / "conte" / "第2回_コンテ表_v1.xlsx"
 
 HEADERS = ['No','パート','TC目安','ナレーション(全文)','読み方の注意','映像内容(画)','素材ソース',
  'Envato検索ワード(映像)','Runway生成プロンプト','Runwayネガティブ','BGM','SE','SE Envato検索',

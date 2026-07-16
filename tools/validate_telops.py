@@ -2,7 +2,7 @@
 """コンテ表のテロップ列がテロップ記法v2に従っているか検証する。
 
 使い方:
-    python3 validate_telops.py 第1回_コンテ表_v1.xlsx
+    python3 tools/validate_telops.py conte/第1回_コンテ表_v1.xlsx
 
 方針: 疑わしい表記は「除去」せず「エラー」として人間に直させる。
 パーサーが黙って本文を削ると、いつか画面に出すべき文字まで食われるため。

@@ -13,8 +13,8 @@ import json
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "mg_factory" / "generated" / "generate_c13_master.jsx"
+ROOT = Path(__file__).resolve().parent.parent
+OUT = ROOT / "out" / "ae" / "generate_c13_master.jsx"
 
 
 def jsx_string(value: str) -> str:
@@ -31,7 +31,7 @@ def build_payload() -> dict[str, object]:
             "duration_frames": 312,
         },
         "paths": {
-            "eye": str((ROOT / "assets" / "mg" / "c13" / "eye_phone_glow.png").resolve()),
+        "eye": str((ROOT / "assets" / "mg" / "c13" / "eye_phone_glow.png").resolve()),
             "paper": str((ROOT / "assets" / "textures" / "paper_scan_01.jpg").resolve()),
             "paper_white": str((ROOT / "assets" / "textures" / "paper_scan_02_white.jpg").resolve()),
             "paper_aged": str((ROOT / "assets" / "textures" / "paper_scan_03_aged.jpg").resolve()),
@@ -46,8 +46,8 @@ JSX_TEMPLATE = r'''#target aftereffects
  * NANDAROU / C13 master scaffold
  *
  * Source of truth:
- * - mg_factory/design_reference/C13_board_master_spec.md
- * - mg_factory/design_reference/C13_board_master_spec.html
+ * - docs/design_reference/C13_board_master_spec.md
+ * - docs/design_reference/C13_board_master_spec.html
  *
  * This JSX builds the first asset-driven master.  It intentionally keeps all
  * colors, sizes, coordinates, and timings close to the approved C13 spec.

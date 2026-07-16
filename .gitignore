@@ -27,3 +27,9 @@ venv/
 # Remotion local dependencies and render outputs
 node_modules/
 remotion_mg/out/
+
+# Repository-wide generated outputs (keep local copies under out/)
+out/
+output/
+output_ep02/
+mg_factory/generated/

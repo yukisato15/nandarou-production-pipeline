@@ -26,6 +26,7 @@
 | `PhoneCloudTransparent` | 透過背景のスマホ群 | 現在25fps、専用コード |
 | `Ep01Thumbnail` / `C01SingleThumbnail` | 第1回サムネ/偽サムネ静止画 | `variant`または画像/index |
 | `NandarouKaitai*` | アイキャッチ | `variant`, `audioMode`等。`ident/timing.ts`が尺の正本 |
+| `EpisodeTitle` / `episode_title` | アイキャッチ直後のエピソードタイトル | `episodeNumber`, `titleParts`, HUDラベル（任意） | `theme.ts`, `random()` |
 
 ## 使用例
 

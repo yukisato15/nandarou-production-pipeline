@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -16,11 +17,11 @@ from mg_factory.template_registry import IMPLEMENTED_TEMPLATES, validate_cut
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MG_JSON = ROOT / "output/ep01_mg.json"
-MG_JSX = ROOT / "mg_factory/generated/generate_mg_factory.jsx"
-DESIGN_JSX = ROOT / "mg_factory/generated/generate_mg_factory_design_v2.jsx"
-C13_MASTER_JSX = ROOT / "mg_factory/generated/generate_c13_master.jsx"
-UI_HTML = ROOT / "mg_factory/generated/ui/C26_UI_AD_FEED_SCROLL.html"
+MG_JSON = ROOT / "out/ep01/ep01_mg.json"
+MG_JSX = ROOT / "archive/ae_pipeline/generated/generate_mg_factory.jsx"
+DESIGN_JSX = ROOT / "archive/ae_pipeline/generated/generate_mg_factory_design_v2.jsx"
+C13_MASTER_JSX = ROOT / "out/ae/generate_c13_master.jsx"
+UI_HTML = ROOT / "archive/ae_pipeline/generated/ui/C26_UI_AD_FEED_SCROLL.html"
 
 
 class MgFactoryTests(unittest.TestCase):
@@ -30,7 +31,7 @@ class MgFactoryTests(unittest.TestCase):
         cls.cuts = {cut["cut"]: cut for cut in cls.payload["cuts"]}
 
     def test_workbook_has_mg_columns_and_params(self) -> None:
-        sheet = load_workbook(ROOT / "第1回_コンテ表_v1.xlsx", data_only=True, read_only=True)["コンテ"]
+        sheet = load_workbook(ROOT / "conte/第1回_コンテ表_v1.xlsx", data_only=True, read_only=True)["コンテ"]
         headers = {str(cell.value): cell.column for cell in next(sheet.iter_rows(min_row=1, max_row=1)) if cell.value}
         self.assertIn("MGテンプレートID", headers)
         self.assertIn("MGパラメータJSON", headers)
@@ -117,11 +118,12 @@ class MgFactoryTests(unittest.TestCase):
             first = temp / "first.jsx"
             second = temp / "second.jsx"
             command = [
-                sys.executable, str(ROOT / "build_mg_factory.py"), str(MG_JSON),
+                sys.executable, str(ROOT / "archive/ae_pipeline/build_mg_factory.py"), str(MG_JSON),
                 "--cuts", "C01,C12", "--output",
             ]
-            subprocess.run(command + [str(first)], cwd=ROOT, check=True, capture_output=True, text=True)
-            subprocess.run(command + [str(second)], cwd=ROOT, check=True, capture_output=True, text=True)
+            env = {**os.environ, "PYTHONPATH": str(ROOT)}
+            subprocess.run(command + [str(first)], cwd=ROOT, env=env, check=True, capture_output=True, text=True)
+            subprocess.run(command + [str(second)], cwd=ROOT, env=env, check=True, capture_output=True, text=True)
             self.assertEqual(first.read_bytes(), second.read_bytes())
             jsx = first.read_text(encoding="utf-8-sig")
             self.assertIn("NANDAROU_MG_FACTORY_EP01_TEST_C01_C12", jsx)
@@ -131,15 +133,16 @@ class MgFactoryTests(unittest.TestCase):
 
             sentinel = temp / "sentinel.jsx"
             sentinel.write_text("KEEP", encoding="utf-8")
-            subprocess.run(command + [str(sentinel), "--check"], cwd=ROOT, check=True, capture_output=True, text=True)
+            subprocess.run(command + [str(sentinel), "--check"], cwd=ROOT, env=env, check=True, capture_output=True, text=True)
             self.assertEqual(sentinel.read_text(encoding="utf-8"), "KEEP")
 
     def test_committed_jsx_matches_current_builder(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             rebuilt = Path(directory) / "rebuilt.jsx"
             subprocess.run(
-                [sys.executable, str(ROOT / "build_mg_factory.py"), str(MG_JSON), "--output", str(rebuilt)],
+                [sys.executable, str(ROOT / "archive/ae_pipeline/build_mg_factory.py"), str(MG_JSON), "--output", str(rebuilt)],
                 cwd=ROOT,
+                env={**os.environ, "PYTHONPATH": str(ROOT)},
                 check=True,
                 capture_output=True,
                 text=True,
@@ -160,8 +163,9 @@ class MgFactoryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             rebuilt = Path(directory) / "design_v2.jsx"
             subprocess.run(
-                [sys.executable, str(ROOT / "build_mg_factory_design_v2.py"), str(MG_JSON), "--output", str(rebuilt)],
+                [sys.executable, str(ROOT / "archive/ae_pipeline/build_mg_factory_design_v2.py"), str(MG_JSON), "--output", str(rebuilt)],
                 cwd=ROOT,
+                env={**os.environ, "PYTHONPATH": str(ROOT)},
                 check=True,
                 capture_output=True,
                 text=True,

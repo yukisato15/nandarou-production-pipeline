@@ -8,6 +8,7 @@ import {StatCard, statCardSchema} from './components/StatCard';
 import {Statement, statementSchema} from './components/Statement';
 import {ThumbnailStack, thumbnailStackSchema} from './components/ThumbnailStack';
 import {TitleCard, titleCardSchema} from './components/TitleCard';
+import {EpisodeTitle, episodeTitleSchema} from './components/EpisodeTitle';
 
 // Component Selectorの本体。
 // AI(または人間)はこの一覧から type を選び、schema に合うpropsをJSONで書く。
@@ -21,6 +22,12 @@ type Entry = {
 };
 
 export const registry: Record<string, Entry> = {
+  episode_title: {
+    component: EpisodeTitle,
+    schema: episodeTitleSchema,
+    defaultDurationInFrames: 144,
+    description: 'アイキャッチ直後の墨背景エピソードタイトル。HUD残滓から本編へ橋渡しする。',
+  },
   title_card: {
     component: TitleCard,
     schema: titleCardSchema,

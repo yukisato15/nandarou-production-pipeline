@@ -3,7 +3,7 @@
 番組のMG(グラフ・引用・宣言・タイトル等)をJSONから半自動生成する基盤。
 
 - **はじめての人**: [使い方マニュアル.md](./使い方マニュアル.md) を読む
-- 設計の全体像: `../mg_factory/design_reference/Remotion基盤_調査設計_v1.md`
+- 設計の全体像: `../docs/design_reference/Remotion基盤_調査設計_v1.md`
 
 ## コンポジション
 
@@ -12,6 +12,7 @@
 | `JsonScenes` | **本命。** シーンJSON→レジストリのコンポーネントを連結して動画化 |
 | `C13AttentionFlow` | 第1回C13のプロトタイプ(視線→再生→広告費ボード) |
 | `TelopOverlay` | `data/ep01_telops.json` → 背景透過テロップ動画 |
+| `EpisodeTitle` | `episode_title` props → C10直後のエピソードタイトルカード(144F) |
 
 ## コマンド
 

@@ -12,6 +12,8 @@ export const theme = {
   red: '#B8352E',
   ash: '#6E6D66',
   white: '#EAE6DF',
+  hudCyan: '#7EC8E3',
+  hudCyanPale: '#B7D9E8',
 
   fontMincho: "'Shippori Mincho', 'Hiragino Mincho ProN', serif",
   fontNumber: "Oswald, sans-serif",

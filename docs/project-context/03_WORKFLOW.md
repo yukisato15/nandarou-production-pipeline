@@ -5,7 +5,7 @@
 ```text
 台本（人間承認）
   → コンテ表（Excel）
-  → conte2srt.py / conte2telops.py / conte2mg.py
+  → tools/conte2srt.py / tools/conte2telops.py / tools/conte2mg.py
   → SRT・テロップJSON・シーンJSON
   → Remotion Studioで確認
   → Remotionで素材レンダー
@@ -16,7 +16,7 @@
 
 1. Excelの「コンテ」シートを編集する。テロップは記法v2（`S2/本文`など）、位置・演出はモーション列タグで記述する。
 2. `validate_telops.py`で記法違反を止める。
-3. `conte2srt.py`でS1 SRTを生成する。23.976fps、既定5.5字/秒を使う。
+3. `tools/conte2srt.py`でS1 SRTを生成する。23.976fps、既定5.5字/秒を使う。
 4. `conte2telops.py`でS2/S3/S5のRemotion入力JSONを生成する。S1/S4/S6は別経路へ送る。
 5. `data/*.json`を`JsonScenes`へ渡す。`registry.tsx`のZod schemaに合わなければ停止する。
 6. `npm run dev`でStudioを開き、静止画・モーション・可読性を確認する。

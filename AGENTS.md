@@ -3,7 +3,7 @@
 このリポジトリで作業するAI(Claude / Codex / その他)は、まずこのファイルを読むこと。
 ここには「何のプロジェクトか」「どう作業するか」「何をしてはいけないか」を集約してある。
 
-最終更新: 2026-07-14
+最終更新: 2026-07-17
 
 ---
 
@@ -14,7 +14,7 @@ YouTube番組**『なんだろう』解体**の制作パイプライン。
 
 **文書の序列(矛盾したら上位が勝つ):**
 `UnsaidWorks_ブランド定義_v1.1` > `チャンネル設計書_v4` > 本ファイル・各ガイド > 個別の作業物
-(原本docxはリポジトリ直下。AI可読の抽出版は `mg_factory/design_reference/` に同名.mdあり)
+(原本docxは `docs/originals/`。AI可読の抽出版は `docs/design_reference/` に同名.mdあり)
 
 - ブランド構造: **Unsaid Works**(レーベル=音楽+映像の制作室)の映像部門が『なんだろう』解体。
   タグライン「言われていないことを、かたちにする。」
@@ -35,7 +35,7 @@ YouTube番組**『なんだろう』解体**の制作パイプライン。
    ↓
 コンテ表(Excel) ……… 第N回_コンテ表_v1.xlsx(25列)。見本=第1回・第2回
    ↓                    テロップ列は「テロップ記法v2」(各コンテ表内のシート参照)
-   ├─ conte2srt.py → S1字幕SRT(Premiere用)
+   ├─ tools/conte2srt.py → S1字幕SRT(Premiere用)
    ├─ テロップJSON → Remotion TelopOverlay → 透過ProRes(S2/S3/S5)
    ├─ シーンJSON  → Remotion JsonScenes  → データMG(グラフ・引用・宣言)
    ├─ モンタージュJSON → Remotion MontageScene → 資料モンタージュ(実写+紙+数字+注釈)★設計段階
@@ -49,8 +49,8 @@ Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終�
 
 | ゲート | コマンド | 合格条件 |
 |---|---|---|
-| コンテ表の整合 | `python3 conte2srt.py <コンテ表>` | 警告ゼロ |
-| テロップ記法v2 | `python3 validate_telops.py <コンテ表>` | 違反ゼロ |
+| コンテ表の整合 | `python3 tools/conte2srt.py conte/第N回_コンテ表_v1.xlsx` | 警告ゼロ |
+| テロップ記法v2 | `python3 tools/validate_telops.py conte/第N回_コンテ表_v1.xlsx` | 違反ゼロ |
 | Remotion型 | `cd remotion_mg && npm run typecheck` | エラーゼロ |
 | 見た目 | `npx remotion still` で静止画を出して目視 | 番組ルック準拠 |
 
@@ -63,7 +63,7 @@ Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終�
 - **① 情報カット生成**: グラフ・年表・引用・宣言・タイトル(抽象・データ)。JsonScenes+レジストリ。実装済み
 - **② 資料モンタージュ編集台**: 実写+静止画+紙+数字+注釈をコードで合成(VOX的)。MontageScene。**設計段階**。
   素材は完成品でなくてよい(Remotion側でクロップ・切り抜き・グレード・合成)。生成AIの補完として
-  要所で使い、正確な資料の図示・数字はここへ寄せる。詳細: `mg_factory/design_reference/資料モンタージュ設計_v1.md`
+  要所で使い、正確な資料の図示・数字はここへ寄せる。詳細: `docs/design_reference/資料モンタージュ設計_v1.md`
 
 **2ループ構成。これを崩さない(①②共通):**
 
@@ -78,7 +78,7 @@ Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終�
 - フォントは@fontsource同梱、素材は`public/`配下(OSフォント・外部CDN禁止)
 - 型は「番組で3回以上使う画」だけ。1回きりの演出は単発コンポジション(例: C13AttentionFlow)
 - 詳細: `remotion_mg/README.md` / 初心者向け: `remotion_mg/使い方マニュアル.md`
-- 設計の全経緯: `mg_factory/design_reference/Remotion基盤_調査設計_v1.md`(①) / `資料モンタージュ設計_v1.md`(②)
+- 設計の全経緯: `docs/design_reference/Remotion基盤_調査設計_v1.md`(①) / `資料モンタージュ設計_v1.md`(②)
 
 ## 5. デザイン規則(絶対)
 
@@ -100,7 +100,7 @@ Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終�
   まだ確定していません」の三点留保をセットで
 - 歴史逸話: 帰属と真偽注記を必ず付ける(例: 「ハーストがそう言った、という逸話まであります。実話かは、怪しい」)
 - 偽サムネ・偽UI: 実在チャンネル・実在ブランド・実在紙面を模倣しない(架空の文言・架空ロゴ)
-- 人物の写真・映像(**v4.1改訂・3段階**。詳細: `mg_factory/design_reference/チャンネル設計書_改訂記録_v4.1.md`):
+- 人物の写真・映像(**v4.1改訂・3段階**。詳細: `docs/design_reference/チャンネル設計書_改訂記録_v4.1.md`):
   ①私人=顔NG(ぼかし・引き) ②存命の公人=権利クリア写真+公的活動の論評文脈ならOK
   (侮辱加工・サムネ釣り・係争当事者は禁止) ③歴史人物(故人・加害者含む)=PD/ライセンス済みならOK、
   抑制的に資料として提示(ナチス関連は概要欄に教育目的を明示)
@@ -113,7 +113,7 @@ Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終�
 
 | スタイル | 内容 | 管理先 |
 |---|---|---|
-| S1 | 標準字幕 | Premiere SRT(conte2srt.py)。Remotion対象外 |
+| S1 | 標準字幕 | Premiere SRT(`tools/conte2srt.py`)。Remotion対象外 |
 | S2/S3/S5 | 強調・引用・数字 | Remotion TelopOverlay(透過mov、パート分割で書き出し) |
 | S4 | 黒画面宣言 | フルフレームカット=JsonScenesのstatement型 |
 | S6 | サムネ/ポスト内文字 | Canva/Photoshop(画像側) |
@@ -124,14 +124,14 @@ Premiere(編集席) …… 全素材の合成・音・呼吸。ここが最終�
 **改行ルール(S1字幕・S2テロップ共通、2026-07-13制定)**:
 ①1行に収まるなら1行(テロップはフォントを1段落として再判定) ②折るときは句点>読点>助詞の
 自然な位置で、各行が均等に近くなる点を選ぶ ③端数だけの行・字幕(「う。」「しなかったからです」等)を
-作らない(実装: conte2srt.py / TelopOverlay.tsx)
+作らない(実装: `tools/conte2srt.py` / TelopOverlay.tsx)
 
 **強調ルール**: 1テロップにつき強調は最大1語。金茶`《》`=概念キーワード(仕様・学習・燃料など)、
 朱`[emph:語|朱]`=感情の刃・危険語(狂っている・ウソ・わざと)で**1話2箇所まで**。
 強調語はワンテンポ(12F)遅れて浮き上がる。S3引用とS1字幕には強調を入れない(引用は史料として静かに)。
 
 **S1とテロップの重複禁止ルール(2026-07-13制定)**:
-①`S1/全文`は「ナレーション−同カットのS2/S4テロップと同じ文」に自動展開される(conte2srt.py)。
+①`S1/全文`は「ナレーション−同カットのS2/S4テロップと同じ文」に自動展開される(`tools/conte2srt.py`)。
 同じ文が字幕とテロップに二重に出ることはない
 ②S2/S3テロップの出現タイミングは、ナレーション内で該当文が始まる位置から自動推定(文字数比例、
 conte2telops.pyのdelaySec)。カット頭ではなく「読まれる瞬間」に出て、カット末まで保持
@@ -166,22 +166,23 @@ TelopOverlayは**パート単位の絶対時間で書き出さない**。カッ�
 
 | 知りたいこと | 場所 |
 |---|---|
-| ブランドの憲法(最上位) | `UnsaidWorks_ブランド定義_v1.1_確定版.md.docx`(抽出md: `mg_factory/design_reference/`) |
-| チャンネル設計・15回ロードマップ・KPI | `チャンネル設計書_v4_確定版.md.docx`(抽出md: 同上) |
-| 台本の書き方・番組の声 | `mg_factory/design_reference/台本文体ガイド_v1.md` |
+| ブランドの憲法(最上位) | `docs/originals/UnsaidWorks_ブランド定義_v1.1_確定版.md.docx`(抽出md: `docs/design_reference/`) |
+| チャンネル設計・15回ロードマップ・KPI | `docs/originals/チャンネル設計書_v4_確定版.md.docx`(抽出md: 同上) |
+| 台本の書き方・番組の声 | `docs/design_reference/台本文体ガイド_v1.md` |
 | Remotionの使い方(初心者向け) | `remotion_mg/使い方マニュアル.md` |
-| Remotion設計思想・OSS評価(役割①情報カット) | `mg_factory/design_reference/Remotion基盤_調査設計_v1.md` |
-| Remotion資料モンタージュ(役割②編集台) | `mg_factory/design_reference/資料モンタージュ設計_v1.md` |
-| チャンネル設計の改訂差分 | `mg_factory/design_reference/チャンネル設計書_改訂記録_v4.1.md`(人物写真) / `_v4.2.md`(映像素材) |
-| テロップ記法v2 | 各コンテ表の「テロップ記法v2」シート + `validate_telops.py` |
-| 記法移行の経緯 | `mg_factory/design_reference/第N回_テロップ記法v2_修正ログ.md` |
-| 偽サムネの作り方 | `mg_factory/design_reference/C01_偽サムネ制作仕様_v1.md` |
-| ゴールデン見本 | `第1回_コンテ表_v1.xlsx` / `第2回_コンテ表_v1.xlsx` |
+| Remotion設計思想・OSS評価(役割①情報カット) | `docs/design_reference/Remotion基盤_調査設計_v1.md` |
+| Remotion資料モンタージュ(役割②編集台) | `docs/design_reference/資料モンタージュ設計_v1.md` |
+| チャンネル設計の改訂差分 | `docs/design_reference/チャンネル設計書_改訂記録_v4.1.md`(人物写真) / `_v4.2.md`(映像素材) |
+| テロップ記法v2 | 各コンテ表の「テロップ記法v2」シート + `tools/validate_telops.py` |
+| 記法移行の経緯 | `docs/design_reference/第N回_テロップ記法v2_修正ログ.md` |
+| 偽サムネの作り方 | `docs/design_reference/C01_偽サムネ制作仕様_v1.md` |
+| ゴールデン見本 | `conte/第1回_コンテ表_v1.xlsx` / `conte/第2回_コンテ表_v1.xlsx` |
+| 旧路線の隔離場所 | `archive/`（新規参照禁止） |
 
 ## 10. よくある作業のレシピ
 
 **新しい回のコンテを作る**: 第1回・第2回の表を開き、列構成(25列)と密度をそのまま踏襲。
-台本→カット割り→各列を埋める→conte2srt.pyとvalidate_telops.pyを警告ゼロまで回す。
+台本→カット割り→各列を埋める→`python3 tools/conte2srt.py`と`python3 tools/validate_telops.py`を警告ゼロまで回す。
 素材ソースは5カテゴリから選ぶ(v4.2): Remotion情報カット / **Remotion(モンタージュ)** /
 ストック・自撮り / 生成AI(Runway・Gemini) / 偽サムネ。歴史・戦史・「資料を構造的に見せる」
 カットはRunway一択にせず、モンタージュ(MGテンプレID=`MNT_*`)を第一候補に検討する。

@@ -1,32 +1,59 @@
-﻿#target aftereffects
+#!/usr/bin/env python3
+"""Build the C13 After Effects scaffold JSX.
+
+This is the first asset-driven master after the design reset.  The script does
+not invent a new look; it translates the approved C13 spec into an AE scaffold
+that imports the prepared assets, builds the BOARD precomp, places named PH/TXT
+ports, and saves QA stills when the JSX is run in After Effects.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent.parent
+OUT = ROOT / "out" / "ae" / "generate_c13_master.jsx"
+
+
+def jsx_string(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False)
+
+
+def build_payload() -> dict[str, object]:
+    return {
+        "project": {
+            "episode": "EP01",
+            "fps": 23.976,
+            "width": 1920,
+            "height": 1080,
+            "duration_frames": 312,
+        },
+        "paths": {
+        "eye": str((ROOT / "assets" / "mg" / "c13" / "eye_phone_glow.png").resolve()),
+            "paper": str((ROOT / "assets" / "textures" / "paper_scan_01.jpg").resolve()),
+            "paper_white": str((ROOT / "assets" / "textures" / "paper_scan_02_white.jpg").resolve()),
+            "paper_aged": str((ROOT / "assets" / "textures" / "paper_scan_03_aged.jpg").resolve()),
+            "qa_dir": str((ROOT / "mg_factory" / "qa" / "C13").resolve()),
+        },
+    }
+
+
+JSX_TEMPLATE = r'''#target aftereffects
 
 /*
  * NANDAROU / C13 master scaffold
  *
  * Source of truth:
- * - mg_factory/design_reference/C13_board_master_spec.md
- * - mg_factory/design_reference/C13_board_master_spec.html
+ * - docs/design_reference/C13_board_master_spec.md
+ * - docs/design_reference/C13_board_master_spec.html
  *
  * This JSX builds the first asset-driven master.  It intentionally keeps all
  * colors, sizes, coordinates, and timings close to the approved C13 spec.
  */
 (function () {
-    var PAYLOAD = {
-    "project": {
-        "episode": "EP01",
-        "fps": 23.976,
-        "width": 1920,
-        "height": 1080,
-        "duration_frames": 312
-    },
-    "paths": {
-        "eye": "/Users/yukisato/VSCode_Python/Youtube企画 スクリプト作成自動化/assets/mg/c13/eye_phone_glow.png",
-        "paper": "/Users/yukisato/VSCode_Python/Youtube企画 スクリプト作成自動化/assets/textures/paper_scan_01.jpg",
-        "paper_white": "/Users/yukisato/VSCode_Python/Youtube企画 スクリプト作成自動化/assets/textures/paper_scan_02_white.jpg",
-        "paper_aged": "/Users/yukisato/VSCode_Python/Youtube企画 スクリプト作成自動化/assets/textures/paper_scan_03_aged.jpg",
-        "qa_dir": "/Users/yukisato/VSCode_Python/Youtube企画 スクリプト作成自動化/mg_factory/qa/C13"
-    }
-};
+    var PAYLOAD = __PAYLOAD__;
     var PROJECT = PAYLOAD.project;
     var PATHS = PAYLOAD.paths;
     var FPS = PROJECT.fps;
@@ -611,3 +638,16 @@
         app.endUndoGroup();
     }
 }());
+'''
+
+
+def main() -> None:
+    payload = build_payload()
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    source = JSX_TEMPLATE.replace("__PAYLOAD__", json.dumps(payload, ensure_ascii=False, indent=4))
+    OUT.write_text(source, encoding="utf-8-sig")
+    print(f"wrote {OUT}")
+
+
+if __name__ == "__main__":
+    main()

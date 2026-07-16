@@ -21,7 +21,7 @@
 
 ## 現在の境界
 
-- **S1字幕**: `conte2srt.py`でSRTを生成し、Premiereで扱う。
+- **S1字幕**: `tools/conte2srt.py`でSRTを生成し、Premiereで扱う。
 - **S2/S3/S5テロップ**: `conte2telops.py` → Remotion `TelopOverlay`。納品はカット単位の透過ProResを基本とする。
 - **S4宣言**: `JsonScenes`の`statement`などフルフレーム画で扱う。
 - **S6**: サムネイル/ポストなど画像側に含める。

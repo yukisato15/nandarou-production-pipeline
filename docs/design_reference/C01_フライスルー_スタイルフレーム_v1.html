@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>C01 Z軸フライスルー スタイルフレーム v1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700;900&family=Oswald:wght@500&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0E0F10;--room:#0A0B0C;--paper:#E3DED1;--gold:#C9A063;
+    --yel:#FFE600;--red:#E60012;--blk:#111111;}
+  body{background:#1a1b1d;color:var(--paper);font-family:'Shippori Mincho',serif;margin:0;padding:48px 0 80px;}
+  .doc{width:920px;margin:0 auto;}
+  h1{font-size:22px;font-weight:700;letter-spacing:.12em;border-left:4px solid var(--gold);padding-left:14px;}
+  .meta{font-size:13px;color:#9a988f;line-height:1.9;margin-bottom:8px;}
+  .frame-label{font-family:'Oswald',sans-serif;font-size:13px;color:var(--gold);letter-spacing:.08em;margin:34px 0 6px;}
+  .frame-label b{color:var(--paper);font-family:'Shippori Mincho',serif;font-weight:600;letter-spacing:.05em;margin-left:12px;font-size:13px;}
+  .vp{width:883px;height:497px;overflow:hidden;border:1px solid #333;}
+  .stage{width:1920px;height:1080px;background:var(--room);position:relative;transform:scale(.46);transform-origin:top left;overflow:hidden;}
+  .grain{position:absolute;inset:0;opacity:.05;pointer-events:none;z-index:60;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");}
+  .vig{position:absolute;inset:0;pointer-events:none;z-index:61;
+    background:radial-gradient(ellipse 130% 100% at 50% 46%, transparent 46%, rgba(0,0,0,.34) 100%);}
+  .glow{position:absolute;inset:0;background:#fff;pointer-events:none;z-index:62;}
+  /* ---- 偽サムネ(プレースホルダ。実装は c01/C01_thumb_01〜03.png 等のPNG差し替え) ---- */
+  .thumb{position:absolute;width:620px;height:349px;border-radius:10px;overflow:hidden;
+    box-shadow:0 22px 60px rgba(0,0,0,.65);font-family:'Noto Sans JP',sans-serif;}
+  .tA{background:linear-gradient(135deg,#1a0505 0%,#3d0a0a 100%);}
+  .tA .badge{position:absolute;top:22px;left:22px;background:var(--red);color:#fff;font-weight:900;font-size:40px;padding:6px 18px;}
+  .tA .sub{position:absolute;top:26px;right:22px;color:var(--yel);font-weight:700;font-size:26px;}
+  .tA .big{position:absolute;bottom:30px;left:22px;color:#fff;font-weight:900;font-size:92px;line-height:1.05;}
+  .tB{background:var(--yel);}
+  .tB .bar{position:absolute;top:0;left:0;right:0;background:var(--blk);color:#fff;font-weight:900;font-size:34px;padding:10px 20px;}
+  .tB .big{position:absolute;bottom:26px;left:24px;color:var(--blk);font-weight:900;font-size:96px;line-height:1.0;}
+  .tB .big em{font-style:normal;color:var(--red);}
+  .tC{background:repeating-conic-gradient(from 0deg at 50% 60%, #FFE600 0deg 12deg, #F5D400 12deg 24deg);}
+  .tC .circle{position:absolute;top:34px;left:30px;width:170px;height:170px;border-radius:50%;background:var(--red);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:38px;text-align:center;line-height:1.2;}
+  .tC .big{position:absolute;bottom:24px;left:30px;color:var(--blk);font-weight:900;font-size:100px;line-height:1.02;}
+  .tC .big em{font-style:normal;color:var(--red);}
+  .tD{background:#0d1f3c;}
+  .tD .big{position:absolute;bottom:28px;left:24px;color:#fff;font-weight:900;font-size:84px;}
+  .tD .badge{position:absolute;top:22px;left:22px;background:var(--yel);color:var(--blk);font-weight:900;font-size:34px;padding:6px 16px;}
+  .tE{background:#3d1010;}
+  .tE .big{position:absolute;bottom:28px;left:24px;color:var(--yel);font-weight:900;font-size:88px;}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:10px;}
+  th,td{border:1px solid #3a3b3d;padding:7px 10px;text-align:left;line-height:1.6;}
+  th{background:#242527;font-weight:600;color:var(--gold);font-family:'Oswald',sans-serif;letter-spacing:.05em;}
+  td.f{font-family:'Oswald',sans-serif;color:var(--paper);white-space:nowrap;}
+  h3{font-size:15px;margin-top:40px;border-left:3px solid var(--gold);padding-left:10px;}
+  .note{font-size:13px;color:#9a988f;line-height:2;}
+</style>
+</head>
+<body>
+<div class="doc">
+<h1>C01 偽サムネ Z軸フライスルー スタイルフレーム v1</h1>
+<div class="meta">
+  演出: 視聴者の背後から偽サムネが飛び込み、画面を覆ってから奥の定位置に着地——「通知に画面を占拠される体験」。<br>
+  背景: 暗いルームトーン #0A0B0C+ビネット34%+グレイン(グリッチコラージュ背景は廃止。サムネの高彩度を引き立てる)。<br>
+  尺: 120F=5.005s @23.976fps / サムネはCSSプレースホルダ(実装は c01/C01_thumb_01〜03.png+バリエーションPNG差し替え)。
+</div>
+
+<!-- ① F0 -->
+<div class="frame-label">① F0 / 0.00s<b>ルームトーンのみ。真っ黒でなく#0A0B0C(部屋の暗さ)</b></div>
+<div class="vp"><div class="stage"><div class="grain"></div><div class="vig"></div></div></div>
+
+<!-- ② F8 飛来中 -->
+<div class="frame-label">② F8 / 0.33s<b>サムネ1飛来中——スケール250%・ブラー5px。画面をほぼ覆う(近すぎてピントが合わない)</b></div>
+<div class="vp"><div class="stage">
+  <div class="thumb tA" style="left:-120px;top:-100px;width:1550px;height:872px;filter:blur(5px);transform:rotate(-2deg);opacity:.96;">
+    <div class="badge" style="font-size:100px;padding:15px 45px;">緊急</div>
+    <div class="sub" style="font-size:65px;top:65px;right:55px;">※もう間に合いません</div>
+    <div class="big" style="font-size:230px;bottom:75px;left:55px;">日本崩壊</div>
+  </div>
+  <div class="grain"></div><div class="vig"></div>
+</div></div>
+
+<!-- ③ F16 着地 -->
+<div class="frame-label">③ F16 / 0.67s<b>サムネ1着地——グロー1F+カメラ3px沈み+低音インパクトSE</b></div>
+<div class="vp"><div class="stage">
+  <div class="thumb tA" style="left:390px;top:305px;transform:rotate(-3.5deg);">
+    <div class="badge">緊急</div><div class="sub">※もう間に合いません</div><div class="big">日本崩壊</div>
+  </div>
+  <div class="glow" style="opacity:.14;"></div>
+  <div class="grain"></div><div class="vig"></div>
+</div></div>
+
+<!-- ④ F30 2枚目飛来中 -->
+<div class="frame-label">④ F30 / 1.25s<b>サムネ2飛来中(左下象限から・ブラー)。1枚目は定位置</b></div>
+<div class="vp"><div class="stage">
+  <div class="thumb tA" style="left:390px;top:305px;transform:rotate(-3.5deg);">
+    <div class="badge">緊急</div><div class="sub">※もう間に合いません</div><div class="big">日本崩壊</div>
+  </div>
+  <div class="thumb tB" style="left:-200px;top:150px;width:1400px;height:788px;filter:blur(4px);transform:rotate(3deg);opacity:.97;">
+    <div class="bar" style="font-size:76px;padding:22px 45px;">知らないと危険</div>
+    <div class="big" style="font-size:215px;bottom:60px;">年金が<em>消える</em></div>
+  </div>
+  <div class="grain"></div><div class="vig"></div>
+</div></div>
+
+<!-- ⑤ F54 3枚目着地 -->
+<div class="frame-label">⑤ F54 / 2.25s<b>サムネ3(主役)着地の瞬間——前の2枚を踏んで最前面・最大。グロー強め</b></div>
+<div class="vp"><div class="stage">
+  <div class="thumb tA" style="left:390px;top:305px;transform:rotate(-3.5deg);">
+    <div class="badge">緊急</div><div class="sub">※もう間に合いません</div><div class="big">日本崩壊</div>
+  </div>
+  <div class="thumb tB" style="left:940px;top:385px;transform:rotate(4deg);">
+    <div class="bar">知らないと危険</div><div class="big">年金が<em>消える</em></div>
+  </div>
+  <div class="thumb tC" style="left:610px;top:430px;width:700px;height:394px;transform:rotate(-2deg);z-index:10;">
+    <div class="circle">9割が<br>知らない</div>
+    <div class="big">知らないと<em>損する</em></div>
+  </div>
+  <div class="glow" style="opacity:.18;"></div>
+  <div class="grain"></div><div class="vig"></div>
+</div></div>
+
+<!-- ⑥ F72 加速期 -->
+<div class="frame-label">⑥ F72 / 3.00s<b>加速期——4枚目着地済み・5枚目が飛来中。間隔が詰まっていく</b></div>
+<div class="vp"><div class="stage">
+  <div class="thumb tA" style="left:390px;top:305px;transform:rotate(-3.5deg);">
+    <div class="badge">緊急</div><div class="sub">※もう間に合いません</div><div class="big">日本崩壊</div>
+  </div>
+  <div class="thumb tB" style="left:940px;top:385px;transform:rotate(4deg);">
+    <div class="bar">知らないと危険</div><div class="big">年金が<em>消える</em></div>
+  </div>
+  <div class="thumb tC" style="left:610px;top:430px;width:700px;height:394px;transform:rotate(-2deg);z-index:10;">
+    <div class="circle">9割が<br>知らない</div>
+    <div class="big">知らないと<em>損する</em></div>
+  </div>
+  <div class="thumb tD" style="left:20px;top:620px;transform:rotate(6deg);z-index:11;">
+    <div class="badge">残り3日</div><div class="big">今すぐ確認</div>
+  </div>
+  <div class="thumb tE" style="left:700px;top:-150px;width:1150px;height:647px;filter:blur(4px);transform:rotate(-4deg);opacity:.97;z-index:12;">
+    <div class="big" style="font-size:150px;">銀行が隠す真実</div>
+  </div>
+  <div class="grain"></div><div class="vig"></div>
+</div></div>
+
+<!-- ⑦ F93 最終着地 -->
+<div class="frame-label">⑦ F93 / 3.88s<b>7枚目着地——画面がほぼ埋まる。端は見切れ(整列させない)</b></div>
+<div class="vp"><div class="stage">
+  <div class="thumb tA" style="left:390px;top:305px;transform:rotate(-3.5deg);">
+    <div class="badge">緊急</div><div class="sub">※もう間に合いません</div><div class="big">日本崩壊</div>
+  </div>
+  <div class="thumb tB" style="left:940px;top:385px;transform:rotate(4deg);">
+    <div class="bar">知らないと危険</div><div class="big">年金が<em>消える</em></div>
+  </div>
+  <div class="thumb tC" style="left:610px;top:430px;width:700px;height:394px;transform:rotate(-2deg);z-index:10;">
+    <div class="circle">9割が<br>知らない</div>
+    <div class="big">知らないと<em>損する</em></div>
+  </div>
+  <div class="thumb tD" style="left:20px;top:620px;transform:rotate(6deg);z-index:11;">
+    <div class="badge">残り3日</div><div class="big">今すぐ確認</div>
+  </div>
+  <div class="thumb tE" style="left:1340px;top:120px;transform:rotate(-5deg);z-index:12;">
+    <div class="big">銀行が隠す真実</div>
+  </div>
+  <div class="thumb tD" style="left:180px;top:-60px;transform:rotate(3deg);z-index:13;background:#301a00;">
+    <div class="badge" style="background:var(--red);color:#fff;">警告</div><div class="big" style="color:var(--yel);">老後2000万円</div>
+  </div>
+  <div class="thumb tE" style="left:1180px;top:760px;transform:rotate(-7deg);z-index:14;background:#12300a;">
+    <div class="big" style="color:#fff;">医者は教えない</div>
+  </div>
+  <div class="glow" style="opacity:.12;"></div>
+  <div class="grain"></div><div class="vig"></div>
+</div></div>
+
+<!-- ⑧ F110 決め画 -->
+<div class="frame-label">⑧ F110 / 4.59s<b>【決め画】占拠完了。ルームトーンはほぼ見えない。〜F120ホールド→C02へ</b></div>
+<div class="vp"><div class="stage">
+  <div class="thumb tA" style="left:390px;top:305px;transform:rotate(-3.5deg);">
+    <div class="badge">緊急</div><div class="sub">※もう間に合いません</div><div class="big">日本崩壊</div>
+  </div>
+  <div class="thumb tB" style="left:940px;top:385px;transform:rotate(4deg);">
+    <div class="bar">知らないと危険</div><div class="big">年金が<em>消える</em></div>
+  </div>
+  <div class="thumb tC" style="left:610px;top:430px;width:700px;height:394px;transform:rotate(-2deg);z-index:10;">
+    <div class="circle">9割が<br>知らない</div>
+    <div class="big">知らないと<em>損する</em></div>
+  </div>
+  <div class="thumb tD" style="left:20px;top:620px;transform:rotate(6deg);z-index:11;">
+    <div class="badge">残り3日</div><div class="big">今すぐ確認</div>
+  </div>
+  <div class="thumb tE" style="left:1340px;top:120px;transform:rotate(-5deg);z-index:12;">
+    <div class="big">銀行が隠す真実</div>
+  </div>
+  <div class="thumb tD" style="left:180px;top:-60px;transform:rotate(3deg);z-index:13;background:#301a00;">
+    <div class="badge" style="background:var(--red);color:#fff;">警告</div><div class="big" style="color:var(--yel);">老後2000万円</div>
+  </div>
+  <div class="thumb tE" style="left:1180px;top:760px;transform:rotate(-7deg);z-index:14;background:#12300a;">
+    <div class="big">医者は教えない</div>
+  </div>
+  <div class="grain"></div><div class="vig"></div>
+</div></div>
+
+<h3>グローバルタイムライン(23.976fps・120F)</h3>
+<table>
+<tr><th>F</th><th>t(s)</th><th>イベント</th><th>備考</th></tr>
+<tr><td class="f">0</td><td class="f">0.000</td><td>ルームトーンのみ</td><td>#0A0B0C+ビネット34%+グレイン</td></tr>
+<tr><td class="f">4–16</td><td class="f">0.17–0.67</td><td>サムネ1 飛来→着地(飛行12F)</td><td>ウーッシュ1(F4–14、ピークF12)/着地SE=低音</td></tr>
+<tr><td class="f">24–36</td><td class="f">1.00–1.50</td><td>サムネ2 飛来→着地(12F)</td><td>ウーッシュ2</td></tr>
+<tr><td class="f">44–54</td><td class="f">1.84–2.25</td><td>サムネ3(主役)飛来→着地(10F)</td><td>グロー.18(他は.12〜.14)</td></tr>
+<tr><td class="f">62–70</td><td class="f">2.59–2.92</td><td>サムネ4(8F)</td><td>ここから加速。ウーッシュ音程を段階的に上げる</td></tr>
+<tr><td class="f">76–83</td><td class="f">3.17–3.46</td><td>サムネ5(7F)</td><td>—</td></tr>
+<tr><td class="f">86–92</td><td class="f">3.59–3.84</td><td>サムネ6(6F)</td><td>—</td></tr>
+<tr><td class="f">93–98</td><td class="f">3.88–4.09</td><td>サムネ7(5F)</td><td>最終着地</td></tr>
+<tr><td class="f">98–120</td><td class="f">4.09–5.01</td><td>決め画ホールド→C02へ</td><td>ナレ/次カットの頭に合わせPremiereで尻調整可</td></tr>
+</table>
+
+<h3>1枚あたりの飛行仕様(全サムネ共通)</h3>
+<table>
+<tr><th>局面</th><th>F(相対)</th><th>プロパティ</th></tr>
+<tr><td>出現</td><td class="f">0–2</td><td>scale 420%(画面外周から。毎回違う象限)/opacity 0→1/blur 6px/回転は着地値±3°</td></tr>
+<tr><td>飛行</td><td class="f">0–12(加速期は短縮)</td><td>scale 420→100% 指数ease-out(出85/入15)。blurはscaleに連動6→0px</td></tr>
+<tr><td>着地</td><td class="f">12–15</td><td>scale 100→97→100(3Fオーバーシュート)/画面グロー(白オーバーレイ 0→.14→0、3F)/スタック全体が+3px沈んで2Fで復帰</td></tr>
+</table>
+
+<h3>着地スロット(中心座標・1920系)</h3>
+<table>
+<tr><th>#</th><th>素材</th><th>中心(x,y)</th><th>回転</th><th>サイズ</th></tr>
+<tr><td class="f">1</td><td>C01_thumb_01(緊急・日本崩壊)</td><td class="f">700, 480</td><td class="f">−3.5°</td><td class="f">620×349</td></tr>
+<tr><td class="f">2</td><td>C01_thumb_02(年金が消える)</td><td class="f">1250, 560</td><td class="f">+4°</td><td class="f">620×349</td></tr>
+<tr><td class="f">3</td><td>C01_thumb_03(知らないと損する・主役)</td><td class="f">960, 627</td><td class="f">−2°</td><td class="f">700×394</td></tr>
+<tr><td class="f">4</td><td>バリエーションPNG</td><td class="f">330, 795</td><td class="f">+6°</td><td class="f">620×349(左端見切れ)</td></tr>
+<tr><td class="f">5</td><td>バリエーションPNG</td><td class="f">1650, 295</td><td class="f">−5°</td><td class="f">620×349(右端見切れ)</td></tr>
+<tr><td class="f">6</td><td>バリエーションPNG</td><td class="f">490, 115</td><td class="f">+3°</td><td class="f">620×349(上端見切れ)</td></tr>
+<tr><td class="f">7</td><td>バリエーションPNG</td><td class="f">1490, 935</td><td class="f">−7°</td><td class="f">620×349(下端見切れ)</td></tr>
+</table>
+
+<h3>SEキュー(Premiere用)</h3>
+<div class="note">
+・ウーッシュ×7: 各飛来頭から10F(加速期は飛行尺に合わせ短縮)。ピークは着地4F前。後半ほど音程/密度を上げる<br>
+・着地インパクト×7: soft cinematic hit low(SE規定準拠)。サムネ3と7だけ一段強く<br>
+・SEはRemotionに載せない(カット単位MOV納品、音はPremiere)
+</div>
+
+<h3>設計メモ</h3>
+<div class="note">
+・背景変更(グリッチコラージュ→ルームトーン)の理由: サムネ7枚が全て高彩度(劇中小道具の例外)のため、背景まで騒ぐと占拠の恐怖が薄れる。暗い部屋に通知が飛んでくる、が体験の正体<br>
+・サムネのCSSはプレースホルダ。実装は既存PNG(c01/)+バリエーション4枚(要制作 or feed_thumb流用)を差し替え<br>
+・飛来の出現位置は「毎回違う象限」だが乱数にせず上表の固定値(決定論・再現性)<br>
+・実装先: ThumbnailStack.tsx の改修(フレームイン→フライスルーへ)。registry型名は維持
+</div>
+</div>
+</body>
+</html>

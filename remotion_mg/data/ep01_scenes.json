@@ -4,17 +4,16 @@
     {
       "type": "thumbnail_stack",
       "id": "C01_thumbnail_stack",
-      "durationInFrames": 240,
+      "durationInFrames": 120,
       "props": {
         "images": [
           "c01/C01_thumb_01.png",
           "c01/C01_thumb_02.png",
-          "c01/C01_thumb_03.png"
-        ],
-        "beatFrames": [
-          8,
-          48,
-          88
+          "c01/C01_thumb_03.png",
+          "c01/C01_thumb_04.png",
+          "c01/C01_thumb_05.png",
+          "c01/C01_thumb_06.png",
+          "c01/C01_thumb_07.png"
         ]
       }
     },

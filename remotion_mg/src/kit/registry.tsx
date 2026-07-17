@@ -37,8 +37,8 @@ export const registry: Record<string, Entry> = {
   thumbnail_stack: {
     component: ThumbnailStack,
     schema: thumbnailStackSchema,
-    defaultDurationInFrames: 240,
-    description: '偽サムネPNGを3枚順に着弾スタック。C01などフック用。',
+    defaultDurationInFrames: 120,
+    description: '偽サムネPNGを7枚、手前から飛来させるC01フライスルー。',
   },
   phone_feed_hesitation: {
     component: PhoneFeedHesitation,

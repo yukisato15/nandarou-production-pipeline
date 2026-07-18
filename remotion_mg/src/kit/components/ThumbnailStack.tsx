@@ -12,6 +12,8 @@ import {z} from 'zod';
 export const thumbnailStackSchema = z.object({
   images: z.array(z.string()).length(7),
   durationInFrames: z.number().int().positive().optional(),
+  /** 透過納品時は none。Studio/QA は roomtone のまま確認する。 */
+  bg: z.enum(['roomtone', 'none']).default('roomtone'),
 });
 
 type FlySpec = {
@@ -96,7 +98,7 @@ export const FakeThumbnail: React.FC<{image: string; index: number}> = ({image, 
   <Img src={staticFile(image)} style={{width: '100%', height: '100%', objectFit: 'cover', display: 'block'}} />
 );
 
-export const ThumbnailStack: React.FC<z.infer<typeof thumbnailStackSchema>> = ({images}) => {
+export const ThumbnailStack: React.FC<z.infer<typeof thumbnailStackSchema>> = ({images, bg}) => {
   const frame = useCurrentFrame();
   // 各着地でスタック全体を2Fだけ3px沈める。既着地カードも同じ揺れを受ける。
   const stackSink = FLY_SPECS.reduce((sum, spec) => {
@@ -107,22 +109,28 @@ export const ThumbnailStack: React.FC<z.infer<typeof thumbnailStackSchema>> = ({
   }, 0);
 
   return (
-    <AbsoluteFill style={{background: '#0A0B0C', overflow: 'hidden'}}>
-      <AbsoluteFill
-        style={{
-          background: 'radial-gradient(ellipse at 50% 48%, transparent 34%, rgba(0,0,0,.34) 100%)',
-          pointerEvents: 'none',
-        }}
-      />
-      <AbsoluteFill
-        style={{
-          opacity: 0.09,
-          pointerEvents: 'none',
-          backgroundImage: 'radial-gradient(rgba(234,230,223,.20) .65px, transparent .85px)',
-          backgroundSize: '7px 7px',
-          mixBlendMode: 'screen',
-        }}
-      />
+    <AbsoluteFill style={{overflow: 'hidden'}}>
+      {bg === 'roomtone' ? (
+        <>
+          {/* 透過納品ではステージ層を描かない。Premiereで共用背景を下に敷く。 */}
+          <AbsoluteFill style={{background: '#0A0B0C'}} />
+          <AbsoluteFill
+            style={{
+              background: 'radial-gradient(ellipse at 50% 48%, transparent 34%, rgba(0,0,0,.34) 100%)',
+              pointerEvents: 'none',
+            }}
+          />
+          <AbsoluteFill
+            style={{
+              opacity: 0.09,
+              pointerEvents: 'none',
+              backgroundImage: 'radial-gradient(rgba(234,230,223,.20) .65px, transparent .85px)',
+              backgroundSize: '7px 7px',
+              mixBlendMode: 'screen',
+            }}
+          />
+        </>
+      ) : null}
       <div style={{position: 'absolute', inset: 0, transform: `translateY(${stackSink}px)`}}>
         {images.map((image, index) => (
           <ThumbnailCard key={`${image}-${index}`} image={image} spec={FLY_SPECS[index]} frame={frame} index={index} />

@@ -14,7 +14,8 @@
           "c01/C01_thumb_05.png",
           "c01/C01_thumb_06.png",
           "c01/C01_thumb_07.png"
-        ]
+        ],
+        "bg": "roomtone"
       }
     },
     {
@@ -23,11 +24,17 @@
       "durationInFrames": 240,
       "props": {
         "images": [
-          "c02/C01_single_01.png",
-          "c02/C01_single_02.png",
-          "c02/C01_single_03.png"
+          "c01/C01_thumb_01.png",
+          "c01/C01_thumb_02.png",
+          "c01/C01_thumb_03.png",
+          "c01/C01_thumb_04.png",
+          "c01/C01_thumb_05.png",
+          "c01/C01_thumb_06.png",
+          "c01/C01_thumb_07.png",
+          "c01/C01_thumb_08.png"
         ],
-        "heroImage": "c02/ep01_thumb_A_reviewed.png"
+        "heroImage": "c02/ep01_thumb_E_dark_clean.png",
+        "bg": "roomtone"
       }
     },
     {
@@ -39,31 +46,18 @@
       }
     },
     {
-      "type": "bar_chart",
+      "type": "c012_word_growth",
       "id": "C12_word_growth",
-      "durationInFrames": 216,
+      "durationInFrames": 288,
       "props": {
-        "title": "見出しの煽り度と、再生の伸び",
-        "bars": [
-          {
-            "label": "ふつうの見出し",
-            "value": 100
-          },
-          {
-            "label": "「閲覧注意」",
-            "value": 138
-          },
-          {
-            "label": "「知らないと損」",
-            "value": 164
-          },
-          {
-            "label": "「日本、終わる」",
-            "value": 195
-          }
-        ],
-        "accentIndex": 3,
-        "conceptual": true
+        "ordinaryTitle": "日本経済と年金制度の現状",
+        "kicker": "同じテーマでも——",
+        "cards": [
+          {"headline":"経済が終わる","emphasis":"終わる","category":"破局","imagePath":"c01/C01_thumb_01.png","finalPosition":{"x":120,"y":260},"entranceTime":1.8,"settleTime":2.5},
+          {"headline":"年金、消える","emphasis":"消える","category":"喪失","imagePath":"c01/C01_thumb_02.png","finalPosition":{"x":650,"y":260},"entranceTime":2.8,"settleTime":3.5},
+          {"headline":"知らないと、損する","emphasis":"損する","category":"損失","imagePath":"c01/C01_thumb_03.png","finalPosition":{"x":120,"y":590},"entranceTime":3.8,"settleTime":4.5},
+          {"headline":"銀行が隠す真実","emphasis":"隠す真実","category":"秘密","imagePath":"c01/C01_thumb_04.png","finalPosition":{"x":650,"y":590},"entranceTime":4.8,"settleTime":5.5}
+        ]
       }
     },
     {

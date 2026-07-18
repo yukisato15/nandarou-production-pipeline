@@ -9,6 +9,7 @@ import {Statement, statementSchema} from './components/Statement';
 import {ThumbnailStack, thumbnailStackSchema} from './components/ThumbnailStack';
 import {TitleCard, titleCardSchema} from './components/TitleCard';
 import {EpisodeTitle, episodeTitleSchema} from './components/EpisodeTitle';
+import {C012WordGrowth, c012WordGrowthSchema} from './components/C012WordGrowth';
 
 // Component Selectorの本体。
 // AI(または人間)はこの一覧から type を選び、schema に合うpropsをJSONで書く。
@@ -22,6 +23,12 @@ type Entry = {
 };
 
 export const registry: Record<string, Entry> = {
+  c012_word_growth: {
+    component: C012WordGrowth,
+    schema: c012WordGrowthSchema,
+    defaultDurationInFrames: 288,
+    description: 'C012専用。煽り見出しのカードが反応を生み、視聴時間へ集約される暗いデジタル編集画。',
+  },
   episode_title: {
     component: EpisodeTitle,
     schema: episodeTitleSchema,
@@ -38,13 +45,13 @@ export const registry: Record<string, Entry> = {
     component: ThumbnailStack,
     schema: thumbnailStackSchema,
     defaultDurationInFrames: 120,
-    description: '偽サムネPNGを7枚、手前から飛来させるC01フライスルー。',
+    description: '完成済み偽サムネPNGを7枚、手前から飛来させるC01フライスルー。bg:noneで透過納品。',
   },
   phone_feed_hesitation: {
     component: PhoneFeedHesitation,
     schema: phoneFeedHesitationSchema,
     defaultDurationInFrames: 240,
-    description: 'スマホYouTube風フィード。縦スクロール停止、指の逡巡、主役サムネ着弾。',
+    description: 'スマホYouTube風フィード。縦スクロール停止、指の逡巡、主役サムネ着弾。bg:noneで透過納品。',
   },
   statement: {
     component: Statement,

@@ -16,10 +16,36 @@ import {EpisodeTitle} from './kit/components/EpisodeTitle';
 import {RoomToneBackground} from './kit/components/RoomToneBackground';
 import {C012WordGrowth, defaultC012Props} from './kit/components/C012WordGrowth';
 import {C12FeedCounters, defaultC12FeedCountersProps} from './compositions/C12FeedCounters';
+import {
+  C17ResearchResults,
+  defaultC17ResearchResultsProps,
+} from './compositions/C17ResearchResults';
+import {
+  C22ABTestDashboard,
+  defaultC22ABTestDashboardProps,
+} from './compositions/C22ABTestDashboard';
 
 export const RemotionRoot = () => {
   return (
     <>
+      <Composition
+        id="C22ABTestDashboard"
+        component={C22ABTestDashboard}
+        durationInFrames={120}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={defaultC22ABTestDashboardProps}
+      />
+      <Composition
+        id="C17ResearchResults"
+        component={C17ResearchResults}
+        durationInFrames={288}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={defaultC17ResearchResultsProps}
+      />
       <Composition
         id="C13AttentionFlow"
         component={C13AttentionFlow}

@@ -1,9 +1,26 @@
 # AGENTS.md — AIエージェント引き継ぎ書
 
-このリポジトリで作業するAI(Claude / Codex / その他)は、まずこのファイルを読むこと。
+このリポジトリで作業するAI(Claude / ChatGPT / Codex / Gemini / その他)は、まずこのファイルを読むこと。
 ここには「何のプロジェクトか」「どう作業するか」「何をしてはいけないか」を集約してある。
 
-最終更新: 2026-07-17
+最終更新: 2026-07-19
+
+---
+
+## 0. 【最優先】複数AI協調のための必読3点
+
+複数のAIが同じリポジトリを並行して触っている。**作業前に必ず下記を読む。**
+
+1. **正本の所在** → [`docs/project-context/CANONICAL_SOURCES.md`](docs/project-context/CANONICAL_SOURCES.md)
+   — どのファイルが最新の正本か。**mainは最新版とは限らない**(制作中の正本は作業ブランチ/PRにある)。
+   例: 第1回コンテの正本は `conte/第1回_コンテ表_v2.xlsx`(PR #5)。mainのv1は旧版。
+2. **協調運用の規約** → [`docs/project-context/MULTI_AGENT_PROTOCOL.md`](docs/project-context/MULTI_AGENT_PROTOCOL.md)
+   — 三原則(境界を越えない/先回りしない/壊す前に止まる)、担当境界、確認義務、破壊的操作の承認。
+3. **事故台帳** → [`docs/project-context/INCIDENTS.md`](docs/project-context/INCIDENTS.md)
+   — 過去の事故と、そこから作られたルール。
+
+**要約(絶対に外さない)**: 指示された対象だけを触る / 先回りの一括同期・再生成をしない /
+上書き・削除・force push・merge・重い一括処理は人間の承認を得てから / 全ブランチ・PRを確認せず「存在しない」と断定しない。
 
 ---
 

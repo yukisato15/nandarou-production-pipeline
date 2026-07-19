@@ -18,6 +18,8 @@
    — 三原則(境界を越えない/先回りしない/壊す前に止まる)、担当境界、確認義務、破壊的操作の承認。
 3. **事故台帳** → [`docs/project-context/INCIDENTS.md`](docs/project-context/INCIDENTS.md)
    — 過去の事故と、そこから作られたルール。
+4. **素材とアウトプットの管理** → [`docs/project-context/ASSET_MANAGEMENT.md`](docs/project-context/ASSET_MANAGEMENT.md)
+   — 素材は `public/<cutID>/`、レンダー出力は `out/`(git管理外)。命名規約・旧素材の退避・現状の是正リスト。
 
 **要約(絶対に外さない)**: 指示された対象だけを触る / 先回りの一括同期・再生成をしない /
 上書き・削除・force push・merge・重い一括処理は人間の承認を得てから / 全ブランチ・PRを確認せず「存在しない」と断定しない。

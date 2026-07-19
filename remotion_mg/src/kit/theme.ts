@@ -19,7 +19,7 @@ export const theme = {
   fontNumber: "Oswald, sans-serif",
 
   // Premiereで重ねるフォローテロップ用。主要情報はこの高さより上へ置く。
-  followTelopSafeBottom: 220,
+  followTelopSafeBottom: 280,
 
   paperTexture: staticFile('textures/paper_scan_01.jpg'),
   paperWhite: staticFile('textures/paper_scan_02_white.jpg'),

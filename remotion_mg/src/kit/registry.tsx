@@ -9,6 +9,8 @@ import {Statement, statementSchema} from './components/Statement';
 import {ThumbnailStack, thumbnailStackSchema} from './components/ThumbnailStack';
 import {TitleCard, titleCardSchema} from './components/TitleCard';
 import {EpisodeTitle, episodeTitleSchema} from './components/EpisodeTitle';
+import {C012WordGrowth, c012WordGrowthSchema} from './components/C012WordGrowth';
+import {RmtIconSwap, rmtIconSwapSchema} from './components/RmtIconSwap';
 
 // Component Selectorの本体。
 // AI(または人間)はこの一覧から type を選び、schema に合うpropsをJSONで書く。
@@ -22,6 +24,12 @@ type Entry = {
 };
 
 export const registry: Record<string, Entry> = {
+  c012_word_growth: {
+    component: C012WordGrowth,
+    schema: c012WordGrowthSchema,
+    defaultDurationInFrames: 288,
+    description: 'C012専用。煽り見出しのカードが反応を生み、視聴時間へ集約される暗いデジタル編集画。',
+  },
   episode_title: {
     component: EpisodeTitle,
     schema: episodeTitleSchema,
@@ -37,14 +45,14 @@ export const registry: Record<string, Entry> = {
   thumbnail_stack: {
     component: ThumbnailStack,
     schema: thumbnailStackSchema,
-    defaultDurationInFrames: 240,
-    description: '偽サムネPNGを3枚順に着弾スタック。C01などフック用。',
+    defaultDurationInFrames: 120,
+    description: '完成済み偽サムネPNGを7枚、手前から飛来させるC01フライスルー。bg:noneで透過納品。',
   },
   phone_feed_hesitation: {
     component: PhoneFeedHesitation,
     schema: phoneFeedHesitationSchema,
     defaultDurationInFrames: 240,
-    description: 'スマホYouTube風フィード。縦スクロール停止、指の逡巡、主役サムネ着弾。',
+    description: 'スマホYouTube風フィード。縦スクロール停止、指の逡巡、主役サムネ着弾。bg:noneで透過納品。',
   },
   statement: {
     component: Statement,
@@ -75,6 +83,12 @@ export const registry: Record<string, Entry> = {
     schema: lineCompareSchema,
     defaultDurationInFrames: 216,
     description: '折れ線の比較(最大3系列)。推移・「AがBを追い抜く」に。',
+  },
+  rmt_icon_swap: {
+    component: RmtIconSwap,
+    schema: rmtIconSwapSchema,
+    defaultDurationInFrames: 240,
+    description: 'C18専用。ロボットアイコンに赤いバツ印が付いて退場し、代わりに人間の拡散シルエット群が現れるVOX風MG。',
   },
 };
 

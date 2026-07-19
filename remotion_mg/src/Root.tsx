@@ -6,13 +6,16 @@ import {calculateTelopOverlayMetadata, TelopOverlay} from './compositions/TelopO
 import {C06GreenPhoneScreens} from './compositions/C06GreenPhoneScreens';
 import {PhoneCloudTransparent} from './compositions/PhoneCloudTransparent';
 import {scenesDocSchema} from './kit/registry';
-import {FakeThumbnail} from './kit/components/ThumbnailStack';
+import {FakeThumbnail, ThumbnailStack} from './kit/components/ThumbnailStack';
 import {PhoneFeedHesitation} from './kit/components/PhoneFeedHesitation';
 import {NandarouKaitaiIdent, defaultIdentProps} from './compositions/NandarouKaitaiIdent';
 import {IDENT_DURATION_FRAMES} from './ident/timing';
 import demoDoc from '../data/ep02_demo.json';
 import ep01Telops from '../data/ep01_telops.json';
 import {EpisodeTitle} from './kit/components/EpisodeTitle';
+import {RoomToneBackground} from './kit/components/RoomToneBackground';
+import {C012WordGrowth, defaultC012Props} from './kit/components/C012WordGrowth';
+import {C12FeedCounters, defaultC12FeedCountersProps} from './compositions/C12FeedCounters';
 
 export const RemotionRoot = () => {
   return (
@@ -20,7 +23,7 @@ export const RemotionRoot = () => {
       <Composition
         id="C13AttentionFlow"
         component={C13AttentionFlow}
-        durationInFrames={312}
+        durationInFrames={430}
         fps={23.976}
         width={1920}
         height={1080}
@@ -36,6 +39,24 @@ export const RemotionRoot = () => {
         schema={scenesDocSchema}
         defaultProps={demoDoc as never}
         calculateMetadata={calculateJsonScenesMetadata}
+      />
+      <Composition
+        id="C012WordGrowth"
+        component={C012WordGrowth}
+        durationInFrames={288}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={defaultC012Props}
+      />
+      <Composition
+        id="C12FeedCounters"
+        component={C12FeedCounters}
+        durationInFrames={264}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={defaultC12FeedCountersProps}
       />
       <Composition
         id="EpisodeTitle"
@@ -65,6 +86,13 @@ export const RemotionRoot = () => {
         height={720}
         defaultProps={{image: 'c01/C01_thumb_01.png', index: 0}}
       />
+      <Still
+        id="RoomToneBackground"
+        component={RoomToneBackground}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
       <Composition
         id="C02PhoneFeedPreview"
         component={PhoneFeedHesitation}
@@ -74,11 +102,61 @@ export const RemotionRoot = () => {
         height={1080}
         defaultProps={{
           images: [
-            'c02/C01_single_01.png',
-            'c02/C01_single_02.png',
-            'c02/C01_single_03.png',
+            'c01/C01_thumb_01.png',
+            'c01/C01_thumb_02.png',
+            'c01/C01_thumb_03.png',
+            'c01/C01_thumb_04.png',
+            'c01/C01_thumb_05.png',
+            'c01/C01_thumb_06.png',
+            'c01/C01_thumb_07.png',
+            'c01/C01_thumb_08.png',
           ],
-          heroImage: 'c02/ep01_thumb_A_reviewed.png',
+          heroImage: 'c02/ep01_thumb_E_dark_clean.png',
+          bg: 'roomtone' as const,
+          audioPreview: false,
+        }}
+      />
+      <Composition
+        id="C02PhoneFeedSfxPreview"
+        component={PhoneFeedHesitation}
+        durationInFrames={240}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          images: [
+            'c01/C01_thumb_01.png',
+            'c01/C01_thumb_02.png',
+            'c01/C01_thumb_03.png',
+            'c01/C01_thumb_04.png',
+            'c01/C01_thumb_05.png',
+            'c01/C01_thumb_06.png',
+            'c01/C01_thumb_07.png',
+            'c01/C01_thumb_08.png',
+          ],
+          heroImage: 'c02/ep01_thumb_E_dark_clean.png',
+          bg: 'roomtone' as const,
+          audioPreview: true,
+        }}
+      />
+      <Composition
+        id="C01ThumbnailStackPreview"
+        component={ThumbnailStack}
+        durationInFrames={120}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          images: [
+            'c01/C01_thumb_01.png',
+            'c01/C01_thumb_02.png',
+            'c01/C01_thumb_03.png',
+            'c01/C01_thumb_04.png',
+            'c01/C01_thumb_05.png',
+            'c01/C01_thumb_06.png',
+            'c01/C01_thumb_07.png',
+          ],
+          bg: 'roomtone' as const,
         }}
       />
       <Composition

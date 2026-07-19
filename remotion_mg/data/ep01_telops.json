@@ -4,35 +4,47 @@
   "parts": {
     "P0": {
       "startSec": 0.0,
-      "endSec": 78.0
+      "endSec": 97.0
     },
     "P1": {
-      "startSec": 78.0,
-      "endSec": 197.0
+      "startSec": 97.0,
+      "endSec": 266.0
     },
-    "P2": {
-      "startSec": 197.0,
-      "endSec": 393.0
+    "P2A": {
+      "startSec": 266.0,
+      "endSec": 506.0
+    },
+    "P2B": {
+      "startSec": 506.0,
+      "endSec": 623.0
+    },
+    "P2C": {
+      "startSec": 623.0,
+      "endSec": 788.0
     },
     "P3": {
-      "startSec": 393.0,
-      "endSec": 475.0
+      "startSec": 788.0,
+      "endSec": 917.0
+    },
+    "P3.5": {
+      "startSec": 917.0,
+      "endSec": 1029.0
     },
     "P4": {
-      "startSec": 475.0,
-      "endSec": 539.0
+      "startSec": 1029.0,
+      "endSec": 1100.0
     },
     "P5": {
-      "startSec": 539.0,
-      "endSec": 594.0
+      "startSec": 1100.0,
+      "endSec": 1160.0
     }
   },
   "cuts": [
     {
       "cut": "C04",
       "part": "P0",
-      "startSec": 22.0,
-      "endSec": 29.0,
+      "startSec": 20.0,
+      "endSec": 27.0,
       "telops": [
         {
           "style": "S5",
@@ -51,11 +63,11 @@
     {
       "cut": "C06",
       "part": "P0",
-      "startSec": 34.0,
-      "endSec": 47.0,
+      "startSec": 32.0,
+      "endSec": 51.0,
       "telops": [
         {
-          "delaySec": 7.88,
+          "delaySec": 13.89,
           "style": "S2",
           "text": "狂っている、とすら思いました。",
           "latin": false,
@@ -73,8 +85,8 @@
     {
       "cut": "C08",
       "part": "P0",
-      "startSec": 53.0,
-      "endSec": 66.0,
+      "startSec": 60.0,
+      "endSec": 73.0,
       "telops": [
         {
           "style": "S2",
@@ -104,11 +116,11 @@
     {
       "cut": "C09",
       "part": "P0",
-      "startSec": 66.0,
-      "endSec": 72.0,
+      "startSec": 73.0,
+      "endSec": 80.0,
       "telops": [
         {
-          "delaySec": 0.58,
+          "delaySec": 1.58,
           "style": "S2",
           "text": "このチャンネルは、その記録です。",
           "latin": false,
@@ -125,11 +137,11 @@
     {
       "cut": "C11",
       "part": "P1",
-      "startSec": 78.0,
-      "endSec": 88.0,
+      "startSec": 97.0,
+      "endSec": 104.0,
       "telops": [
         {
-          "delaySec": 3.57,
+          "delaySec": 0.79,
           "style": "S2",
           "text": "不安は、商品ではありません。エサです。",
           "latin": false,
@@ -147,8 +159,8 @@
     {
       "cut": "C14",
       "part": "P1",
-      "startSec": 110.0,
-      "endSec": 130.0,
+      "startSec": 128.0,
+      "endSec": 148.0,
       "telops": [
         {
           "delaySec": 15.68,
@@ -166,13 +178,42 @@
       ]
     },
     {
-      "cut": "C16",
+      "cut": "C15",
       "part": "P1",
-      "startSec": 144.0,
-      "endSec": 158.0,
+      "startSec": 148.0,
+      "endSec": 176.0,
       "telops": [
         {
-          "delaySec": 2.03,
+          "style": "S5",
+          "text": "MIT 2018",
+          "latin": false,
+          "emphasis": [],
+          "motion": "数字ポップイン12F"
+        },
+        {
+          "style": "S5",
+          "text": "126,000件",
+          "latin": false,
+          "emphasis": [],
+          "motion": "数字ポップイン12F"
+        },
+        {
+          "style": "S5",
+          "text": "11年分",
+          "latin": false,
+          "emphasis": [],
+          "motion": "数字ポップイン12F"
+        }
+      ]
+    },
+    {
+      "cut": "C16",
+      "part": "P1",
+      "startSec": 176.0,
+      "endSec": 184.0,
+      "telops": [
+        {
+          "delaySec": 0.75,
           "style": "S2",
           "text": "ウソのほうが、速く、遠くまで広がっていました。",
           "latin": false,
@@ -188,10 +229,53 @@
       ]
     },
     {
+      "cut": "C17",
+      "part": "P1",
+      "startSec": 184.0,
+      "endSec": 196.0,
+      "telops": [
+        {
+          "style": "S5",
+          "text": "+70%",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "×6",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
       "cut": "C18",
       "part": "P1",
-      "startSec": 167.0,
-      "endSec": 175.0,
+      "startSec": 196.0,
+      "endSec": 206.0,
+      "telops": [
+        {
+          "delaySec": 5.38,
+          "style": "S2",
+          "text": "広めていたのは、人間です。",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "人間",
+              "color": "gold"
+            }
+          ],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C21",
+      "part": "P1",
+      "startSec": 230.0,
+      "endSec": 238.0,
       "telops": [
         {
           "delaySec": 0.75,
@@ -209,10 +293,10 @@
       ]
     },
     {
-      "cut": "C22",
-      "part": "P2",
-      "startSec": 197.0,
-      "endSec": 209.0,
+      "cut": "C25",
+      "part": "P2A",
+      "startSec": 266.0,
+      "endSec": 278.0,
       "telops": [
         {
           "style": "S5",
@@ -229,12 +313,87 @@
       ]
     },
     {
-      "cut": "C23",
-      "part": "P2",
-      "startSec": 209.0,
-      "endSec": 218.0,
+      "cut": "C26",
+      "part": "P2A",
+      "startSec": 278.0,
+      "endSec": 287.0,
       "telops": [
         {
+          "style": "S3",
+          "text": "「私たちの日常の選択は——姿の見えない統治機構の、支配を免れない」。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C28",
+      "part": "P2A",
+      "startSec": 316.0,
+      "endSec": 338.0,
+      "telops": [
+        {
+          "style": "S3",
+          "text": "「プロパガンダという言葉は評判が悪くなった。だから、別の言葉を探した」。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "PUBLIC RELATIONS",
+          "latin": true,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C29",
+      "part": "P2A",
+      "startSec": 338.0,
+      "endSec": 346.0,
+      "telops": [
+        {
+          "style": "S5",
+          "text": "PROPAGANDA → PR",
+          "latin": true,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C31",
+      "part": "P2A",
+      "startSec": 359.0,
+      "endSec": 379.0,
+      "telops": [
+        {
+          "style": "S3",
+          "text": "「必要の文化から、欲望の文化へ切り替えねばならない」。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "1927",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C32",
+      "part": "P2A",
+      "startSec": 379.0,
+      "endSec": 392.0,
+      "telops": [
+        {
+          "delaySec": 4.21,
           "style": "S3",
           "text": "「女性にも、たばこを吸わせたい」。",
           "latin": false,
@@ -244,15 +403,29 @@
       ]
     },
     {
-      "cut": "C24",
-      "part": "P2",
-      "startSec": 218.0,
-      "endSec": 234.0,
+      "cut": "C33",
+      "part": "P2A",
+      "startSec": 392.0,
+      "endSec": 406.0,
       "telops": [
         {
-          "delaySec": 11.47,
           "style": "S3",
-          "text": "——これは、「自由のたいまつ」だ、と。",
+          "text": "「たばこは、力の象徴だ。自分の『たいまつ』になる」。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C34",
+      "part": "P2A",
+      "startSec": 406.0,
+      "endSec": 425.0,
+      "telops": [
+        {
+          "style": "S5",
+          "text": "1929",
           "latin": false,
           "emphasis": [],
           "motion": "引用:火の横に静かにフェード、新聞明朝の趣"
@@ -260,10 +433,47 @@
       ]
     },
     {
-      "cut": "C25",
-      "part": "P2",
-      "startSec": 234.0,
-      "endSec": 241.0,
+      "cut": "C35",
+      "part": "P2A",
+      "startSec": 425.0,
+      "endSec": 434.0,
+      "telops": [
+        {
+          "delaySec": 3.59,
+          "style": "S2",
+          "text": "デモに見えたものは、広告でした。",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "広告",
+              "color": "gold"
+            }
+          ],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C36",
+      "part": "P2A",
+      "startSec": 434.0,
+      "endSec": 455.0,
+      "telops": [
+        {
+          "delaySec": 14.91,
+          "style": "S2",
+          "text": "「見せびらかしの消費」",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C37",
+      "part": "P2A",
+      "startSec": 455.0,
+      "endSec": 462.0,
       "telops": [
         {
           "delaySec": 0.25,
@@ -277,30 +487,57 @@
       ]
     },
     {
-      "cut": "C29",
-      "part": "P2",
-      "startSec": 272.0,
-      "endSec": 283.0,
+      "cut": "C39",
+      "part": "P2A",
+      "startSec": 474.0,
+      "endSec": 489.0,
       "telops": [
         {
-          "delaySec": 6.58,
-          "style": "S3",
-          "text": "「ウソも、繰り返せば、本当になる」。",
+          "delaySec": 6.31,
+          "style": "S2",
+          "text": "人を動かすエサは、大きく2つです。",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "2つ",
+              "color": "gold"
+            }
+          ],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "「怖い」",
           "latin": false,
           "emphasis": [],
-          "motion": "引用:中央。1回表示→一瞬消え→もう1回表示(\"繰り返し\"を画で実装)"
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "「なりたい」",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
         }
       ]
     },
     {
-      "cut": "C30",
-      "part": "P2",
-      "startSec": 283.0,
-      "endSec": 293.0,
+      "cut": "C43",
+      "part": "P2B",
+      "startSec": 525.0,
+      "endSec": 544.0,
       "telops": [
         {
           "style": "S2",
-          "text": "複雑なことを、単純な対立にする。",
+          "text": "理屈ではなく、感情に訴える。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "3行が上から順にスタンプ的に出現(各1拍) [seq:順次]",
+          "seq": "stack"
+        },
+        {
+          "style": "S2",
+          "text": "スローガンを、強烈に、何度も繰り返す。",
           "latin": false,
           "emphasis": [],
           "motion": "3行が上から順にスタンプ的に出現(各1拍) [seq:順次]",
@@ -313,25 +550,176 @@
           "emphasis": [],
           "motion": "3行が上から順にスタンプ的に出現(各1拍) [seq:順次]",
           "seq": "stack"
-        },
-        {
-          "style": "S2",
-          "text": "何度も繰り返す。",
-          "latin": false,
-          "emphasis": [],
-          "motion": "3行が上から順にスタンプ的に出現(各1拍) [seq:順次]",
-          "seq": "stack"
         }
       ]
     },
     {
-      "cut": "C31",
-      "part": "P2",
-      "startSec": 293.0,
-      "endSec": 303.0,
+      "cut": "C45",
+      "part": "P2B",
+      "startSec": 548.0,
+      "endSec": 572.0,
       "telops": [
         {
-          "delaySec": 4.88,
+          "delaySec": 5.34,
+          "style": "S3",
+          "text": "「ウソも、繰り返せば、本当になる」。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "引用:中央。1回表示→一瞬消え→もう1回表示(\"繰り返し\"を画で実装)"
+        },
+        {
+          "delaySec": 18.31,
+          "style": "S2",
+          "text": "繰り返されたウソは、本当より強い。",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "強い",
+              "color": "gold"
+            }
+          ],
+          "motion": "引用:中央。1回表示→一瞬消え→もう1回表示(\"繰り返し\"を画で実装)"
+        }
+      ]
+    },
+    {
+      "cut": "C46",
+      "part": "P2B",
+      "startSec": 572.0,
+      "endSec": 582.0,
+      "telops": [
+        {
+          "style": "S5",
+          "text": "600万人以上",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C49",
+      "part": "P2C",
+      "startSec": 623.0,
+      "endSec": 634.0,
+      "telops": [
+        {
+          "style": "S5",
+          "text": "1938→1944",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C51",
+      "part": "P2C",
+      "startSec": 646.0,
+      "endSec": 655.0,
+      "telops": [
+        {
+          "style": "S2",
+          "text": "ここでも、大衆は操作されている。別の、やり方で。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C54",
+      "part": "P2C",
+      "startSec": 682.0,
+      "endSec": 698.0,
+      "telops": [
+        {
+          "delaySec": 8.55,
+          "style": "S3",
+          "text": "「資本主義は、ファシズムより、ずっと巧妙な方法で人々を動かしている」。",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "※主張の要約",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C55",
+      "part": "P2C",
+      "startSec": 698.0,
+      "endSec": 719.0,
+      "telops": [
+        {
+          "delaySec": 2.09,
+          "style": "S2",
+          "text": "文化産業",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "文化産業",
+              "color": "gold"
+            }
+          ],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C57",
+      "part": "P2C",
+      "startSec": 729.0,
+      "endSec": 750.0,
+      "telops": [
+        {
+          "delaySec": 11.7,
+          "style": "S2",
+          "text": "「求めるもの」自体を、産業が作っている。",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "作っている",
+              "color": "gold"
+            }
+          ],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C58",
+      "part": "P2C",
+      "startSec": 750.0,
+      "endSec": 775.0,
+      "telops": [
+        {
+          "style": "S2",
+          "text": "違うのは、目的だけ。",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "目的",
+              "color": "gold"
+            }
+          ],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C60",
+      "part": "P3",
+      "startSec": 788.0,
+      "endSec": 797.0,
+      "telops": [
+        {
+          "delaySec": 3.88,
           "style": "S2",
           "text": "変わったのは、「届け方」です。",
           "latin": false,
@@ -346,10 +734,10 @@
       ]
     },
     {
-      "cut": "C33",
-      "part": "P2",
-      "startSec": 315.0,
-      "endSec": 323.0,
+      "cut": "C62",
+      "part": "P3",
+      "startSec": 811.0,
+      "endSec": 819.0,
       "telops": [
         {
           "delaySec": 2.34,
@@ -367,10 +755,10 @@
       ]
     },
     {
-      "cut": "C34",
-      "part": "P2",
-      "startSec": 323.0,
-      "endSec": 337.0,
+      "cut": "C63",
+      "part": "P3",
+      "startSec": 819.0,
+      "endSec": 835.0,
       "telops": [
         {
           "style": "S5",
@@ -391,13 +779,13 @@
       ]
     },
     {
-      "cut": "C36",
-      "part": "P2",
-      "startSec": 347.0,
-      "endSec": 363.0,
+      "cut": "C65",
+      "part": "P3",
+      "startSec": 846.0,
+      "endSec": 866.0,
       "telops": [
         {
-          "delaySec": 9.26,
+          "delaySec": 11.85,
           "style": "S2",
           "text": "その手口が実際に使われたことは、事実です。",
           "latin": false,
@@ -412,13 +800,13 @@
       ]
     },
     {
-      "cut": "C38",
-      "part": "P2",
-      "startSec": 383.0,
-      "endSec": 393.0,
+      "cut": "C67",
+      "part": "P3",
+      "startSec": 891.0,
+      "endSec": 903.0,
       "telops": [
         {
-          "delaySec": 2.69,
+          "delaySec": 3.28,
           "style": "S2",
           "text": "「画面の向こうから、一人ひとりに届く動画」",
           "latin": false,
@@ -428,34 +816,60 @@
       ]
     },
     {
-      "cut": "C42",
+      "cut": "C68",
       "part": "P3",
-      "startSec": 421.0,
-      "endSec": 428.0,
+      "startSec": 903.0,
+      "endSec": 917.0,
       "telops": [
         {
-          "delaySec": 0.79,
+          "delaySec": 7.01,
           "style": "S2",
-          "text": "笑顔にも、値段がついたことがあります。",
+          "text": "「動かせるもの」は、ぜんぶ市場になっていく。",
           "latin": false,
           "emphasis": [
             {
-              "text": "値段",
+              "text": "市場",
               "color": "gold"
             }
           ],
-          "motion": "中央フェード"
+          "motion": "—"
         }
       ]
     },
     {
-      "cut": "C43",
-      "part": "P3",
-      "startSec": 428.0,
-      "endSec": 441.0,
+      "cut": "C69",
+      "part": "P3.5",
+      "startSec": 917.0,
+      "endSec": 936.0,
       "telops": [
         {
-          "delaySec": 6.8,
+          "style": "S2",
+          "text": "あなたの「反応」が、お金に変わっています。",
+          "latin": false,
+          "emphasis": [
+            {
+              "text": "お金",
+              "color": "gold"
+            }
+          ],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C71",
+      "part": "P3.5",
+      "startSec": 964.0,
+      "endSec": 986.0,
+      "telops": [
+        {
+          "style": "S5",
+          "text": "スマイル ¥0",
+          "latin": false,
+          "emphasis": [],
+          "motion": "中央フェード"
+        },
+        {
           "style": "S2",
           "text": "人の感情が、商品として提示されている。",
           "latin": false,
@@ -465,16 +879,15 @@
               "color": "gold"
             }
           ],
-          "motion": "★文:静かに中央下 [pos:bottom]",
-          "pos": "bottom"
+          "motion": "中央フェード"
         }
       ]
     },
     {
-      "cut": "C45",
-      "part": "P3",
-      "startSec": 451.0,
-      "endSec": 458.0,
+      "cut": "C73",
+      "part": "P3.5",
+      "startSec": 996.0,
+      "endSec": 1001.0,
       "telops": [
         {
           "style": "S2",
@@ -491,13 +904,49 @@
       ]
     },
     {
-      "cut": "C46",
-      "part": "P3",
-      "startSec": 458.0,
-      "endSec": 475.0,
+      "cut": "C74",
+      "part": "P3.5",
+      "startSec": 1001.0,
+      "endSec": 1013.0,
       "telops": [
         {
-          "delaySec": 11.34,
+          "style": "S5",
+          "text": "欲望 1929",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "世論 1933",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "文化 1947",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        },
+        {
+          "style": "S5",
+          "text": "反応 いま",
+          "latin": false,
+          "emphasis": [],
+          "motion": "—"
+        }
+      ]
+    },
+    {
+      "cut": "C75",
+      "part": "P3.5",
+      "startSec": 1013.0,
+      "endSec": 1029.0,
+      "telops": [
+        {
+          "delaySec": 10.34,
           "style": "S2",
           "text": "ぜんぶ、売り物になっていくんです。",
           "latin": false,
@@ -512,14 +961,14 @@
       ]
     },
     {
-      "cut": "C48",
+      "cut": "C76",
       "part": "P4",
-      "startSec": 481.0,
-      "endSec": 499.0,
+      "startSec": 1029.0,
+      "endSec": 1060.0,
       "telops": [
         {
           "style": "S2",
-          "text": "ひとつ。本当は売り物じゃないものまで、どんどん売り物になっています。",
+          "text": "ひとつ。売り物になる範囲は、100年かけて広がってきました。",
           "latin": false,
           "emphasis": [],
           "motion": "画面左に縦積み。1項ずつフェードイン、既出項は少し暗く残す [pos:left] [seq:順次]",
@@ -528,11 +977,11 @@
         },
         {
           "style": "S2",
-          "text": "ふたつ。その仕組みは、ぼくたちの「つい反応してしまう」心を、よく知って使ってきます。",
+          "text": "ふたつ。仕組みは、ぼくたちの「怖い」と「なりたい」を使ってきます。",
           "latin": false,
           "emphasis": [
             {
-              "text": "「つい反応してしまう」",
+              "text": "「怖い」と「なりたい」",
               "color": "gold"
             }
           ],
@@ -542,14 +991,9 @@
         },
         {
           "style": "S2",
-          "text": "みっつ。——でも、仕組みは、知れば、距離が取れます。",
+          "text": "みっつ。仕組みは、知れば、距離が取れます。",
           "latin": false,
-          "emphasis": [
-            {
-              "text": "距離",
-              "color": "gold"
-            }
-          ],
+          "emphasis": [],
           "motion": "画面左に縦積み。1項ずつフェードイン、既出項は少し暗く残す [pos:left] [seq:順次]",
           "pos": "left",
           "seq": "stack"
@@ -557,13 +1001,13 @@
       ]
     },
     {
-      "cut": "C50",
+      "cut": "C78",
       "part": "P4",
-      "startSec": 511.0,
-      "endSec": 519.0,
+      "startSec": 1072.0,
+      "endSec": 1081.0,
       "telops": [
         {
-          "delaySec": 1.79,
+          "delaySec": 2.79,
           "style": "S2",
           "text": "怖がらなくて済むように、することです。",
           "latin": false,
@@ -578,13 +1022,13 @@
       ]
     },
     {
-      "cut": "C51",
+      "cut": "C79",
       "part": "P4",
-      "startSec": 519.0,
-      "endSec": 539.0,
+      "startSec": 1081.0,
+      "endSec": 1100.0,
       "telops": [
         {
-          "delaySec": 7.35,
+          "delaySec": 6.96,
           "style": "S2",
           "text": "たぶん、その感覚のほうが、正しい。",
           "latin": false,

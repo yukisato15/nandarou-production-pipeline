@@ -5,7 +5,7 @@
 | type | 役割 | 主なprops | 依存 |
 |---|---|---|---|
 | `title_card` | 墨背景の回タイトル/章見出し | `title`, `episode?`, `subtitle?` | `TitleCard`, `InkStage`, `theme` |
-| `thumbnail_stack` | 偽サムネ3枚の順次着弾 | `images[]`, `beatFrames?`, `caption?` | `ThumbnailStack`, `Img`, `Audio`（実装を確認） |
+| `thumbnail_stack` | C01用の偽サムネ7枚フライスルー。手前から飛来し、画面を覆ってから固定スロットへ着地 | `images[7]`, `durationInFrames?` | `ThumbnailStack`, `Img`。座標・タイミング・回転・グローは承認済み仕様に固定 |
 | `phone_feed_hesitation` | YouTube風フィード、停止、指の逡巡、主役着弾 | `images[]`, `heroImage?` | `PhoneFeedHesitation`, `Img`, frame interpolation |
 | `statement` | 墨背景の宣言/M6 | `text`, `emphasis?`, `startAt?` | `Statement`, `InkStage`, `theme` |
 | `quote` | 紙片の引用、帰属、真偽注記 | `text`, `attribution?`, `note?`, `image?`, `imageCaption?` | `Quote`, `PaperStage`, `staticFile` |

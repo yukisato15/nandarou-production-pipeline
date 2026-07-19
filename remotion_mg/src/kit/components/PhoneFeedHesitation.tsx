@@ -1,615 +1,153 @@
 import React from 'react';
-import {
-  AbsoluteFill,
-  Audio,
-  Easing,
-  Img,
-  interpolate,
-  Sequence,
-  staticFile,
-  useCurrentFrame,
-} from 'remotion';
+import {AbsoluteFill, Audio, Easing, Img, interpolate, Sequence, staticFile, useCurrentFrame} from 'remotion';
 import {z} from 'zod';
 
+/** C02 のフィードは完成済みサムネ8枚と、本編サムネ1枚だけで構成する。 */
 export const phoneFeedHesitationSchema = z.object({
-  images: z.array(z.string()).min(3),
-  heroImage: z.string().optional(),
+  images: z.array(z.string()).min(8),
+  heroImage: z.string(),
+  /** v1.1: 透過納品ではステージ背景を除外する。 */
+  bg: z.enum(['roomtone', 'none']).default('roomtone'),
+  /**
+   * 編集タイミング確認用の仮SE。納品用の透過MOVでは false のままにする。
+   * 音の最終選定・音量調整はPremiere側で行う。
+   */
+  audioPreview: z.boolean().default(false),
 });
 
-const clamp = {
-  extrapolateLeft: 'clamp' as const,
-  extrapolateRight: 'clamp' as const,
-};
-
-const easeInOut = Easing.bezier(0.65, 0, 0.35, 1);
+const clamp = {extrapolateLeft: 'clamp' as const, extrapolateRight: 'clamp' as const};
 const easeOut = Easing.bezier(0.16, 1, 0.3, 1);
-const easeDrop = Easing.bezier(0.18, 0.92, 0.2, 1);
-
-const titles = [
-  '速報。日本、終わる',
-  '高齢者の手元に忍び寄るワナ',
-  '9割が知らないと損する話',
-];
-
-const channels = ['仮ニュース通信', '暮らしメモ編集部', 'サンプル動画局'];
+const easeInOut = Easing.bezier(0.65, 0, 0.35, 1);
 
 const interp = (frame: number, input: number[], output: number[], easing = easeOut) =>
   interpolate(frame, input, output, {...clamp, easing});
 
-const StatusIcons: React.FC = () => (
-  <div style={{position: 'absolute', right: 30, top: 22, width: 122, height: 24}}>
-    <div style={{position: 'absolute', left: 0, bottom: 2, display: 'flex', gap: 3, alignItems: 'flex-end'}}>
-      {[8, 12, 16, 20].map((height, index) => (
-        <div
-          key={height}
-          style={{
-            width: 5,
-            height,
-            borderRadius: 2,
-            background: index < 3 ? '#fff' : 'rgba(255,255,255,.55)',
-          }}
-        />
-      ))}
-    </div>
-    <div
-      style={{
-        position: 'absolute',
-        left: 44,
-        top: 2,
-        width: 26,
-        height: 20,
-        borderTop: '5px solid #fff',
-        borderRadius: '50% 50% 0 0',
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          left: 8,
-          top: 8,
-          width: 10,
-          height: 10,
-          borderTop: '4px solid #fff',
-          borderRadius: '50% 50% 0 0',
-        }}
-      />
-    </div>
-    <div
-      style={{
-        position: 'absolute',
-        right: 0,
-        top: 3,
-        width: 36,
-        height: 18,
-        border: '2px solid rgba(255,255,255,.82)',
-        borderRadius: 5,
-      }}
-    >
-      <div style={{position: 'absolute', right: -6, top: 5, width: 4, height: 8, background: '#fff', borderRadius: 2}} />
-      <div style={{position: 'absolute', left: 3, top: 3, width: 8, height: 10, background: '#D32222', borderRadius: 2}} />
-    </div>
+const keyframe = (frame: number, input: number[], output: number[]) =>
+  interpolate(frame, input, output, clamp);
+
+const BellIcon: React.FC = () => (
+  <div style={{position: 'relative', width: 30, height: 30}}>
+    <div style={{position: 'absolute', left: 7, top: 4, width: 16, height: 19, border: '3px solid #fff', borderRadius: '12px 12px 6px 6px', borderBottom: 'none'}} />
+    <div style={{position: 'absolute', left: 4, top: 22, width: 22, height: 3, borderRadius: 3, background: '#fff'}} />
+    <div style={{position: 'absolute', left: 12, top: 26, width: 6, height: 4, borderRadius: 3, background: '#fff'}} />
   </div>
 );
 
 const SearchIcon: React.FC = () => (
-  <div style={{position: 'relative', width: 28, height: 28}}>
-    <div
-      style={{
-        position: 'absolute',
-        left: 3,
-        top: 3,
-        width: 14,
-        height: 14,
-        border: '4px solid #fff',
-        borderRadius: '50%',
-      }}
-    />
-    <div
-      style={{
-        position: 'absolute',
-        left: 18,
-        top: 19,
-        width: 13,
-        height: 4,
-        borderRadius: 3,
-        background: '#fff',
-        transform: 'rotate(45deg)',
-        transformOrigin: '0 50%',
-      }}
-    />
-  </div>
-);
-
-const BellIcon: React.FC = () => (
-  <div style={{position: 'relative', width: 30, height: 30}}>
-    <div
-      style={{
-        position: 'absolute',
-        left: 7,
-        top: 5,
-        width: 16,
-        height: 18,
-        border: '3px solid #fff',
-        borderRadius: '12px 12px 7px 7px',
-        borderBottom: 'none',
-      }}
-    />
-    <div style={{position: 'absolute', left: 5, top: 22, width: 20, height: 3, background: '#fff', borderRadius: 3}} />
-    <div style={{position: 'absolute', left: 12, top: 26, width: 6, height: 4, background: '#fff', borderRadius: 3}} />
+  <div style={{position: 'relative', width: 32, height: 32}}>
+    <div style={{position: 'absolute', left: 2, top: 2, width: 18, height: 18, border: '4px solid #fff', borderRadius: '50%'}} />
+    <div style={{position: 'absolute', left: 19, top: 20, width: 13, height: 4, borderRadius: 3, background: '#fff', transform: 'rotate(45deg)', transformOrigin: '0 50%'}} />
   </div>
 );
 
 const YouTubeHeader: React.FC = () => (
-  <>
-    <div
-      style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 82,
-        background: '#080808',
-        color: '#fff',
-        fontFamily: "'Hiragino Sans', 'Noto Sans JP', sans-serif",
-      }}
-    >
-      <div style={{position: 'absolute', left: 28, top: 20, fontSize: 22, fontWeight: 800}}>0:08</div>
-      <StatusIcons />
+  <div style={{height: 118, position: 'relative', background: '#080808', color: '#fff', fontFamily: "'Noto Sans JP', sans-serif"}}>
+    <div style={{position: 'absolute', left: 24, top: 22, fontSize: 26, fontWeight: 700}}>0:08</div>
+    <div style={{position: 'absolute', right: 22, top: 20, display: 'flex', gap: 18, alignItems: 'center'}}>
+      <div style={{width: 46, height: 28, display: 'flex', alignItems: 'flex-end', gap: 4}}>{[10, 15, 21, 26].map((h, i) => <span key={h} style={{width: 6, height: h, background: i === 3 ? 'rgba(255,255,255,.45)' : '#fff', borderRadius: 2}} />)}</div>
+      <div style={{width: 30, height: 25, border: '4px solid #fff', borderBottom: 0, borderRadius: '50% 50% 0 0', position: 'relative'}}><span style={{position: 'absolute', left: 8, top: 9, width: 7, height: 7, background: '#fff', borderRadius: '50%'}} /></div>
+      <div style={{width: 38, height: 19, border: '3px solid #888', borderRadius: 6, position: 'relative'}}><span style={{position: 'absolute', left: 4, top: 3, width: 6, height: 11, background: '#D32222', borderRadius: 2}} /></div>
     </div>
-    <div
-      style={{
-        position: 'absolute',
-        top: 82,
-        left: 0,
-        right: 0,
-        height: 92,
-        background: '#090909',
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          left: 28,
-          top: 24,
-          width: 48,
-          height: 34,
-          borderRadius: 8,
-          background: '#f00',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            left: 18,
-            top: 8,
-            width: 0,
-            height: 0,
-            borderTop: '9px solid transparent',
-            borderBottom: '9px solid transparent',
-            borderLeft: '15px solid #fff',
-          }}
-        />
-      </div>
-      <div style={{position: 'absolute', left: 92, top: 26, color: '#fff', fontSize: 24, fontWeight: 800}}>
-        YouTube
-      </div>
-      <div style={{position: 'absolute', right: 112, top: 21}}>
-        <BellIcon />
-      </div>
-      <div style={{position: 'absolute', right: 68, top: 22}}>
-        <SearchIcon />
-      </div>
-      <div style={{position: 'absolute', right: 28, top: 24, color: '#fff', fontSize: 30}}>⋮</div>
-      {['すべて', 'ニュース', 'ミックス'].map((label, i) => (
-        <div
-          key={label}
-          style={{
-            position: 'absolute',
-            left: 28 + i * 128,
-            bottom: -44,
-            height: 40,
-            padding: '0 22px',
-            display: 'flex',
-            alignItems: 'center',
-            borderRadius: 14,
-            background: i === 0 ? '#f1f1f1' : '#252525',
-            color: i === 0 ? '#111' : '#fff',
-            fontSize: 18,
-            fontWeight: 700,
-          }}
-        >
-          {label}
-        </div>
-      ))}
+    <div style={{position: 'absolute', left: 24, bottom: 22, display: 'flex', alignItems: 'center', gap: 12}}>
+      <div style={{width: 45, height: 31, borderRadius: 8, background: '#f00', position: 'relative'}}><span style={{position: 'absolute', left: 17, top: 7, borderLeft: '13px solid #fff', borderTop: '8px solid transparent', borderBottom: '8px solid transparent'}} /></div>
+      <span style={{fontSize: 25, fontWeight: 800}}>YouTube</span>
     </div>
-  </>
+    <div style={{position: 'absolute', right: 23, bottom: 23, display: 'flex', alignItems: 'center', gap: 17}}><BellIcon /><SearchIcon /><span style={{fontSize: 31, lineHeight: 1}}>⋮</span></div>
+  </div>
 );
 
 const BottomNav: React.FC = () => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 0,
-      right: 0,
-      bottom: 0,
-      height: 86,
-      background: 'rgba(9,9,9,0.96)',
-      borderTop: '1px solid rgba(255,255,255,0.08)',
-      color: '#fff',
-      fontFamily: "'Hiragino Sans', 'Noto Sans JP', sans-serif",
-    }}
-  >
-    {[
-      ['⌂', 'ホーム'],
-      ['▶', 'ショート'],
-      ['＋', '作成'],
-      ['▣', '登録'],
-      ['●', 'マイページ'],
-    ].map(([icon, label], i) => (
-      <div
-        key={label}
-        style={{
-          position: 'absolute',
-          left: 32 + i * 91,
-          top: 10,
-          width: 60,
-          textAlign: 'center',
-          opacity: i === 0 ? 1 : 0.78,
-        }}
-      >
-        <div style={{fontSize: i === 2 ? 34 : 26, lineHeight: '30px'}}>{icon}</div>
-        <div style={{fontSize: 12, marginTop: 6}}>{label}</div>
-      </div>
-    ))}
+  <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: 104, background: 'rgba(7,7,7,.98)', borderTop: '1px solid rgba(255,255,255,.1)', color: '#fff', display: 'flex', justifyContent: 'space-around', alignItems: 'center', fontFamily: "'Noto Sans JP', sans-serif", zIndex: 20}}>
+    {[['⌂', 'ホーム'], ['▶', 'ショート'], ['＋', '作成'], ['▣', '登録'], ['●', 'マイページ']].map(([icon, label]) => <div key={label} style={{width: 100, textAlign: 'center', opacity: .88}}><div style={{fontSize: icon === '＋' ? 42 : 29, lineHeight: '38px'}}>{icon}</div><div style={{fontSize: 14, marginTop: 6}}>{label}</div></div>)}
   </div>
 );
 
-const FeedCard: React.FC<{
-  image: string;
-  index: number;
-}> = ({image, index}) => (
-  <div
-    style={{
-      width: 472,
-      margin: '0 auto 34px',
-      color: '#fff',
-      fontFamily: "'Hiragino Sans', 'Noto Sans JP', sans-serif",
-    }}
-  >
-    <div
-      style={{
-        width: 472,
-        height: (472 * 9) / 16,
-        borderRadius: 0,
-        overflow: 'hidden',
-        background: '#111',
-        boxShadow: '0 10px 26px rgba(0,0,0,.45)',
-      }}
-    >
-      <Img
-        src={staticFile(image)}
-        style={{
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          display: 'block',
-        }}
-      />
-    </div>
-    <div style={{display: 'flex', gap: 12, padding: '14px 4px 0'}}>
-      <div
-        style={{
-          width: 42,
-          height: 42,
-          borderRadius: '50%',
-          background:
-            index === 0
-              ? 'linear-gradient(135deg,#ffe600,#f00)'
-              : index === 1
-                ? 'linear-gradient(135deg,#fff,#d63f3f)'
-                : 'linear-gradient(135deg,#f00,#ffe600)',
-          flexShrink: 0,
-        }}
-      />
+const channelNames = ['サンプル通信', '暮らしの記録', 'ニュース観測所', '今日の解説', '資料チャンネル', '生活メモ', '調査ノート', '静かな報道'];
+const titles = ['日本、終わる', '年金、消える', '知らないと損する', '期限が迫る', '銀行が隠す真実', '老後破産', '医者は教えてくれない', 'スマホの向こう側'];
+
+const FeedCard: React.FC<{image: string; index: number; hero?: boolean}> = ({image, index, hero}) => (
+  <div style={{width: 600, marginBottom: 26, color: '#fff', fontFamily: "'Noto Sans JP', sans-serif"}}>
+    <Img src={staticFile(image)} style={{display: 'block', width: 600, height: 338, objectFit: 'cover', background: '#111'}} />
+    <div style={{display: 'flex', gap: 14, padding: '14px 18px 0', minHeight: 70}}>
+      <div style={{width: 52, height: 52, borderRadius: '50%', flexShrink: 0, background: hero ? '#35383a' : `linear-gradient(135deg, ${index % 2 ? '#ddd' : '#c92'}, #333)`}} />
       <div style={{minWidth: 0, flex: 1}}>
-        <div
-          style={{
-            fontSize: 20,
-            lineHeight: 1.25,
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {titles[index]}
-        </div>
-        <div style={{marginTop: 5, color: '#aaa', fontSize: 14, lineHeight: 1.35}}>
-          {channels[index]}・{index === 2 ? '98万回視聴' : '137万回視聴'}・{index + 1}年前
-        </div>
+        <div style={{fontSize: 23, lineHeight: 1.25, fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>{hero ? '『なんだろう』解体' : titles[index]}</div>
+        <div style={{marginTop: 5, color: '#aaa', fontSize: 15, lineHeight: 1.35}}>{hero ? '『なんだろう』解体・1本目・今日' : `${channelNames[index]}・${index % 2 ? '98万回' : '137万回'}視聴・${index + 1}年前`}</div>
       </div>
-      <div style={{fontSize: 28, lineHeight: '34px', color: '#e8e8e8'}}>⋮</div>
+      <div style={{fontSize: 30, lineHeight: '36px', color: '#ddd'}}>⋮</div>
     </div>
   </div>
 );
 
-const HesitatingFinger: React.FC<{frame: number}> = ({frame}) => {
-  // フィードの2回のスクロールと同期して、指自身も上へスワイプする。
-  // 1回目の後だけ指を画面下側に戻し、2回目のスワイプに備える。
-  const swipe1 = interp(frame, [0, 44], [0, 1], easeInOut);
-  const resetForSecondSwipe = interp(frame, [44, 64], [0, 1], easeInOut);
-  const swipe2 = interp(frame, [64, 106], [0, 1], easeInOut);
-  const hesitation = interp(frame, [106, 136], [0, 1], easeOut);
-  const trembleX = Math.sin(frame * 0.72) * hesitation * 3;
-  const trembleY = Math.sin(frame * 0.91) * hesitation * 2;
-  const press = interpolate(frame, [174, 181, 188], [0, 1, 0], {...clamp, easing: easeInOut});
-  const swipeBottom = 96 + swipe1 * 242 - resetForSecondSwipe * 190 + swipe2 * 190;
-
-  return (
-    <Img
-      src={staticFile('c02/finger.png')}
-      style={{
-        position: 'absolute',
-        right: -210 + trembleX,
-        bottom: swipeBottom + trembleY,
-        width: 650,
-        height: 366,
-        objectFit: 'contain',
-        filter: 'drop-shadow(0 20px 30px rgba(0,0,0,.62))',
-        opacity: 1,
-        scale: `${1 - press * 0.025}`,
-        transformOrigin: '64% 42%',
-        zIndex: 60,
-      }}
-    />
-  );
+const Finger: React.FC<{frame: number}> = ({frame}) => {
+  // 指は冒頭から表示し、各フリック中だけ上方向へ動く。停止中は位置を固定する。
+  const y = keyframe(frame, [0, 20, 32, 56, 66, 90, 100, 116], [70, 70, 330, 330, 500, 500, 680, 680]);
+  const shake = frame >= 32 && frame < 56 ? keyframe(frame, [38, 40, 42, 48, 50, 52], [0, -3, 0, 0, -3, 0]) : 0;
+  return <Img src={staticFile('c02/finger.png')} style={{position: 'absolute', right: -235, bottom: y + shake, width: 700, height: 394, objectFit: 'contain', filter: 'drop-shadow(0 20px 30px rgba(0,0,0,.65))', zIndex: 30}} />;
 };
 
-const PlaceholderHeroThumbnail: React.FC = () => (
-  <div
-    style={{
-      position: 'relative',
-      width: 1020,
-      height: (1020 * 9) / 16,
-      overflow: 'hidden',
-      background:
-        'radial-gradient(circle at 26% 50%, rgba(140,0,10,.9), transparent 35%), linear-gradient(135deg, #050505 0%, #250006 58%, #050505 100%)',
-      border: '5px solid #111',
-      fontFamily: "'Hiragino Sans', 'Noto Sans JP', sans-serif",
-    }}
-  >
-    <div
-      style={{
-        position: 'absolute',
-        inset: 0,
-        backgroundImage:
-          'linear-gradient(155deg, transparent 0 42%, rgba(230,0,18,.95) 43%, rgba(230,0,18,.95) 46%, transparent 47%), linear-gradient(190deg, transparent 0 58%, rgba(230,0,18,.55) 59%, transparent 61%)',
-        opacity: 0.78,
-      }}
-    />
-    <div
-      style={{
-        position: 'absolute',
-        left: 42,
-        top: 36,
-        background: '#E60012',
-        color: '#fff',
-        fontSize: 48,
-        fontWeight: 900,
-        padding: '10px 26px 13px',
-        transform: 'skewX(-10deg) rotate(-2deg)',
-        boxShadow: '0 8px 0 #111',
-      }}
-    >
-      仮
-    </div>
-    <div
-      style={{
-        position: 'absolute',
-        right: 42,
-        top: 42,
-        color: '#FFE600',
-        fontSize: 38,
-        fontWeight: 900,
-        textShadow: '0 0 18px rgba(255,230,0,.65)',
-      }}
-    >
-      ※ここに本サムネを差し替え
-    </div>
-    <div
-      style={{
-        position: 'absolute',
-        left: 210,
-        top: 132,
-        color: '#fff',
-        fontSize: 112,
-        fontWeight: 900,
-        lineHeight: 0.95,
-        letterSpacing: '-0.05em',
-        WebkitTextStroke: '9px #111',
-        paintOrder: 'stroke fill',
-        textShadow: '0 8px 0 rgba(0,0,0,.25), 0 18px 26px rgba(0,0,0,.42)',
-      }}
-    >
-      本動画の
-      <br />
-      サムネ
-    </div>
-    <div
-      style={{
-        position: 'absolute',
-        left: 402,
-        top: 314,
-        color: '#FFE600',
-        fontSize: 160,
-        fontWeight: 900,
-        lineHeight: 0.95,
-        letterSpacing: '-0.05em',
-        WebkitTextStroke: '11px #111',
-        paintOrder: 'stroke fill',
-        transform: 'rotate(-3deg)',
-        textShadow: '0 9px 0 rgba(0,0,0,.28), 0 18px 26px rgba(0,0,0,.42)',
-      }}
-    >
-      仮配置
-    </div>
-    <div
-      style={{
-        position: 'absolute',
-        right: 28,
-        bottom: 22,
-        background: 'rgba(0,0,0,0.82)',
-        color: '#fff',
-        padding: '8px 14px 9px',
-        borderRadius: 7,
-        fontSize: 32,
-        fontWeight: 800,
-        letterSpacing: '0.02em',
-      }}
-    >
-      0:00
-    </div>
-  </div>
-);
+const Stamp: React.FC<{frame: number}> = ({frame}) => {
+  const scale = interp(frame, [138, 141], [2.8, 1], easeOut);
+  const opacity = interp(frame, [138, 139], [0, 1]);
+  // 顔・目に重ならないよう、画面右側の髪の領域へ移動する。
+  return <div style={{position: 'absolute', left: 1480, top: 320, width: 240, height: 240, borderRadius: '50%', background: '#E60012', border: '10px solid #fff', boxShadow: 'inset 0 0 0 5px #E60012, inset 0 0 0 9px #fff, 0 18px 25px rgba(0,0,0,.45)', color: '#fff', fontFamily: "'Noto Sans JP', sans-serif", fontWeight: 900, fontSize: 50, lineHeight: 1.08, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: `rotate(-14deg) scale(${scale})`, transformOrigin: '50% 50%', opacity, zIndex: 120}}>売約<br />済</div>;
+};
 
-const PhoneShell: React.FC<{children: React.ReactNode}> = ({children}) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 710,
-      top: 54,
-      width: 500,
-      height: 972,
-      borderRadius: 54,
-      background: '#030303',
-      boxShadow: '0 38px 95px rgba(0,0,0,.74), 0 0 0 3px rgba(255,255,255,.1)',
-      overflow: 'hidden',
-    }}
-  >
-    <div
-      style={{
-        position: 'absolute',
-        inset: 14,
-        borderRadius: 42,
-        overflow: 'hidden',
-        background: '#080808',
-      }}
-    >
-      {children}
-    </div>
-  </div>
-);
-
-export const PhoneFeedHesitation: React.FC<z.infer<typeof phoneFeedHesitationSchema>> = ({
-  images,
-  heroImage,
-}) => {
+export const PhoneFeedHesitation: React.FC<z.infer<typeof phoneFeedHesitationSchema>> = ({images, heroImage, bg, audioPreview}) => {
   const frame = useCurrentFrame();
-  const scrollY = interpolate(frame, [0, 44, 64, 106, 132], [120, -142, -142, -574, -574], {
-    ...clamp,
-    easing: easeInOut,
-  });
-  const stopJolt = interpolate(frame, [126, 132, 138], [0, 1, 0], {...clamp, easing: easeOut});
-  const heroStart = 188;
-  const dim = interp(frame, [heroStart - 10, heroStart + 14], [0, 1], easeOut);
-  const heroDrop = interp(frame, [heroStart, heroStart + 18], [0, 1], easeDrop);
-  const heroScale = interpolate(frame, [heroStart, heroStart + 10, heroStart + 24], [1.12, 1.035, 1], {
-    ...clamp,
-    easing: easeDrop,
-  });
-  const heroY = interpolate(heroDrop, [0, 1], [-820, 0]);
-  const heroOpacity = interp(frame, [heroStart - 2, heroStart + 4], [0, 1], easeOut);
+  const scrollY = keyframe(frame, [0, 20, 32, 56, 66, 90, 100, 116], [0, 0, -900, -900, -1650, -1650, -3350, -3350]);
+  const hesitation = keyframe(frame, [38, 40, 42, 48, 50, 52], [0, -3, 0, 0, -3, 0]);
+  const feedBlur = frame < 20 ? 0 : frame < 32 ? interp(frame, [20, 32], [6, 0], easeOut) : frame < 90 ? 0 : frame < 100 ? interp(frame, [90, 100], [8, 0], easeOut) : 0;
+  // 3段階の「どん！」を少しゆっくり見せ、各着地の回転もわずかに強める。
+  const heroPunch = frame < 116 ? 1 : frame < 122 ? interp(frame, [116, 122], [1, 1.18], easeOut) : frame < 128 ? 1.18 : frame < 134 ? interp(frame, [128, 134], [1.18, 1.6], easeOut) : frame < 140 ? 1.6 : interp(frame, [140, 148], [1.6, 2.6], easeOut);
+  const punchX = keyframe(frame, [116, 119, 122, 128, 131, 134, 140, 144, 148], [0, 2, -2, 0, 2, -2, 0, -3, 0]);
+  const punchY = keyframe(frame, [116, 119, 122, 128, 131, 134, 140, 144, 148], [0, -2, 2, 0, -2, 2, 0, 2, 0]);
+  const punchRotate = keyframe(frame, [116, 119, 122, 128, 131, 134, 140, 144, 148], [0, 2.5, -2.5, 0, 2.5, -2.5, 0, 3.5, 0]);
+  const phoneDim = interp(frame, [100, 116], [0, .22], easeOut);
+  const flash = keyframe(frame, [140, 141], [.12, 0]);
+  const feedImages = [...images.slice(0, 8), heroImage];
 
-  return (
-    <AbsoluteFill
-      style={{
-        background: 'transparent',
-        overflow: 'hidden',
-        fontFamily: "'Hiragino Sans', 'Noto Sans JP', sans-serif",
-      }}
-    >
-      <Sequence from={128} durationInFrames={22} layout="none">
-        <Audio src={staticFile('sfx/c02_scroll_stop.wav')} volume={0.65} />
-      </Sequence>
-      <Sequence from={heroStart} durationInFrames={24} layout="none">
-        <Audio src={staticFile('sfx/c01_thump.wav')} volume={0.9} />
-      </Sequence>
-
-      <PhoneShell>
+  return <AbsoluteFill style={{overflow: 'hidden', fontFamily: "'Noto Sans JP', sans-serif"}}>
+    {bg === 'roomtone' ? (
+      <>
+        {/* v1.1: この2層は透過納品時に除外し、C01と共用の背景素材をPremiereで敷く。 */}
+        <AbsoluteFill style={{background: '#0A0B0C'}} />
+        <AbsoluteFill style={{background: 'radial-gradient(ellipse 130% 100% at 50% 46%, transparent 46%, rgba(0,0,0,.34) 100%)', pointerEvents: 'none'}} />
+        <AbsoluteFill style={{opacity: .09, backgroundImage: 'radial-gradient(rgba(234,230,223,.20) .65px, transparent .85px)', backgroundSize: '7px 7px', mixBlendMode: 'screen', pointerEvents: 'none'}} />
+      </>
+    ) : null}
+    <div style={{position: 'absolute', left: 650, top: -160, width: 620, height: 1260, borderRadius: 64, background: '#030303', border: '10px solid #222', transform: 'rotate(-2deg)', transformOrigin: '50% 50%', boxShadow: '0 38px 120px rgba(0,0,0,.82)', overflow: 'hidden', zIndex: 10}}>
+      <div style={{position: 'absolute', inset: 14, borderRadius: 46, background: '#080808', overflow: 'hidden'}}>
         <YouTubeHeader />
-        <BottomNav />
-        <div
-          style={{
-            position: 'absolute',
-            top: 214,
-            left: 0,
-            right: 0,
-            bottom: 86,
-            overflow: 'hidden',
-          }}
-        >
-          <div
-            style={{
-              position: 'absolute',
-              top: scrollY + stopJolt * 10,
-              left: 0,
-              right: 0,
-              paddingBottom: 80,
-            }}
-          >
-            {images.slice(0, 3).map((image, index) => (
-              <FeedCard key={image} image={image} index={index} />
-            ))}
+        <div style={{position: 'absolute', left: 0, right: 0, top: 118, bottom: 104, overflow: 'hidden'}}>
+          <div style={{position: 'absolute', left: 0, right: 0, top: scrollY + hesitation, filter: `blur(${feedBlur}px)`}}>
+            {feedImages.map((image, index) => <FeedCard key={`${image}-${index}`} image={image} index={index} hero={index === 8} />)}
           </div>
-          <div
-            style={{
-              position: 'absolute',
-              right: 6,
-              top: interp(frame, [0, 132], [34, 390], easeInOut),
-              width: 4,
-              height: 98,
-              borderRadius: 6,
-              background: 'rgba(255,255,255,.72)',
-              opacity: interp(frame, [0, 20, 150, 174], [0, 0.7, 0.7, 0], easeOut),
-            }}
-          />
+          <div style={{position: 'absolute', right: 8, top: interp(frame, [0, 116], [32, 430], easeInOut), width: 5, height: 110, borderRadius: 8, background: 'rgba(255,255,255,.72)', opacity: interp(frame, [0, 18, 150, 170], [0, .72, .72, 0])}} />
         </div>
-        <HesitatingFinger frame={frame} />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: '#000',
-            opacity: dim * 0.62,
-            zIndex: 70,
-          }}
-        />
-      </PhoneShell>
-
-      <div
-        style={{
-          position: 'absolute',
-          left: 450,
-          top: 262 + heroY,
-          width: 1020,
-          height: (1020 * 9) / 16,
-          borderRadius: 24,
-          overflow: 'hidden',
-          opacity: heroOpacity,
-          scale: `${heroScale}`,
-          transformOrigin: '50% 50%',
-          boxShadow:
-            '0 54px 130px rgba(0,0,0,.82), 0 0 0 2px rgba(255,255,255,.18)',
-          zIndex: 100,
-        }}
-      >
-        {heroImage ? (
-          <Img src={staticFile(heroImage)} style={{width: '100%', height: '100%', objectFit: 'cover', display: 'block'}} />
-        ) : (
-          <PlaceholderHeroThumbnail />
-        )}
+        <Finger frame={frame} />
+        <div style={{position: 'absolute', inset: 0, background: '#000', opacity: phoneDim, zIndex: 40, pointerEvents: 'none'}} />
+        <BottomNav />
       </div>
-    </AbsoluteFill>
-  );
+    </div>
+    <div style={{position: 'absolute', left: 660 + punchX, top: 301 + punchY, width: 600, height: 338, overflow: 'hidden', transform: `rotate(${-3.5 + punchRotate}deg) scale(${heroPunch})`, transformOrigin: '50% 50%', boxShadow: '0 54px 130px rgba(0,0,0,.82)', opacity: frame < 116 ? 0 : 1, zIndex: 100}}><Img src={staticFile(heroImage)} style={{width: '100%', height: '100%', objectFit: 'cover', display: 'block'}} /></div>
+    <Stamp frame={frame} />
+    <AbsoluteFill style={{background: '#fff', opacity: flash, mixBlendMode: 'screen', pointerEvents: 'none', zIndex: 140}} />
+    {audioPreview ? (
+      <>
+        {/* 仮キュー: スクロール停止をF32/F66/F100、サムネ着地をF116、スタンプ押印をF141で確認する。 */}
+        {[32, 66, 100].map((from) => (
+          <Sequence key={`scroll-stop-${from}`} from={from} durationInFrames={Math.ceil(0.18 * 23.976)}>
+            <Audio src={staticFile('sfx/c02_scroll_stop.wav')} volume={0.7} />
+          </Sequence>
+        ))}
+        <Sequence from={116} durationInFrames={Math.ceil(0.34 * 23.976)}>
+          <Audio src={staticFile('sfx/c01_thump.wav')} volume={0.85} />
+        </Sequence>
+        <Sequence from={141} durationInFrames={Math.ceil(0.34 * 23.976)}>
+          <Audio src={staticFile('sfx/c01_thump.wav')} volume={0.75} />
+        </Sequence>
+      </>
+    ) : null}
+  </AbsoluteFill>;
 };

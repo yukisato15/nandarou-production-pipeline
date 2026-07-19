@@ -1,0 +1,13 @@
+{
+  "fps": 23.976,
+  "scenes": [
+    {
+      "type": "rmt_icon_swap",
+      "id": "C18_robot_to_human",
+      "durationInFrames": 240,
+      "props": {
+        "telopText": "広めていたのは、《人間》です。"
+      }
+    }
+  ]
+}

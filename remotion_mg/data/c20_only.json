@@ -1,0 +1,10 @@
+{
+  "scenes": [
+    {
+      "type": "ui_message_branch_network",
+      "props": {
+        "conceptual": false
+      }
+    }
+  ]
+}

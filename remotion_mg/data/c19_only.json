@@ -1,0 +1,10 @@
+{
+  "scenes": [
+    {
+      "type": "ui_chat_chain",
+      "props": {
+        "messageText": "これ、知ってた?"
+      }
+    }
+  ]
+}

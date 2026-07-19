@@ -12,49 +12,101 @@ export const rmtIconSwapSchema = z.object({
 
 type Props = z.infer<typeof rmtIconSwapSchema>;
 
-// ロボットアイコン (手ざわり感のあるミニマルなロボット)
+// ダブルレイヤー透過ロボットアイコン（墨線画＋金茶ずらし影）
 const RobotIcon: React.FC<{style?: React.CSSProperties}> = ({style}) => (
-  <svg
-    viewBox="0 0 100 100"
-    width="160"
-    height="160"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="3.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    style={style}
-  >
-    {/* アンテナ */}
-    <line x1="50" y1="28" x2="50" y2="12" />
-    <circle cx="50" cy="12" r="3" fill="currentColor" />
-    {/* 頭部 */}
-    <rect x="22" y="28" width="56" height="48" rx="6" />
-    {/* 目 */}
-    <circle cx="38" cy="48" r="4.5" fill="currentColor" />
-    <circle cx="62" cy="48" r="4.5" fill="currentColor" />
-    {/* 口 */}
-    <line x1="38" y1="62" x2="62" y2="62" />
-    {/* 耳/ネジ */}
-    <rect x="16" y="46" width="6" height="12" rx="1.5" />
-    <rect x="78" y="46" width="6" height="12" rx="1.5" />
-  </svg>
+  <div style={{position: 'relative', width: 420, height: 420, ...style}}>
+    {/* 背面: 金茶ベタ塗り影 (背景透過) */}
+    <svg
+      viewBox="0 0 100 100"
+      width="420"
+      height="420"
+      style={{
+        position: 'absolute',
+        left: 28,
+        top: 28,
+        color: theme.goldDeep,
+        fill: 'currentColor',
+      }}
+    >
+      <rect x="22" y="28" width="56" height="48" rx="6" />
+      <rect x="16" y="46" width="6" height="12" rx="1.5" />
+      <rect x="78" y="46" width="6" height="12" rx="1.5" />
+    </svg>
+    
+    {/* 前面: 墨線画 (背景透過) */}
+    <svg
+      viewBox="0 0 100 100"
+      width="420"
+      height="420"
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        color: theme.ink,
+      }}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* アンテナ */}
+      <line x1="50" y1="28" x2="50" y2="12" />
+      <circle cx="50" cy="12" r="3" fill="currentColor" stroke="none" />
+      {/* 頭部 */}
+      <rect x="22" y="28" width="56" height="48" rx="6" />
+      {/* 目 */}
+      <circle cx="38" cy="48" r="4.5" fill="currentColor" stroke="none" />
+      <circle cx="62" cy="48" r="4.5" fill="currentColor" stroke="none" />
+      {/* 口 */}
+      <line x1="38" y1="62" x2="62" y2="62" />
+      {/* 耳/ネジ */}
+      <rect x="16" y="46" width="6" height="12" rx="1.5" />
+      <rect x="78" y="46" width="6" height="12" rx="1.5" />
+    </svg>
+  </div>
 );
 
-// 人間シルエットアイコン
+// ダブルレイヤー透過人間シルエットアイコン（墨線画＋金茶ずらし影）
 const HumanIcon: React.FC<{style?: React.CSSProperties}> = ({style}) => (
-  <svg
-    viewBox="0 0 100 100"
-    width="64"
-    height="64"
-    fill="currentColor"
-    style={style}
-  >
-    {/* 頭 */}
-    <circle cx="50" cy="28" r="18" />
-    {/* 体/肩 */}
-    <path d="M16 84 C16 62, 30 50, 50 50 C70 50, 84 62, 84 84 Z" />
-  </svg>
+  <div style={{position: 'relative', width: 100, height: 100, ...style}}>
+    {/* 背面: 金茶ベタ塗り影 (背景透過) */}
+    <svg
+      viewBox="0 0 100 100"
+      width="100"
+      height="100"
+      style={{
+        position: 'absolute',
+        left: 10,
+        top: 10,
+        color: theme.goldDeep,
+        fill: 'currentColor',
+      }}
+    >
+      <circle cx="50" cy="28" r="18" />
+      <path d="M16 84 C16 62, 30 50, 50 50 C70 50, 84 62, 84 84 Z" />
+    </svg>
+    
+    {/* 前面: 墨線画 (背景透過) */}
+    <svg
+      viewBox="0 0 100 100"
+      width="100"
+      height="100"
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        color: theme.ink,
+      }}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="4"
+      strokeLinecap="round"
+    >
+      <circle cx="50" cy="28" r="18" />
+      <path d="M16 84 C16 62, 30 50, 50 50 C70 50, 84 62, 84 84 Z" />
+    </svg>
+  </div>
 );
 
 // 手書き風バツ(X)マーク
@@ -67,10 +119,10 @@ const CrossMark: React.FC<{
   return (
     <svg
       viewBox="0 0 100 100"
-      width="240"
-      height="240"
+      width="560"
+      height="560"
       stroke={theme.red}
-      strokeWidth="8"
+      strokeWidth="10"
       strokeLinecap="round"
       fill="none"
       style={style}
@@ -122,33 +174,48 @@ export const RmtIconSwap: React.FC<Props> = ({
   const exitTranslateY = exitProgress * 150;
   const exitOpacity = 1 - exitProgress;
 
-  // 4. 人間ノードの定義
-  // 画面中心 (960, 440) を中心とした同心円配置
+  // 4. 人間ノードの定義とズームアウトアニメーション
+  // テロップ被りを防ぎつつ横に広げるため、中心座標を Y: 360 へ持ち上げ
   const centerX = 960;
-  const centerY = 440;
-  const humanNodes = [
-    // 第一層 (R=180) - 4人
-    { x: centerX + 180 * Math.cos(0), y: centerY + 180 * Math.sin(0), delay: 80 },
-    { x: centerX + 180 * Math.cos(Math.PI * 0.5), y: centerY + 180 * Math.sin(Math.PI * 0.5), delay: 84 },
-    { x: centerX + 180 * Math.cos(Math.PI), y: centerY + 180 * Math.sin(Math.PI), delay: 88 },
-    { x: centerX + 180 * Math.cos(Math.PI * 1.5), y: centerY + 180 * Math.sin(Math.PI * 1.5), delay: 92 },
-    // 第二層 (R=340) - 6人
-    { x: centerX + 340 * Math.cos(Math.PI * 0.15), y: centerY + 340 * Math.sin(Math.PI * 0.15), delay: 96 },
-    { x: centerX + 340 * Math.cos(Math.PI * 0.45), y: centerY + 340 * Math.sin(Math.PI * 0.45), delay: 100 },
-    { x: centerX + 340 * Math.cos(Math.PI * 0.8), y: centerY + 340 * Math.sin(Math.PI * 0.8), delay: 104 },
-    { x: centerX + 340 * Math.cos(Math.PI * 1.15), y: centerY + 340 * Math.sin(Math.PI * 1.15), delay: 108 },
-    { x: centerX + 340 * Math.cos(Math.PI * 1.5), y: centerY + 340 * Math.sin(Math.PI * 1.5), delay: 112 },
-    { x: centerX + 340 * Math.cos(Math.PI * 1.85), y: centerY + 340 * Math.sin(Math.PI * 1.85), delay: 116 },
-    // 第三層 (R=500) - 8人
-    { x: centerX + 500 * Math.cos(Math.PI * 0.05), y: centerY + 500 * Math.sin(Math.PI * 0.05), delay: 120 },
-    { x: centerX + 500 * Math.cos(Math.PI * 0.3), y: centerY + 500 * Math.sin(Math.PI * 0.3), delay: 124 },
-    { x: centerX + 500 * Math.cos(Math.PI * 0.55), y: centerY + 500 * Math.sin(Math.PI * 0.55), delay: 128 },
-    { x: centerX + 500 * Math.cos(Math.PI * 0.8), y: centerY + 500 * Math.sin(Math.PI * 0.8), delay: 132 },
-    { x: centerX + 500 * Math.cos(Math.PI * 1.05), y: centerY + 500 * Math.sin(Math.PI * 1.05), delay: 136 },
-    { x: centerX + 500 * Math.cos(Math.PI * 1.3), y: centerY + 500 * Math.sin(Math.PI * 1.3), delay: 140 },
-    { x: centerX + 500 * Math.cos(Math.PI * 1.55), y: centerY + 500 * Math.sin(Math.PI * 1.55), delay: 144 },
-    { x: centerX + 500 * Math.cos(Math.PI * 1.8), y: centerY + 500 * Math.sin(Math.PI * 1.8), delay: 148 },
+  const centerY = 360;
+
+  // 80Fから148Fにかけて、全体が超巨大な4.0倍（ズームイン）から1.0倍（ズームアウト）へ引きながら拡散していく
+  const zoom = interpolate(frame, [80, 148], [4.0, 1.0], {
+    extrapolateLeft: 'clamp',
+    extrapolateRight: 'clamp',
+  });
+
+  // X軸・Y軸の基本楕円半径（横幅を大きく広げ、縦幅はテロップ領域 Y: 800 以降を完全に避ける）
+  const layers = [
+    { Rx: 240, Ry: 100, count: 6, startDelay: 80, stepDelay: 2 },
+    { Rx: 540, Ry: 220, count: 10, startDelay: 92, stepDelay: 2 },
+    { Rx: 840, Ry: 340, count: 12, startDelay: 114, stepDelay: 3 }
   ];
+
+  const humanNodes: Array<{
+    id: string;
+    layerIndex: number;
+    nodeIndex: number;
+    angle: number;
+    Rx: number;
+    Ry: number;
+    delay: number;
+  }> = [];
+
+  layers.forEach((layer, lIdx) => {
+    for (let i = 0; i < layer.count; i++) {
+      const angle = (i * 2 * Math.PI) / layer.count;
+      humanNodes.push({
+        id: `node-${lIdx}-${i}`,
+        layerIndex: lIdx,
+        nodeIndex: i,
+        angle,
+        Rx: layer.Rx,
+        Ry: layer.Ry,
+        delay: layer.startDelay + i * layer.stepDelay,
+      });
+    }
+  });
 
   // 5. テロップのパースと文字表示 (132F開始)
   const telopStartFrame = 132;
@@ -181,8 +248,8 @@ export const RmtIconSwap: React.FC<Props> = ({
         <div
           style={{
             position: 'absolute',
-            left: centerX - 80,
-            top: centerY - 80,
+            left: centerX - 210, // 420pxの半分
+            top: centerY - 210,
             opacity: robotOpacity * exitOpacity,
             transform: `translateY(${exitTranslateY}px)`,
             color: theme.ink,
@@ -197,8 +264,8 @@ export const RmtIconSwap: React.FC<Props> = ({
         <div
           style={{
             position: 'absolute',
-            left: centerX - 120,
-            top: centerY - 120,
+            left: centerX - 280, // 560pxの半分
+            top: centerY - 280,
             opacity: exitOpacity,
             transform: `translateY(${exitTranslateY}px)`,
           }}
@@ -218,25 +285,75 @@ export const RmtIconSwap: React.FC<Props> = ({
             pointerEvents: 'none',
           }}
         >
+          {/* ① 中心からの放射状ライン */}
           {humanNodes.map((node, i) => {
             const lineGrow = spring({
               frame: frame - node.delay,
               fps,
               config: {damping: 26, stiffness: 120},
             });
-            const x2 = centerX + (node.x - centerX) * lineGrow;
-            const y2 = centerY + (node.y - centerY) * lineGrow;
+            // ズームイン/ズームアウトに連動した端点座標の計算
+            const currentRx = node.Rx * (lineGrow / zoom);
+            const currentRy = node.Ry * (lineGrow / zoom);
+            const x2 = centerX + currentRx * Math.cos(node.angle);
+            const y2 = centerY + currentRy * Math.sin(node.angle);
             return (
               <line
-                key={`line-${i}`}
+                key={`line-radial-${i}`}
                 x1={centerX}
                 y1={centerY}
                 x2={x2}
                 y2={y2}
                 stroke={theme.gold}
-                strokeWidth="2.5"
+                strokeWidth="2.0"
                 strokeDasharray="4,6"
-                opacity={lineGrow * 0.7}
+                opacity={lineGrow * 0.5}
+              />
+            );
+          })}
+
+          {/* ② 同一層内の隣接ノード同士を繋ぐリング状ライン */}
+          {humanNodes.map((node, i) => {
+            const lIdx = node.layerIndex;
+            const count = layers[lIdx].count;
+            const nextIdx = (node.nodeIndex + 1) % count;
+            const nextNode = humanNodes.find(n => n.layerIndex === lIdx && n.nodeIndex === nextIdx)!;
+            
+            const maxDelay = Math.max(node.delay, nextNode.delay);
+            const lineGrow = spring({
+              frame: frame - maxDelay,
+              fps,
+              config: {damping: 26, stiffness: 100},
+            });
+
+            if (frame < maxDelay) return null;
+
+            // 各ノードの現在位置をズームを考慮して算出
+            const r1x = node.Rx * (1 / zoom);
+            const r1y = node.Ry * (1 / zoom);
+            const x1 = centerX + r1x * Math.cos(node.angle);
+            const y1 = centerY + r1y * Math.sin(node.angle);
+
+            const r2x = nextNode.Rx * (1 / zoom);
+            const r2y = nextNode.Ry * (1 / zoom);
+            const x2_target = centerX + r2x * Math.cos(nextNode.angle);
+            const y2_target = centerY + r2y * Math.sin(nextNode.angle);
+
+            // 線が徐々に伸びるようにする
+            const x2 = x1 + (x2_target - x1) * lineGrow;
+            const y2 = y1 + (y2_target - y1) * lineGrow;
+
+            return (
+              <line
+                key={`line-ring-${i}`}
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke={theme.gold}
+                strokeWidth="2.0"
+                strokeDasharray="3,5"
+                opacity={lineGrow * 0.6}
               />
             );
           })}
@@ -256,18 +373,22 @@ export const RmtIconSwap: React.FC<Props> = ({
             extrapolateRight: 'clamp',
           });
           
-          // 中心から少し飛び出して着地するようなイージング
-          const scale = appear * 1.0;
-          const translateX = (node.x - centerX) * (0.8 + 0.2 * appear);
-          const translateY = (node.y - centerY) * (0.8 + 0.2 * appear);
+          // ズームイン/アウトに連動したスケール（登場時の最大4.0倍から1.0倍へ引く）
+          const scale = appear * zoom;
+          
+          // ズームイン/アウトに連動した位置（最初は中心寄りで大きく、引くにつれて外側へ広がり小さくなる）
+          const currentRx = node.Rx * (appear / zoom);
+          const currentRy = node.Ry * (appear / zoom);
+          const translateX = currentRx * Math.cos(node.angle);
+          const translateY = currentRy * Math.sin(node.angle);
 
           return (
             <div
-              key={`human-${i}`}
+              key={node.id}
               style={{
                 position: 'absolute',
-                left: centerX - 32,
-                top: centerY - 32,
+                left: centerX - 50, // 100pxの半分
+                top: centerY - 50,
                 opacity: opacity,
                 transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
                 color: theme.ink,

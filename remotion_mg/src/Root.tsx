@@ -49,7 +49,8 @@ export const RemotionRoot = () => {
       <Composition
         id="C13AttentionFlow"
         component={C13AttentionFlow}
-        durationInFrames={430}
+        // 紙幣の弾みを24秒地点から6秒間見せるため、30秒尺に延長。
+        durationInFrames={720}
         fps={23.976}
         width={1920}
         height={1080}

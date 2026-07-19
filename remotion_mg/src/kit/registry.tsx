@@ -11,6 +11,9 @@ import {TitleCard, titleCardSchema} from './components/TitleCard';
 import {EpisodeTitle, episodeTitleSchema} from './components/EpisodeTitle';
 import {C012WordGrowth, c012WordGrowthSchema} from './components/C012WordGrowth';
 import {RmtIconSwap, rmtIconSwapSchema} from './components/RmtIconSwap';
+import {UiChatChain, uiChatChainSchema} from './components/UiChatChain';
+import {UiMessageBranchNetwork, uiMessageBranchNetworkSchema} from './components/UiMessageBranchNetwork';
+import {UiPeopleCircuitZoomout, uiPeopleCircuitZoomoutSchema} from './components/UiPeopleCircuitZoomout';
 
 // Component Selectorの本体。
 // AI(または人間)はこの一覧から type を選び、schema に合うpropsをJSONで書く。
@@ -89,6 +92,24 @@ export const registry: Record<string, Entry> = {
     schema: rmtIconSwapSchema,
     defaultDurationInFrames: 240,
     description: 'C18専用。ロボットアイコンに赤いバツ印が付いて退場し、代わりに人間の拡散シルエット群が現れるVOX風MG。',
+  },
+  ui_chat_chain: {
+    component: UiChatChain,
+    schema: uiChatChainSchema,
+    defaultDurationInFrames: 240,
+    description: 'C19専用。C18で構築された楕円上の人間ネットワークから、「これ、知ってた?」という吹き出しが連鎖ポップアップして広がるVOX風MG。',
+  },
+  ui_message_branch_network: {
+    component: UiMessageBranchNetwork,
+    schema: uiMessageBranchNetworkSchema,
+    defaultDurationInFrames: 240,
+    description: 'C20専用。メッセージアプリ風の吹き出しが、ツリー状に枝分かれしながら加速度的に連鎖増殖する動画を生成する自作MG。',
+  },
+  ui_people_circuit_zoomout: {
+    component: UiPeopleCircuitZoomout,
+    schema: uiPeopleCircuitZoomoutSchema,
+    defaultDurationInFrames: 240,
+    description: 'C21専用。C20のメッセージ増殖の結末からカメラがズームアウトし、メッセージ群がフェードアウトして巨大な人型回路図（微グロー付き）へ収束・完成する自作MG。',
   },
 };
 

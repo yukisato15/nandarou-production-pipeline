@@ -1,0 +1,10 @@
+{
+  "scenes": [
+    {
+      "type": "ui_people_circuit_zoomout",
+      "props": {
+        "conceptual": false
+      }
+    }
+  ]
+}

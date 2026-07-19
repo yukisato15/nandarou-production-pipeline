@@ -23,7 +23,7 @@ export const RemotionRoot = () => {
       <Composition
         id="C13AttentionFlow"
         component={C13AttentionFlow}
-        durationInFrames={312}
+        durationInFrames={430}
         fps={23.976}
         width={1920}
         height={1080}

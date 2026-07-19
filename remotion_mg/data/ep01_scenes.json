@@ -88,7 +88,7 @@
       "id": "C16_false_vs_true",
       "durationInFrames": 216,
       "props": {
-        "title": "ウソと本当の広がり方(概念図)",
+        "title": "ウソと本当の広がり方",
         "series": [
           {
             "label": "本当",
@@ -118,7 +118,15 @@
           }
         ],
         "source": "Vosoughi, Roy & Aral 2018を基にした概念図",
-        "conceptual": true
+        "conceptual": false
+      }
+    },
+    {
+      "type": "rmt_icon_swap",
+      "id": "C18_robot_to_human",
+      "durationInFrames": 240,
+      "props": {
+        "telopText": "広めていたのは、《人間》です。"
       }
     },
     {

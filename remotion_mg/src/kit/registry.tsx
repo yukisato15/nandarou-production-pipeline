@@ -10,6 +10,7 @@ import {ThumbnailStack, thumbnailStackSchema} from './components/ThumbnailStack'
 import {TitleCard, titleCardSchema} from './components/TitleCard';
 import {EpisodeTitle, episodeTitleSchema} from './components/EpisodeTitle';
 import {C012WordGrowth, c012WordGrowthSchema} from './components/C012WordGrowth';
+import {RmtIconSwap, rmtIconSwapSchema} from './components/RmtIconSwap';
 
 // Component Selectorの本体。
 // AI(または人間)はこの一覧から type を選び、schema に合うpropsをJSONで書く。
@@ -82,6 +83,12 @@ export const registry: Record<string, Entry> = {
     schema: lineCompareSchema,
     defaultDurationInFrames: 216,
     description: '折れ線の比較(最大3系列)。推移・「AがBを追い抜く」に。',
+  },
+  rmt_icon_swap: {
+    component: RmtIconSwap,
+    schema: rmtIconSwapSchema,
+    defaultDurationInFrames: 240,
+    description: 'C18専用。ロボットアイコンに赤いバツ印が付いて退場し、代わりに人間の拡散シルエット群が現れるVOX風MG。',
   },
 };
 

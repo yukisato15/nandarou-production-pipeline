@@ -1,0 +1,27 @@
+{
+  "fps": 23.976,
+  "scenes": [
+    {
+      "type": "line_compare",
+      "id": "C16_false_vs_true",
+      "durationInFrames": 216,
+      "props": {
+        "title": "ウソと本当の広がり方",
+        "series": [
+          {
+            "label": "本当",
+            "values": [10, 16, 22, 27, 31, 34, 36],
+            "color": "ink"
+          },
+          {
+            "label": "ウソ",
+            "values": [10, 20, 34, 52, 72, 88, 100],
+            "color": "red"
+          }
+        ],
+        "source": "Vosoughi, Roy & Aral 2018を基にした概念図",
+        "conceptual": false
+      }
+    }
+  ]
+}

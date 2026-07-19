@@ -18,6 +18,9 @@ export const theme = {
   fontMincho: "'Shippori Mincho', 'Hiragino Mincho ProN', serif",
   fontNumber: "Oswald, sans-serif",
 
+  // Premiereで重ねるフォローテロップ用。主要情報はこの高さより上へ置く。
+  followTelopSafeBottom: 220,
+
   paperTexture: staticFile('textures/paper_scan_01.jpg'),
   paperWhite: staticFile('textures/paper_scan_02_white.jpg'),
 } as const;

@@ -13,10 +13,20 @@ import {IDENT_DURATION_FRAMES} from './ident/timing';
 import demoDoc from '../data/ep02_demo.json';
 import ep01Telops from '../data/ep01_telops.json';
 import {EpisodeTitle} from './kit/components/EpisodeTitle';
+import {C15MitStudyMontage} from './compositions/C15MitStudyMontage';
 
 export const RemotionRoot = () => {
   return (
     <>
+      <Composition
+        id="C15MitStudyMontage"
+        component={C15MitStudyMontage}
+        durationInFrames={216}
+        fps={23.976}
+        width={1920}
+        height={1080}
+        defaultProps={{}}
+      />
       <Composition
         id="C13AttentionFlow"
         component={C13AttentionFlow}

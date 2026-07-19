@@ -170,7 +170,9 @@ TelopOverlayは**パート単位の絶対時間で書き出さない**。カッ�
 | チャンネル設計・15回ロードマップ・KPI | `docs/originals/チャンネル設計書_v4_確定版.md.docx`(抽出md: 同上) |
 | 台本の書き方・番組の声 | `docs/design_reference/台本文体ガイド_v1.md` |
 | Remotionの使い方(初心者向け) | `remotion_mg/使い方マニュアル.md` |
+| **Remotion再利用パターン台帳(新カット着手前に必ず見る)** | `docs/design_reference/Remotionパターンカタログ_v1.md` |
 | Remotion設計思想・OSS評価(役割①情報カット) | `docs/design_reference/Remotion基盤_調査設計_v1.md` |
+| **VOX写真モンタージュ実装(生成AI動画を減らす主力)** | `docs/design_reference/MontageScene実装指示書_v1_VOX.md` / `VOXルック_テンプレート提案_v1.html` |
 | Remotion資料モンタージュ(役割②編集台) | `docs/design_reference/資料モンタージュ設計_v1.md` |
 | チャンネル設計の改訂差分 | `docs/design_reference/チャンネル設計書_改訂記録_v4.1.md`(人物写真) / `_v4.2.md`(映像素材) |
 | テロップ記法v2 | 各コンテ表の「テロップ記法v2」シート + `tools/validate_telops.py` |

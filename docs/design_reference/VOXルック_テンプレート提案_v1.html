@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>VOX風モンタージュ・テンプレート提案 v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700;800&family=Oswald:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E3DED1; --ink:#0E0F10; --ink2:#17181A; --gold:#C9A063; --red:#B8352E;
+    --white:#EAE6DF; --ash:#6E6D66; --amber:#E8A33D;
+  }
+  body{background:#141517;color:var(--paper);font-family:'Shippori Mincho',serif;margin:0;padding:44px 0 90px;}
+  .doc{width:940px;margin:0 auto;}
+  h1{font-size:23px;font-weight:800;letter-spacing:.08em;border-left:5px solid var(--gold);padding-left:16px;}
+  h2{font-size:18px;margin:52px 0 6px;padding:9px 14px;background:#232427;border-left:4px solid var(--gold);}
+  .lead{font-size:14px;color:#a7a49a;line-height:1.95;}
+  .cap{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:.14em;color:var(--gold);margin:26px 0 6px;text-transform:uppercase;}
+  .cap b{color:var(--paper);font-family:'Shippori Mincho';margin-left:10px;font-size:13px;letter-spacing:.02em;}
+  .vp{width:900px;height:506px;overflow:hidden;border:1px solid #333;position:relative;background:#000;}
+  .row{display:flex;gap:16px;}
+  .row .vp{width:442px;height:249px;}
+  /* ===== 共通素材(擬似写真をCSSグラデ+ノイズで) ===== */
+  .grain{position:absolute;inset:0;pointer-events:none;opacity:.06;z-index:50;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .vig{position:absolute;inset:0;pointer-events:none;z-index:49;
+    background:radial-gradient(ellipse 120% 100% at 50% 42%, transparent 45%, rgba(0,0,0,.55) 100%);}
+  .photo{position:absolute;inset:0;background-size:cover;background-position:center;filter:grayscale(.75) contrast(1.15) brightness(.72) sepia(.25);}
+  /* 擬似アーカイブ写真 */
+  .p-crowd{background:linear-gradient(160deg,#3a3428,#141210 70%),repeating-linear-gradient(92deg,rgba(255,255,255,.04) 0 3px,transparent 3px 9px);}
+  .p-portrait{background:radial-gradient(circle at 55% 40%,#4a4436,#12100c 75%);}
+  .p-city{background:linear-gradient(180deg,#2b3038,#0d0f12 80%),repeating-linear-gradient(88deg,rgba(200,220,255,.05) 0 2px,transparent 2px 22px);}
+  .p-ship{background:linear-gradient(180deg,#20303a,#0a1014 85%);}
+  /* ===== 大型ロワーサード(VOXの核) ===== */
+  .band{position:absolute;left:0;bottom:0;padding:26px 40px 34px;z-index:20;}
+  .kicker{font-family:'Oswald',sans-serif;font-weight:600;font-size:20px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+  .head{font-family:'Shippori Mincho';font-weight:800;font-size:62px;line-height:1.14;color:var(--white);text-shadow:0 3px 30px rgba(0,0,0,.8);}
+  .head em{font-style:normal;color:var(--amber);}
+  .sub{font-size:19px;color:#cfcabd;margin-top:12px;letter-spacing:.03em;}
+  .goldbar{width:64px;height:4px;background:var(--gold);margin-bottom:18px;}
+  .small .kicker{font-size:12px;letter-spacing:.18em;margin-bottom:6px;}
+  .small .head{font-size:33px;}
+  .small .sub{font-size:12px;margin-top:7px;}
+  .small .band{padding:16px 22px 20px;}
+  .small .goldbar{width:38px;height:3px;margin-bottom:10px;}
+  /* ソースタグ(VOXの信頼記号) */
+  .srctag{position:absolute;top:20px;left:24px;z-index:20;font-family:'Oswald',sans-serif;font-size:14px;letter-spacing:.12em;color:#cfcabd;border-left:3px solid var(--gold);padding-left:10px;line-height:1.5;}
+  .small .srctag{top:12px;left:14px;font-size:9px;padding-left:6px;}
+  /* 数字(全画面データ) */
+  .bignum{font-family:'Oswald',sans-serif;font-weight:600;font-size:180px;line-height:.9;color:var(--white);}
+  .bignum em{color:var(--amber);font-style:normal;}
+  .small .bignum{font-size:96px;}
+  /* 引用 */
+  .quote{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 70px;z-index:20;}
+  .quote .qmark{font-family:'Oswald';font-size:120px;color:var(--gold);line-height:.6;opacity:.5;}
+  .quote .qtext{font-family:'Shippori Mincho';font-weight:700;font-size:40px;line-height:1.5;color:var(--white);}
+  .small .quote{padding:0 30px;} .small .quote .qtext{font-size:20px;} .small .quote .qmark{font-size:60px;}
+  /* 注釈(手描き丸・引き出し線) */
+  .annot{position:absolute;z-index:22;border:3px solid var(--red);border-radius:50%;}
+  .annotlbl{position:absolute;z-index:22;font-family:'Oswald';font-size:15px;letter-spacing:.1em;color:var(--red);}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:12px;}
+  th,td{border:1px solid #3a3b3d;padding:8px 11px;text-align:left;line-height:1.65;vertical-align:top;}
+  th{background:#232427;color:var(--gold);font-family:'Oswald';font-weight:600;letter-spacing:.04em;}
+  .note{font-size:13px;color:#a7a49a;line-height:2;}
+  .verdict{background:#1c1d20;border:1px solid #34352f;border-left:4px solid var(--gold);padding:14px 20px;margin:14px 0;font-size:14px;line-height:1.95;}
+</style>
+</head>
+<body>
+<div class="doc">
+<h1>VOX風モンタージュ・テンプレート提案 v1</h1>
+<p class="lead">
+目的: 現行の「静かな異物感」の資産(明朝・墨・金茶・朱)を捨てず、<b>VOXの見やすさ・写真モンタージュの迫力</b>を接ぎ木する。
+下は実際の第1回カットに当てて組んだテンプレ案。写真はCSSの擬似アーカイブ画像(実装では実写/PD/AI画像)。
+</p>
+
+<div class="verdict">
+<b>結論を先に:</b> 全面VOX化(極太ゴシック+高彩度)は勧めません——それは他の解説チャンネルと同じ顔になり、差別化(明朝の声)を捨てることになります。
+勝ち筋は<b>「VOXの構図・カメラ・データの見せ方 × この番組の明朝と抑制パレット」</b>。
+つまり<b>写真は全面・グレード強め、文字は明朝のまま大きく、色は金茶/朱を一点だけ</b>。これなら"誰も持っていないモンタージュ・ルック"になります。
+</div>
+
+<h2>テンプレA — アーカイブ・ロワーサード(人物・歴史の導入)</h2>
+<p class="lead">全面のアーカイブ写真をグレード(グレースケール+コントラスト+暗め)。左上にソースタグ、下に大型明朝の見出し。VOXの基本形。<b>使用カット例: C25 バーネイズ登場 / C42 ゲッベルス。</b></p>
+<div class="cap">A① <b>C25「エドワード・バーネイズという男がいました」</b></div>
+<div class="vp">
+  <div class="photo p-portrait"></div>
+  <div class="srctag">ARCHIVE / 1920s<br>New York</div>
+  <div class="band">
+    <div class="goldbar"></div>
+    <div class="kicker">The Man Who Made Us Want</div>
+    <div class="head">欲望を、<em>発明</em>した男</div>
+    <div class="sub">エドワード・バーネイズ ／ 1891–1995</div>
+  </div>
+  <div class="vig"></div><div class="grain"></div>
+</div>
+
+<h2>テンプレB — 全画面データ(研究の数字)</h2>
+<p class="lead">数字は Oswald 特大、写真は暗く沈めて背景に。朱/金茶を一点。<b>使用カット例: C17 拡散7割・6倍 / C46 600万人 / C74 年表。</b></p>
+<div class="row">
+  <div>
+    <div class="cap">B① <b>C17 MIT研究</b></div>
+    <div class="vp small">
+      <div class="photo p-city"></div>
+      <div class="srctag">Vosoughi et al.<br>Science, 2018</div>
+      <div class="band">
+        <div class="bignum"><em>×6</em></div>
+        <div class="sub">ウソが「本当」に追いつく速さ</div>
+      </div>
+      <div class="vig"></div><div class="grain"></div>
+    </div>
+  </div>
+  <div>
+    <div class="cap">B② <b>C74 商品化の年表</b></div>
+    <div class="vp small">
+      <div class="photo p-crowd"></div>
+      <div class="band" style="padding-bottom:26px;">
+        <div class="kicker" style="color:var(--amber)">1929 → NOW</div>
+        <div class="head" style="font-size:30px;">欲望 → 世論 → 文化<br>→ 感情 → <em>反応</em></div>
+      </div>
+      <div class="vig"></div><div class="grain"></div>
+    </div>
+  </div>
+</div>
+
+<h2>テンプレC — 引用(史料・本人の言葉)</h2>
+<p class="lead">中央に明朝の引用、金茶のクォートマーク、出典タグ。既存Quote型の"紙片"をやめ、全面の暗い写真に浮かせる=VOX的な重み。<b>使用カット例: C26 見えない統治機構 / C54 アドルノ。</b></p>
+<div class="cap">C① <b>C26『プロパガンダ』1928</b></div>
+<div class="vp">
+  <div class="photo p-portrait" style="filter:grayscale(.9) contrast(1.2) brightness(.5);"></div>
+  <div class="quote">
+    <div class="qmark">“</div>
+    <div class="qtext">私たちが自由意思で選んでいる日常は——<br><em style="color:var(--amber);font-style:normal;">姿の見えない統治機構</em>の、支配を免れない。</div>
+  </div>
+  <div class="srctag">E. BERNAYS<br>"Propaganda", 1928</div>
+  <div class="vig"></div><div class="grain"></div>
+</div>
+
+<h2>テンプレD — 資料モンタージュ(切り抜き+注釈+移動)</h2>
+<p class="lead">紙背景に切り抜き写真を重ね、赤の手描き丸・引き出し線・数字カウンター。VOXの真骨頂。<b>使用カット例: C35 新聞に刷られる / C27 CPI / C49 亡命。</b>(動画では船・紙・数字が動く)</p>
+<div class="cap">D① <b>C35「デモに見えたものは、広告でした」</b></div>
+<div class="vp">
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,#2a2620,#15130f);"></div>
+  <div class="photo p-crowd" style="left:8%;top:14%;right:42%;bottom:20%;inset:auto;position:absolute;width:48%;height:64%;border:6px solid #d8d2c4;transform:rotate(-2deg);box-shadow:0 20px 50px rgba(0,0,0,.6);filter:grayscale(.85) contrast(1.2) brightness(.8);"></div>
+  <div class="annot" style="left:14%;top:22%;width:120px;height:120px;transform:rotate(-8deg);"></div>
+  <div class="annotlbl" style="left:12%;top:15%;">1929.4</div>
+  <div class="band">
+    <div class="goldbar" style="background:var(--red);"></div>
+    <div class="head" style="font-size:44px;">デモに見えたものは、<br><em style="color:var(--red);">広告</em>でした。</div>
+  </div>
+  <div class="srctag">NYT, 1929-04-01<br>(reconstruction)</div>
+  <div class="vig"></div><div class="grain"></div>
+</div>
+
+<h2>変更するデザイン規則(差分)</h2>
+<table>
+<tr><th>項目</th><th>現行(v1.1)</th><th>VOX-montage案</th></tr>
+<tr><td>背景の基本</td><td>紙#E3DED1 / 墨#0E0F10 のベタ</td><td><b>全面写真をグレード(グレースケール.75+コントラスト+暗め)</b>を基本に。紙・墨はベタでなく写真の"下地"へ</td></tr>
+<tr><td>見出し書体</td><td>しっぽり明朝(維持)</td><td><b>維持</b>。ただしサイズを大きく(48→62px級)、影を深く。ここが差別化の生命線</td></tr>
+<tr><td>キッカー/数字</td><td>Oswald</td><td>Oswald維持。字間を広げVOX風の英字キッカーを常設(例 "The Man Who Made Us Want")</td></tr>
+<tr><td>色</td><td>金茶・朱を少量</td><td><b>1画面1アクセント厳守</b>。金茶=概念、朱=危険/断絶、+新設<b>琥珀#E8A33D</b>=数字ハイライト(明るい写真上で金茶が沈むため)</td></tr>
+<tr><td>禁止だった"全面写真"</td><td>ストックは生使用を避け気味</td><td><b>全面写真を主役化</b>(グレードで番組ルックに馴染ませる前提)。VOX化の核</td></tr>
+<tr><td>出典表示</td><td>データに常設</td><td><b>ソースタグを左上に常設</b>(写真・引用にも)。VOXの信頼記号=誠実の実装と一致</td></tr>
+<tr><td>カメラ</td><td>静止/C13アンカー</td><td><b>静止画に緩速ズーム/パン(Ken Burns)を標準化</b>。アンカーカメラ文法をそのまま流用</td></tr>
+<tr><td>維持するもの</td><td colspan="2">明朝の声 / 低彩度(高彩度は偽サムネのみ) / グレイン・ビネット / 抑制(1画面1アクセント・1★) / 出典と留保</td></tr>
+</table>
+
+<h2>実装への落とし方</h2>
+<div class="note">
+・theme.tsに<b>琥珀#E8A33D</b>と<b>グレードのプリセット</b>(archive: grayscale.75/contrast1.15/brightness.72、quote: .9/1.2/.5)を追加<br>
+・新レイヤー型<b>ArchiveLowerThird / FullBleedStat / QuoteOverPhoto / MontageBoard</b>を上のA〜Dとして起案 → 静止画承認 → registry登録<br>
+・これらは<b>MontageScene(資料モンタージュ)</b>の具体テンプレになる。つまり今回の転換は方針転換ではなく、<b>設計済みの②モンタージュ路線を"VOX品質で確定させる"作業</b><br>
+・チャンネル設計書v4.4(質感設計の改訂)+ブランド定義への追記が必要(全面写真の許可・琥珀の追加・Ken Burns標準化)<br>
+・既存の墨タイトル/★宣言/偽UIはそのまま共存(全部をVOX化しない。"静かなカット"は残す=緩急がVOXらしさでもある)
+</div>
+
+<div class="verdict" style="border-left-color:var(--red);">
+<b>一点だけ強く言います:</b> VOXが格好いいのは"派手だから"ではなく<b>徹底した引き算</b>だからです。1画面に情報を詰めない・色は一つ・余白を大きく取る。
+この番組の「抑制」の美学は、実はVOXと同じ方向を向いています。だから恐れず寄せて大丈夫。危険なのは"VOX風の派手さ"だけ真似て情報過多になること。それだけ避ければ、むしろ番組の核が強化されます。
+</div>
+</div>
+</body>
+</html>

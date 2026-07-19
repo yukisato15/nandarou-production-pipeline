@@ -7,6 +7,7 @@
     "dev": "remotion studio",
     "still": "remotion still C13AttentionFlow out/c13_styleframe.png --frame=238",
     "render:c13": "remotion render C13AttentionFlow out/c13_attention_flow.mp4",
+    "render:c15": "remotion render C15MitStudyMontage out/c15_mit_study_montage.mp4",
     "typecheck": "tsc --noEmit",
     "render:scenes": "remotion render JsonScenes out/json_scenes_demo.mp4",
     "still:scenes": "remotion still JsonScenes out/json_scenes_still.png",

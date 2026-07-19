@@ -62,7 +62,7 @@ const CountStat: React.FC<{
         style={{
           color: theme.red,
           fontFamily: theme.fontNumber,
-          fontSize: 188,
+          fontSize: 170,
           fontWeight: 600,
           letterSpacing: '-0.035em',
           lineHeight: 0.95,
@@ -79,7 +79,7 @@ const CountStat: React.FC<{
         style={{
           color: theme.ink,
           fontFamily: theme.fontMincho,
-          fontSize: 40,
+          fontSize: 36,
           fontWeight: 600,
           letterSpacing: '0.015em',
           lineHeight: 1.5,
@@ -180,7 +180,7 @@ export const C17ResearchResults: React.FC<C17ResearchResultsProps> = ({
       <div
         style={{
           position: 'absolute',
-          inset: `60px 104px ${theme.followTelopSafeBottom + 16}px`,
+          inset: `52px 104px ${theme.followTelopSafeBottom + 12}px`,
           display: 'flex',
           flexDirection: 'column',
           opacity: mainReveal,
@@ -214,13 +214,17 @@ export const C17ResearchResults: React.FC<C17ResearchResultsProps> = ({
           </div>
           <div
             style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+              gap: 8,
               color: theme.ash,
-              fontFamily: theme.fontNumber,
-              fontSize: 30,
-              letterSpacing: '0.1em',
             }}
           >
-            2006—2017
+            <div style={{fontFamily: theme.fontNumber, fontSize: 30, letterSpacing: '0.1em'}}>2006—2017</div>
+            <div style={{fontFamily: theme.fontMincho, fontSize: 17, letterSpacing: '0.04em'}}>
+              出典: {source}
+            </div>
           </div>
         </div>
 
@@ -254,34 +258,21 @@ export const C17ResearchResults: React.FC<C17ResearchResultsProps> = ({
             gap: 16,
             opacity: politicsReveal,
             scale: pulse,
-            minHeight: 72,
+            minHeight: 64,
             borderTop: `2px solid ${theme.gold}`,
-            paddingTop: 22,
+            paddingTop: 18,
             fontFamily: theme.fontMincho,
-            fontSize: 40,
+            fontSize: 36,
             fontWeight: 600,
             letterSpacing: '0.035em',
           }}
         >
           <span style={{color: theme.ash}}>とくに</span>
-          <span style={{color: theme.red, fontSize: 48}}>政治の話題</span>
+          <span style={{color: theme.red, fontSize: 43}}>政治の話題</span>
           <span style={{color: theme.ink}}>で、拡散の差が大きかった</span>
         </div>
       </div>
 
-      <div
-        style={{
-          position: 'absolute',
-          right: 104,
-          bottom: theme.followTelopSafeBottom + 4,
-          color: theme.ash,
-          fontFamily: theme.fontMincho,
-          fontSize: 20,
-          letterSpacing: '0.05em',
-        }}
-      >
-        出典: {source}
-      </div>
     </PaperStage>
   );
 };

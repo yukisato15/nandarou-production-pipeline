@@ -3,7 +3,7 @@ import '@fontsource/oswald/600.css';
 import '@fontsource/shippori-mincho/600.css';
 import React from 'react';
 import {Easing, interpolate, useCurrentFrame} from 'remotion';
-import {PaperStage, SourceNotes} from '../kit/stages';
+import {PaperStage} from '../kit/stages';
 import {theme} from '../kit/theme';
 
 export type C17ResearchResultsProps = {
@@ -171,7 +171,6 @@ export const C17ResearchResults: React.FC<C17ResearchResultsProps> = ({
   const frame = useCurrentFrame();
   const mainReveal = interpolate(frame, [18, 38], [0, 1], {...clamp, easing: ease});
   const politicsReveal = interpolate(frame, [108, 130], [0, 1], {...clamp, easing: ease});
-  const barWidth = interpolate(frame, [116, 164], [0, 1], {...clamp, easing: ease});
   const pulse = interpolate(frame, [172, 188, 204], [1, 1.035, 1], clamp);
 
   return (
@@ -181,7 +180,7 @@ export const C17ResearchResults: React.FC<C17ResearchResultsProps> = ({
       <div
         style={{
           position: 'absolute',
-          inset: '70px 104px 112px',
+          inset: `60px 104px ${theme.followTelopSafeBottom + 16}px`,
           display: 'flex',
           flexDirection: 'column',
           opacity: mainReveal,
@@ -249,44 +248,40 @@ export const C17ResearchResults: React.FC<C17ResearchResultsProps> = ({
 
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: '240px 1fr 250px',
+            display: 'flex',
             alignItems: 'center',
-            gap: 28,
+            justifyContent: 'center',
+            gap: 16,
             opacity: politicsReveal,
             scale: pulse,
+            minHeight: 72,
+            borderTop: `2px solid ${theme.gold}`,
+            paddingTop: 22,
+            fontFamily: theme.fontMincho,
+            fontSize: 40,
+            fontWeight: 600,
+            letterSpacing: '0.035em',
           }}
         >
-          <div
-            style={{
-              color: theme.ink,
-              fontFamily: theme.fontMincho,
-              fontSize: 39,
-              fontWeight: 600,
-              letterSpacing: '0.08em',
-            }}
-          >
-            政治の話題
-          </div>
-          <div style={{height: 26, background: 'rgba(14,15,16,0.12)', overflow: 'hidden'}}>
-            <div style={{height: '100%', width: `${barWidth * 100}%`, background: theme.red}} />
-          </div>
-          <div
-            style={{
-              color: theme.red,
-              fontFamily: theme.fontMincho,
-              fontSize: 35,
-              fontWeight: 600,
-              letterSpacing: '0.08em',
-              textAlign: 'right',
-            }}
-          >
-            差が最大
-          </div>
+          <span style={{color: theme.ash}}>とくに</span>
+          <span style={{color: theme.red, fontSize: 48}}>政治の話題</span>
+          <span style={{color: theme.ink}}>で、拡散の差が大きかった</span>
         </div>
       </div>
 
-      <SourceNotes source={source} conceptual={false} />
+      <div
+        style={{
+          position: 'absolute',
+          right: 104,
+          bottom: theme.followTelopSafeBottom + 4,
+          color: theme.ash,
+          fontFamily: theme.fontMincho,
+          fontSize: 20,
+          letterSpacing: '0.05em',
+        }}
+      >
+        出典: {source}
+      </div>
     </PaperStage>
   );
 };

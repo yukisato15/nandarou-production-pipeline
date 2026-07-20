@@ -1,0 +1,92 @@
+{
+  "fps": 23.976,
+  "scenes": [
+    {
+      "type": "title_card",
+      "id": "EH01_opening",
+      "durationInFrames": 240,
+      "props": {
+        "title": "江戸川区の新庁舎",
+        "subtitle": "工事費は、なぜ増えたのか",
+        "episode": "調査・構成デモ v0.1"
+      }
+    },
+    {
+      "type": "bar_chart",
+      "id": "EH02_cost_transition",
+      "durationInFrames": 720,
+      "props": {
+        "title": "公表された工事費の推移",
+        "bars": [
+          {"label": "2023年12月", "value": 590, "suffix": "億円"},
+          {"label": "2025年2月", "value": 610, "suffix": "億円"},
+          {"label": "2025年12月", "value": 694, "suffix": "億円"}
+        ],
+        "accentIndex": 2,
+        "source": "江戸川区公式公表（各時点）",
+        "conceptual": false
+      }
+    },
+    {
+      "type": "statement",
+      "id": "EH03_question",
+      "durationInFrames": 480,
+      "props": {
+        "text": "増えた事実と、増えた理由は、分けて確かめる。",
+        "emphasis": "理由"
+      }
+    },
+    {
+      "type": "line_compare",
+      "id": "EH04_schedule",
+      "durationInFrames": 720,
+      "props": {
+        "title": "開庁時期も後ろへ動いている",
+        "series": [
+          {"label": "当初計画", "values": [2029, 2029, 2029], "color": "ink"},
+          {"label": "公表時点の予定", "values": [2029, 2031, 2033], "color": "red"}
+        ],
+        "xLabels": ["当初", "2023年公表", "2025年公表"],
+        "conceptual": true
+      }
+    },
+    {
+      "type": "title_card",
+      "id": "EH05_points",
+      "durationInFrames": 600,
+      "props": {
+        "title": "検証するのは、金額だけではない",
+        "subtitle": "物価上昇／工期延期／設計・仕様／財源／議会での説明",
+        "episode": "一次資料と議事録を照合"
+      }
+    },
+    {
+      "type": "statement",
+      "id": "EH06_balance",
+      "durationInFrames": 600,
+      "props": {
+        "text": "建替えの必要性と、694億円の妥当性は、同じ問いではない。",
+        "emphasis": "同じ問いではない"
+      }
+    },
+    {
+      "type": "title_card",
+      "id": "EH07_interview",
+      "durationInFrames": 600,
+      "props": {
+        "title": "議会では、何が問われたのか",
+        "subtitle": "大橋みえ子区議へのインタビュー挿入想定",
+        "episode": "質問・要望・賛否・代替案を確認"
+      }
+    },
+    {
+      "type": "statement",
+      "id": "EH08_closing",
+      "durationInFrames": 360,
+      "props": {
+        "text": "必要な庁舎を、どの規模と費用でつくるのか。",
+        "emphasis": "どの規模と費用"
+      }
+    }
+  ]
+}
